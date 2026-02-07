@@ -9,6 +9,41 @@ See the README in the plugin repo for information on how to set it up.
 Docs are available at [dg-docs.ole.dev](https://dg-docs.ole.dev/)
 
 ---
+## Local development
+
+1. **Install dependencies:** `npm install`
+2. **Start the dev server:** `npm start`  
+   This runs the theme fetcher, builds Sass once, then watches both Sass and Eleventy. The site is served (typically at **http://localhost:8080**).
+3. **Build for production:** `npm run build`
+
+To test custom components (e.g. the Technical Debt Simulator), open any note page. User components in the `afterContent` slot appear below the main content on every note.
+
+---
+## User components (Digital Garden slots)
+
+Custom HTML/JS components are included via **slots**. Put `.njk` files in:
+
+```
+src/site/_includes/components/user/<namespace>/<slot>/
+```
+
+- **Namespaces:** `index` (home only), `notes` (note pages only), `common` (all pages).
+- **Slots:** `head`, `header`, `beforeContent`, `afterContent`, `footer`.
+
+Example: a component that appears below the content on every page goes in:
+
+`src/site/_includes/components/user/common/afterContent/your-component.njk`
+
+**Embedding a component only in specific notes:** Use a code fence in your Obsidian note where you want it. The Technical Debt Simulator is available as a fenced block—in the note where you want it (e.g. "My Thoughts on Technical Debt"), add:
+
+````
+```tech-debt-sim
+```
+````
+
+(The block can be empty.) The simulator is then rendered only at that spot. The snippet lives in `src/site/_includes/snippets/tech-debt-sim.njk`.
+
+---
 ## CSS Variables
 
 The digital garden is fully customizable through CSS variables. Override these in `src/site/styles/custom-style.scss` to customize your garden's appearance.

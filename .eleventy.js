@@ -1,6 +1,7 @@
 const slugify = require("@sindresorhus/slugify");
 const markdownIt = require("markdown-it");
 const fs = require("fs");
+const path = require("path");
 const matter = require("gray-matter");
 const faviconsPlugin = require("eleventy-plugin-gen-favicons");
 const tocPlugin = require("eleventy-plugin-nesting-toc");
@@ -204,6 +205,9 @@ module.exports = function (eleventyConfig) {
               parts.slice(nbLinesToSkip).join("\n")
             )}</div></div>`;
           return res
+        }
+        if (token.info.trim() === "tech-debt-sim") {
+          return '<div data-dg-embed="tech-debt-sim"></div>';
         }
 
         // Other languages
@@ -437,6 +441,23 @@ module.exports = function (eleventyConfig) {
     const parsed = parse(str);
     transformCalloutBlockquotes(parsed.querySelectorAll("blockquote"));
     return str && parsed.innerHTML;
+  });
+
+  eleventyConfig.addTransform("embed-tech-debt-sim", function (str) {
+    if (!str || !str.includes('data-dg-embed="tech-debt-sim"')) return str;
+    const snippetPath = path.join(__dirname, "src/site/_includes/snippets/tech-debt-sim.njk");
+    let snippetHtml;
+    try {
+      snippetHtml = fs.readFileSync(snippetPath, "utf8");
+    } catch {
+      return str;
+    }
+    const parsed = parse(str);
+    for (const placeholder of parsed.querySelectorAll('[data-dg-embed="tech-debt-sim"]')) {
+      placeholder.innerHTML = snippetHtml;
+      placeholder.removeAttribute("data-dg-embed");
+    }
+    return parsed.innerHTML;
   });
 
   function fillPictureSourceSets(src, cls, alt, meta, width, imageTag) {

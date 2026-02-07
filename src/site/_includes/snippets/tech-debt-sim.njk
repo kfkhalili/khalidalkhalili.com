@@ -1,0 +1,63 @@
+<div class="tech-debt-sim" style="border: 1px solid #444; padding: 20px; border-radius: 8px; font-family: monospace;">
+    <h3>Technical Debt Simulator</h3>
+
+    <div style="margin-bottom: 20px;">
+        <label>Refactoring Allocation: <span class="sim-refactor-val">30</span>%</label>
+        <input type="range" class="sim-refactor-slider" min="0" max="100" value="30" style="width: 100%;">
+    </div>
+
+    <div class="sim-bars" style="display: flex; gap: 10px; height: 150px; align-items: flex-end;">
+        <div class="sim-bar-velocity" style="width: 30%; min-height: 8px; background: #4caf50; text-align: center; color: white; display: flex; align-items: center; justify-content: center;">Feature Velocity</div>
+        <div class="sim-bar-debt" style="width: 30%; min-height: 8px; background: #f44336; text-align: center; color: white; display: flex; align-items: center; justify-content: center;">Tech Debt</div>
+        <div class="sim-bar-morale" style="width: 30%; min-height: 8px; background: #2196f3; text-align: center; color: white; display: flex; align-items: center; justify-content: center;">Team Morale</div>
+    </div>
+
+    <div class="sim-log" style="margin-top: 15px; font-size: 0.8em; color: #888;"></div>
+</div>
+
+<script>
+(function() {
+    const containers = document.querySelectorAll('.tech-debt-sim');
+    containers.forEach(function(container) {
+        const nextState = (current, input) => {
+            const debtGrowth = (100 - input.refactorRate) * 0.5;
+            const debtReduction = input.refactorRate * 0.8;
+            const newDebt = Math.max(0, current.debt + debtGrowth - debtReduction);
+            const debtDrag = newDebt * 1.2;
+            const rawVelocity = (100 - input.refactorRate);
+            const newVelocity = Math.max(0, rawVelocity - debtDrag);
+            const newMorale = Math.max(0, 100 - (newDebt * 0.5) - ((100 - newVelocity) * 0.2));
+            return { debt: Math.min(100, newDebt), velocity: Math.min(100, newVelocity), morale: Math.min(100, newMorale), input: input };
+        };
+        const render = (state) => {
+            const refactorVal = container.querySelector('.sim-refactor-val');
+            const barVelocity = container.querySelector('.sim-bar-velocity');
+            const barDebt = container.querySelector('.sim-bar-debt');
+            const barMorale = container.querySelector('.sim-bar-morale');
+            const log = container.querySelector('.sim-log');
+            if (refactorVal) refactorVal.innerText = state.input.refactorRate;
+            if (barVelocity) { barVelocity.style.height = Math.max(8, state.velocity) + '%'; barVelocity.innerText = 'Vel: ' + Math.round(state.velocity); }
+            if (barDebt) { barDebt.style.height = Math.max(8, state.debt) + '%'; barDebt.innerText = 'Debt: ' + Math.round(state.debt); }
+            if (barMorale) { barMorale.style.height = Math.max(8, state.morale) + '%'; barMorale.innerText = 'Morale: ' + Math.round(state.morale); }
+            if (log) {
+                if (state.debt > 80) log.innerText = 'CRITICAL: The team is paralyzed by legacy code.';
+                else if (state.velocity > 80 && state.debt < 20) log.innerText = 'OPTIMAL: Shipping fast with clean code.';
+                else log.innerText = 'System is running.';
+            }
+        };
+        let state = { debt: 0, velocity: 100, morale: 100, input: { refactorRate: 30 } };
+        function init() {
+            state = nextState(state, state.input);
+            render(state);
+            const slider = container.querySelector('.sim-refactor-slider');
+            if (slider) slider.addEventListener('input', function(e) {
+                const input = { refactorRate: parseInt(e.target.value, 10) };
+                state = nextState(state, input);
+                render(state);
+            });
+        }
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+        else init();
+    });
+})();
+</script>
