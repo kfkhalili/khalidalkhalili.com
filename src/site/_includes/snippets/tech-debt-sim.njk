@@ -35,22 +35,19 @@
             border-radius: 4px;
         }
     </style>
-    <h3 style="margin-top: 0;">Technical Debt Simulator</h3>
-    <p style="font-size: 0.85em; color: var(--text-muted, #888); margin-bottom: 1rem;">A running project. Pick a preset or move the slider, then watch what happens over time.</p>
+    <div style="margin-bottom: 16px;">
+        <label style="display: flex; align-items: left; gap: 12px;">
+            <span>Refactor allocation:</span>
+            <span class="sim-refactor-val" style="font-weight: bold;">30</span><span>%</span>
+        </label>
+        <input type="range" class="sim-refactor-slider" min="0" max="100" value="30" style="width: 100%; margin: 8px 0; display: block;">
+    </div>
 
     <div class="sim-presets" style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
         <button type="button" class="sim-preset" data-refactor="10" style="padding: 6px 12px; font-size: 0.8em; border-radius: 6px; border: 1px solid #555; background: #333; color: var(--text-normal, #ccc); cursor: pointer;">Startup rush</button>
         <button type="button" class="sim-preset" data-refactor="30" style="padding: 6px 12px; font-size: 0.8em; border-radius: 6px; border: 1px solid #555; background: #333; color: var(--text-normal, #ccc); cursor: pointer;">Sustainable</button>
         <button type="button" class="sim-preset" data-refactor="50" style="padding: 6px 12px; font-size: 0.8em; border-radius: 6px; border: 1px solid #555; background: #333; color: var(--text-normal, #ccc); cursor: pointer;">Enterprise safe</button>
         <button type="button" class="sim-preset" data-refactor="80" style="padding: 6px 12px; font-size: 0.8em; border-radius: 6px; border: 1px solid #555; background: #333; color: var(--text-normal, #ccc); cursor: pointer;">Full refactor</button>
-    </div>
-
-    <div style="margin-bottom: 16px;">
-        <label style="display: flex; justify-content: space-between; align-items: center; gap: 12px;">
-            <span>Refactor allocation:</span>
-            <span class="sim-refactor-val" style="font-weight: bold;">30</span><span>%</span>
-        </label>
-        <input type="range" class="sim-refactor-slider" min="0" max="100" value="30" style="width: 100%; margin: 8px 0; display: block;">
     </div>
 
     <div class="sim-bars" style="display: flex; gap: 12px; height: 140px; align-items: flex-end;">
@@ -64,8 +61,8 @@
         <span style="width: 30%; text-align: center;">Morale</span>
     </div>
 
-    <div class="sim-meta" style="margin-top: 14px; font-size: 0.8em; color: var(--text-muted, #888);">
-        <span class="sim-tick-label">Week 1</span>
+    <div class="sim-meta" style="margin-top: 14px; font-size: 0.9em; color: var(--text-muted, #888);">
+        <span class="sim-tick-label">Week 0</span>
     </div>
     <div class="sim-log" style="margin-top: 8px; font-size: 0.85em; color: var(--text-normal, #ccc); min-height: 1.4em;"></div>
 </div>
