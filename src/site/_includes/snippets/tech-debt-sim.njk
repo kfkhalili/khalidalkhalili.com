@@ -36,7 +36,14 @@
         }
     </style>
     <h3 style="margin-top: 0;">Technical Debt Simulator</h3>
-    <p style="font-size: 0.85em; color: var(--text-muted, #888); margin-bottom: 1rem;">A running project. Adjust refactor allocation and watch what happens over time.</p>
+    <p style="font-size: 0.85em; color: var(--text-muted, #888); margin-bottom: 1rem;">A running project. Pick a preset or move the slider, then watch what happens over time.</p>
+
+    <div class="sim-presets" style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+        <button type="button" class="sim-preset" data-refactor="10" style="padding: 6px 12px; font-size: 0.8em; border-radius: 6px; border: 1px solid #555; background: #333; color: var(--text-normal, #ccc); cursor: pointer;">Startup rush</button>
+        <button type="button" class="sim-preset" data-refactor="30" style="padding: 6px 12px; font-size: 0.8em; border-radius: 6px; border: 1px solid #555; background: #333; color: var(--text-normal, #ccc); cursor: pointer;">Sustainable</button>
+        <button type="button" class="sim-preset" data-refactor="50" style="padding: 6px 12px; font-size: 0.8em; border-radius: 6px; border: 1px solid #555; background: #333; color: var(--text-normal, #ccc); cursor: pointer;">Enterprise safe</button>
+        <button type="button" class="sim-preset" data-refactor="80" style="padding: 6px 12px; font-size: 0.8em; border-radius: 6px; border: 1px solid #555; background: #333; color: var(--text-normal, #ccc); cursor: pointer;">Full refactor</button>
+    </div>
 
     <div style="margin-bottom: 16px;">
         <label style="display: flex; justify-content: space-between; align-items: center; gap: 12px;">
@@ -183,6 +190,15 @@
             }
         }
 
+        function applyRefactorRate(value) {
+            refactorRate = Math.max(0, Math.min(100, value));
+            const slider = container.querySelector('.sim-refactor-slider');
+            if (slider instanceof HTMLInputElement) {
+                slider.value = String(refactorRate);
+            }
+            render(state, refactorRate, container);
+        }
+
         function init() {
             const slider = container.querySelector('.sim-refactor-slider');
             if (slider instanceof HTMLInputElement) {
@@ -193,6 +209,17 @@
                     render(state, refactorRate, container);
                 });
             }
+            container.querySelectorAll('.sim-preset').forEach(function(btn) {
+                const val = btn.getAttribute('data-refactor');
+                if (val !== null) {
+                    const pct = Number.parseInt(val, 10);
+                    if (!Number.isNaN(pct)) {
+                        btn.addEventListener('click', function() {
+                            applyRefactorRate(pct);
+                        });
+                    }
+                }
+            });
             render(state, refactorRate, container);
             if (document.visibilityState === 'visible') {
                 startLoop();
