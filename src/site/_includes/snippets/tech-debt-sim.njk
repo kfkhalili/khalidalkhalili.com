@@ -177,17 +177,17 @@
         }
 
         function init() {
-            render(state, refactorRate, container);
-            startLoop();
-
             const slider = container.querySelector('.sim-refactor-slider');
             if (slider instanceof HTMLInputElement) {
+                slider.value = String(refactorRate);
                 slider.addEventListener('input', function() {
                     const parsed = Number.parseInt(slider.value, 10);
                     refactorRate = Number.isNaN(parsed) ? refactorRate : parsed;
                     render(state, refactorRate, container);
                 });
             }
+            render(state, refactorRate, container);
+            startLoop();
         }
 
         if (document.readyState === 'loading') {
