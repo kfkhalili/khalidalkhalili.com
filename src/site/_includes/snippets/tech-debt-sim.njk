@@ -34,6 +34,14 @@
             background: #444;
             border-radius: 4px;
         }
+        .tech-debt-sim .sim-bar-value.sim-bar-pulse {
+            animation: sim-bar-pulse 0.55s ease-out;
+        }
+        @keyframes sim-bar-pulse {
+            0% { transform: scale(1); opacity: 1; }
+            45% { transform: scale(1.5); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
     </style>
     <div style="margin-bottom: 16px;">
         <label style="display: flex; align-items: left; gap: 12px; flex-wrap: wrap;">
@@ -52,9 +60,9 @@
     </div>
 
     <div class="sim-bars" style="display: flex; gap: 12px; height: 140px; align-items: flex-end;">
-        <div class="sim-bar-velocity" style="width: 30%; min-height: 12px; background-color: #4caf50; border-radius: 4px 4px 0 0; text-align: center; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.8em; transition: height 0.3s ease, background-color 0.3s ease;">—</div>
-        <div class="sim-bar-debt" style="width: 30%; min-height: 12px; background-color: #4caf50; border-radius: 4px 4px 0 0; text-align: center; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.8em; transition: height 0.3s ease, background-color 0.3s ease;">—</div>
-        <div class="sim-bar-morale" style="width: 30%; min-height: 12px; background-color: #4caf50; border-radius: 4px 4px 0 0; text-align: center; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.8em; transition: height 0.3s ease, background-color 0.3s ease;">—</div>
+        <div class="sim-bar-velocity" style="width: 30%; min-height: 12px; background-color: #4caf50; border-radius: 4px 4px 0 0; text-align: center; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.8em; transition: height 0.3s ease, background-color 0.3s ease;"><span class="sim-bar-value">—</span></div>
+        <div class="sim-bar-debt" style="width: 30%; min-height: 12px; background-color: #4caf50; border-radius: 4px 4px 0 0; text-align: center; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.8em; transition: height 0.3s ease, background-color 0.3s ease;"><span class="sim-bar-value">—</span></div>
+        <div class="sim-bar-morale" style="width: 30%; min-height: 12px; background-color: #4caf50; border-radius: 4px 4px 0 0; text-align: center; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.8em; transition: height 0.3s ease, background-color 0.3s ease;"><span class="sim-bar-value">—</span></div>
     </div>
     <div style="display: flex; gap: 12px; margin-top: 4px; font-size: 0.75em; color: var(--text-muted, #888);">
         <span style="width: 30%; text-align: center;">Velocity</span>
@@ -157,10 +165,28 @@
         return baseMsg;
     }
 
+    const PULSE_CLASS = 'sim-bar-pulse';
+
+    /**
+     * Trigger one-shot pulse on element and remove class when animation ends.
+     */
+    function triggerPulse(el) {
+        if (!el) return;
+        el.classList.remove(PULSE_CLASS);
+        el.offsetHeight;
+        el.classList.add(PULSE_CLASS);
+        function onEnd() {
+            el.removeEventListener('animationend', onEnd);
+            el.classList.remove(PULSE_CLASS);
+        }
+        el.addEventListener('animationend', onEnd);
+    }
+
     /**
      * Side-effect only: update DOM.
+     * @param {{ velocity: number | null, debt: number | null, morale: number | null }} prevDisplayed - previous rounded values (mutated).
      */
-    function render(state, refactorRate, container) {
+    function render(state, refactorRate, container, prevDisplayed) {
         const refactorVal = container.querySelector('.sim-refactor-val');
         const breakEvenEl = container.querySelector('.sim-break-even');
         const barVelocity = container.querySelector('.sim-bar-velocity');
@@ -184,8 +210,16 @@
 
         // --- VELOCITY BAR ---
         if (barVelocity) {
+            const velRounded = Math.round(state.velocity);
             barVelocity.style.height = Math.max(MIN_BAR_PCT, state.velocity) + '%';
-            barVelocity.textContent = String(Math.round(state.velocity));
+            const velValueEl = barVelocity.querySelector('.sim-bar-value');
+            if (velValueEl) {
+                velValueEl.textContent = String(velRounded);
+                if (prevDisplayed.velocity !== null && prevDisplayed.velocity !== velRounded) {
+                    triggerPulse(velValueEl);
+                }
+            }
+            prevDisplayed.velocity = velRounded;
 
             if (state.velocity > 85) {
                 // Reckless Orange
@@ -208,8 +242,16 @@
 
         // --- DEBT BAR ---
         if (barDebt) {
+            const debtRounded = Math.round(state.debt);
             barDebt.style.height = Math.max(MIN_BAR_PCT, state.debt) + '%';
-            barDebt.textContent = String(Math.round(state.debt));
+            const debtValueEl = barDebt.querySelector('.sim-bar-value');
+            if (debtValueEl) {
+                debtValueEl.textContent = String(debtRounded);
+                if (prevDisplayed.debt !== null && prevDisplayed.debt !== debtRounded) {
+                    triggerPulse(debtValueEl);
+                }
+            }
+            prevDisplayed.debt = debtRounded;
 
             if (state.debt < 25) {
                 // Low Debt (Healthy) -> Green
@@ -228,8 +270,16 @@
 
         // --- MORALE BAR ---
         if (barMorale) {
+            const moraleRounded = Math.round(state.morale);
             barMorale.style.height = Math.max(MIN_BAR_PCT, state.morale) + '%';
-            barMorale.textContent = String(Math.round(state.morale));
+            const moraleValueEl = barMorale.querySelector('.sim-bar-value');
+            if (moraleValueEl) {
+                moraleValueEl.textContent = String(moraleRounded);
+                if (prevDisplayed.morale !== null && prevDisplayed.morale !== moraleRounded) {
+                    triggerPulse(moraleValueEl);
+                }
+            }
+            prevDisplayed.morale = moraleRounded;
             
             if (state.morale >= 80) {
                  // High Morale (Happy) -> Green
@@ -258,10 +308,12 @@
         let refactorRate = 30;
         /** @type {ReturnType<typeof setInterval> | null} */
         let tickTimer = null;
+        /** @type {{ velocity: number | null, debt: number | null, morale: number | null }} */
+        const prevDisplayed = { velocity: null, debt: null, morale: null };
 
         function tick() {
             state = nextState(state, refactorRate);
-            render(state, refactorRate, container);
+            render(state, refactorRate, container, prevDisplayed);
         }
 
         function startLoop() {
@@ -282,7 +334,7 @@
             if (slider instanceof HTMLInputElement) {
                 slider.value = String(refactorRate);
             }
-            render(state, refactorRate, container);
+            render(state, refactorRate, container, prevDisplayed);
         }
 
         function init() {
@@ -292,7 +344,7 @@
                 slider.addEventListener('input', function() {
                     const parsed = Number.parseInt(slider.value, 10);
                     refactorRate = Number.isNaN(parsed) ? refactorRate : parsed;
-                    render(state, refactorRate, container);
+                    render(state, refactorRate, container, prevDisplayed);
                 });
             }
 
@@ -308,7 +360,7 @@
                 }
             });
 
-            render(state, refactorRate, container);
+            render(state, refactorRate, container, prevDisplayed);
 
             if (document.visibilityState === 'visible') {
                 startLoop();
