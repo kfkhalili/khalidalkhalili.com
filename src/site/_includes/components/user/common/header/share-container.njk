@@ -1,0 +1,30 @@
+<div id="share-container" class="share-container" data-site-name="{{ meta.siteName }}">
+</div>
+
+<script>
+  (function() {
+    const createShareLinks = (url, shareTitle) => [
+      { label: "X (Twitter)", icon: "fa-brands fa-x-twitter", href: `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareTitle)}&url=${encodeURIComponent(url)}` },
+      { label: "LinkedIn", icon: "fa-brands fa-linkedin-in", href: `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(url)}&title=${encodeURIComponent(shareTitle)}` },
+      { label: "Reddit", icon: "fa-brands fa-reddit-alien", href: `https://www.reddit.com/submit?url=${encodeURIComponent(url)}&title=${encodeURIComponent(shareTitle)}` }
+    ];
+
+    const renderLinks = (containerId) => {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+
+      const siteName = container.getAttribute("data-site-name") || "";
+      const pageTitle = document.title;
+      const shareTitle = siteName ? `${siteName} | ${pageTitle}` : pageTitle;
+
+      const links = createShareLinks(window.location.href, shareTitle);
+      const html = links.map(link =>
+        `<a class="share-link" href="${link.href}" target="_blank" rel="noopener noreferrer" title="${link.label}" aria-label="${link.label}"><i class="${link.icon}" aria-hidden="true"></i></a>`
+      ).join('');
+
+      container.innerHTML = `<span class="share-label">Share</span>${html}`;
+    };
+
+    renderLinks('share-container');
+  })();
+</script>
