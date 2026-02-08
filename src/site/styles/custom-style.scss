@@ -58,3 +58,9 @@ body {
     }
   }
 }
+
+/* Filetree: align folderless (root-level) notes with folder name text (same as folder row) */
+.folder > div:not(.filelist) > .notelink {
+  margin-left: 0;
+  padding-left: calc(var(--dg-inner-folder-margin) + 2px + var(--dg-folder-icon-size));
+}
