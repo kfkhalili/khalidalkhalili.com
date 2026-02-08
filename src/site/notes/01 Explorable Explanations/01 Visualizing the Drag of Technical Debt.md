@@ -54,6 +54,7 @@ Technical debt is fatal not when code is unfixable, but when the <strong>cost of
 <summary><p style="display: inline-block; margin: 0">Clean Code is Not the Goal</p></summary>
 <strong>70% Velocity</strong> (with its associated maintenance cost) is better than <strong>40% Velocity</strong> (perfect code). If you have 0% debt but are moving slowly because you are polishing code, you are failing just as badly as the team with high debt. The goal is the <em>sustainable maximum</em>.
 </details>
+
 ## Conclusion
 
 The simulation demonstrates Ousterhout’s central thesis: **Complexity accumulates when you don't invest in design.** The most effective teams aren't the ones who type the fastest; they are the ones who maintain a "Sustainable" balance, preventing the drag coefficient from taking over.
