@@ -36,9 +36,10 @@
         }
     </style>
     <div style="margin-bottom: 16px;">
-        <label style="display: flex; align-items: left; gap: 12px;">
+        <label style="display: flex; align-items: left; gap: 12px; flex-wrap: wrap;">
             <span>Refactor allocation:</span>
             <span class="sim-refactor-val" style="font-weight: bold;">30</span><span>%</span>
+            <span class="sim-break-even" style="color: var(--text-muted, #888); font-weight: normal;"></span>
         </label>
         <input type="range" class="sim-refactor-slider" min="0" max="100" value="30" style="width: 100%; margin: 8px 0; display: block;">
     </div>
@@ -51,9 +52,9 @@
     </div>
 
     <div class="sim-bars" style="display: flex; gap: 12px; height: 140px; align-items: flex-end;">
-        <div class="sim-bar-velocity" style="width: 30%; min-height: 12px; background: #4caf50; border-radius: 4px 4px 0 0; text-align: center; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.8em; transition: height 0.3s ease;">—</div>
-        <div class="sim-bar-debt" style="width: 30%; min-height: 12px; background: #f44336; border-radius: 4px 4px 0 0; text-align: center; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.8em; transition: height 0.3s ease;">—</div>
-        <div class="sim-bar-morale" style="width: 30%; min-height: 12px; background: #2196f3; border-radius: 4px 4px 0 0; text-align: center; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.8em; transition: height 0.3s ease;">—</div>
+        <div class="sim-bar-velocity" style="width: 30%; min-height: 12px; background-color: #4caf50; border-radius: 4px 4px 0 0; text-align: center; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.8em; transition: height 0.3s ease, background-color 0.3s ease;">—</div>
+        <div class="sim-bar-debt" style="width: 30%; min-height: 12px; background-color: #4caf50; border-radius: 4px 4px 0 0; text-align: center; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.8em; transition: height 0.3s ease, background-color 0.3s ease;">—</div>
+        <div class="sim-bar-morale" style="width: 30%; min-height: 12px; background-color: #4caf50; border-radius: 4px 4px 0 0; text-align: center; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.8em; transition: height 0.3s ease, background-color 0.3s ease;">—</div>
     </div>
     <div style="display: flex; gap: 12px; margin-top: 4px; font-size: 0.75em; color: var(--text-muted, #888);">
         <span style="width: 30%; text-align: center;">Velocity</span>
@@ -81,31 +82,29 @@
      * @typedef {{ debt: number, velocity: number, morale: number, tick: number }} SimState
      */
 
-    /**
-     * Clamp a value to [0, CAP].
-     * @param {number} value
-     * @returns {number}
-     */
     function clamp(value) {
         return Math.max(0, Math.min(CAP, value));
     }
 
     /**
-     * Pure: compute next simulation state from current state and refactor rate.
-     * @param {SimState} current
-     * @param {number} refactorRate - 0..100
-     * @returns {SimState}
+     * Pure: compute next simulation state.
      */
     function nextState(current, refactorRate) {
         const r = refactorRate / 100;
+        
+        // Compound Interest
         const complexityFactor = 1 + (current.debt / 50); 
-        const growth = (1 - r) * DEBT_GROWTH_PER_TICK * complexityFactor;        const payback = r * DEBT_PAYBACK_PER_TICK;
+        const growth = (1 - r) * DEBT_GROWTH_PER_TICK * complexityFactor;
+        const payback = r * DEBT_PAYBACK_PER_TICK;
         const debtDelta = growth - payback;
         const newDebt = clamp(current.debt + debtDelta);
 
+        // Strict Realism: Debt kills velocity 1-to-1
         const debtDrag = newDebt * 1.0;
         const refactorTax = refactorRate * 1.0;
         const newVelocity = clamp(100 - debtDrag - refactorTax);
+        
+        // Morale penalty
         const newMorale = clamp(100 - newDebt * 0.4 - (100 - newVelocity) * 0.5);
 
         return {
@@ -116,73 +115,54 @@
         };
     }
 
-/**
-     * Pure: derive log message from state and refactor rate.
-     * @param {SimState} state
-     * @param {number} refactorRate
-     * @returns {string}
+    /**
+     * Pure: Break-even refactor % for current debt (Growth = Payback).
      */
-     function getLogMessage(state, refactorRate) {
-        // 1. Calculate the trend
-        const r = refactorRate / 100;
-        const complexityFactor = 1 + (state.debt / 50); 
-        const growth = (1 - r) * 1.5 * complexityFactor;
-        const payback = r * 3.5;
-        const netChange = growth - payback;
-
-        // 2. Calculate the exact "Break Even" point for this debt level
-        // Math: Growth = Payback  ->  (1-r)*1.5*C = r*3.5  ->  r = (1.5*C) / (3.5 + 1.5*C)
+    function getBreakEvenPct(state) {
+        const complexityFactor = 1 + (state.debt / 50);
         const breakEvenRate = (1.5 * complexityFactor) / (3.5 + 1.5 * complexityFactor);
-        const breakEvenPct = Math.round(breakEvenRate * 100);
-
-        // --- SCENARIO 0: TOTAL COLLAPSE (GAME OVER) ---
-        if (state.debt >= 95) {
-             if (netChange < -1) return 'System Reset: You are effectively rewriting the app. Keep going, but expect zero features for weeks.';
-             return 'GAME OVER: The team is paralyzed. You cannot ship. You must switch to 100% refactoring to survive.';
-        }
-
-        // --- SCENARIO 1: CRITICAL DEBT (80-95) ---
-        if (state.debt >= 80) {
-            if (netChange < -0.5) return 'CRITICAL: Good. You are paying down the debt, but it will take time to recover velocity.';
-            if (netChange < 0) return 'CRITICAL: Debt is slowly decreasing. Push harder (increase refactor) to escape the death spiral.';
-            return 'CRITICAL: The system is collapsing. You are still accumulating debt. STOP SHIPPING FEATURES immediately.';
-        }
-
-        // --- SCENARIO 2: HIGH DEBT (50-80) ---
-        if (state.debt >= 50) {
-            if (netChange < 0) return 'Recovering: Debt is high, but the trend is positive. Morale will improve soon.';
-            // USE THE CALCULATED VALUE HERE
-            return 'WARNING: High debt is compounding. You need at least ' + breakEvenPct + '% allocation just to stop it from growing.';
-        }
-
-        // --- SCENARIO 3: MODERATE DEBT (25-50) ---
-        if (state.debt >= 25) {
-            if (netChange > 0.1) return 'Caution: Debt is creeping up. Don\'t let it compound.';
-            // Only say "Grinding" if they are actually trying to fix it (netChange <= 0)
-            if (state.velocity < 50 && netChange <= 0) return 'Grinding: The debt drag is heavy, but you are doing the right thing. Hold the line.';
-            if (state.velocity < 50) return 'Stuck: Velocity is low because of debt. You are not refactoring enough to fix it.';
-        }
-
-        // --- SCENARIO 4: LOW DEBT (<25) ---
-        if (state.debt < 25) {
-            if (refactorRate > 60) return 'Gold Plating: The code is pristine. You can likely afford to ship more features (lower the slider).';
-            if (netChange > 0.5) return 'Sugar Rush: You are shipping fast, but debt is piling up quickly. Watch out!';
-            if (state.velocity > 70) return 'Sustainable: The team is in the zone. Great balance.';
-        }
-
-        // Fallback
-        if (netChange > 0) return 'Drifting: Debt is slowly accumulating. Keep an eye on it.';
-        return 'Stable: The codebase is healthy.';
+        return Math.round(breakEvenRate * 100);
     }
 
     /**
-     * Side-effect only: update DOM from state and refactor rate.
-     * @param {SimState} state
-     * @param {number} refactorRate
-     * @param {Element} container
+     * Pure: Snapshot-based messaging.
+     */
+    function getLogMessage(state) {
+        const baseMsg = (() => {
+            // 1. GAME OVER
+            if (state.debt >= 90) {
+                return 'GAME OVER: The system is paralyzed. You must switch to "Full Refactor" immediately.';
+            }
+
+            // 2. DANGER ZONE (High Debt)
+            if (state.debt >= 50) {
+                return 'WARNING: High technical debt is compounding. Velocity is suffering.';
+            }
+
+            // 3. SUSTAINABLE ZONE (Clean code)
+            if (state.debt < 25) {
+                if (state.velocity < 50) {
+                    return 'Inefficient: Code is clean, but you are refactoring too much ("Gold Plating"). Ship more features.';
+                }
+                if (state.velocity > 85) {
+                    return 'Sugar Rush: You are moving recklessly fast. Debt will spike soon.';
+                }
+                return 'Healthy: The team is maintaining a sustainable, professional pace.';
+            }
+
+            // 4. MIDDLE GROUND (25-50 Debt)
+            return 'Project Running: Watch the debt levels; do not let them cross 50%.';
+        })();
+
+        return baseMsg;
+    }
+
+    /**
+     * Side-effect only: update DOM.
      */
     function render(state, refactorRate, container) {
         const refactorVal = container.querySelector('.sim-refactor-val');
+        const breakEvenEl = container.querySelector('.sim-break-even');
         const barVelocity = container.querySelector('.sim-bar-velocity');
         const barDebt = container.querySelector('.sim-bar-debt');
         const barMorale = container.querySelector('.sim-bar-morale');
@@ -190,20 +170,84 @@
         const log = container.querySelector('.sim-log');
 
         if (refactorVal) refactorVal.textContent = String(refactorRate);
+
+        if (breakEvenEl) {
+            const breakEvenPct = getBreakEvenPct(state);
+            if (breakEvenPct === refactorRate) {
+                breakEvenEl.textContent = '';
+                breakEvenEl.style.display = 'none';
+            } else {
+                breakEvenEl.textContent = ' (Break-even: ' + breakEvenPct + '%)';
+                breakEvenEl.style.display = '';
+            }
+        }
+
+        // --- VELOCITY BAR ---
         if (barVelocity) {
             barVelocity.style.height = Math.max(MIN_BAR_PCT, state.velocity) + '%';
             barVelocity.textContent = String(Math.round(state.velocity));
+
+            if (state.velocity > 85) {
+                // Reckless Orange
+                barVelocity.style.backgroundColor = '#ff9800'; 
+                barVelocity.style.color = 'white';
+            } else if (state.velocity >= 65) {
+                // Healthy Green
+                barVelocity.style.backgroundColor = '#4caf50'; 
+                barVelocity.style.color = 'white';
+            } else if (state.velocity >= 40) {
+                // Struggling Yellow
+                barVelocity.style.backgroundColor = '#ffeb3b'; 
+                barVelocity.style.color = '#333';
+            } else {
+                // Stalled Red
+                barVelocity.style.backgroundColor = '#f44336'; 
+                barVelocity.style.color = 'white';
+            }
         }
+
+        // --- DEBT BAR ---
         if (barDebt) {
             barDebt.style.height = Math.max(MIN_BAR_PCT, state.debt) + '%';
             barDebt.textContent = String(Math.round(state.debt));
+
+            if (state.debt < 25) {
+                // Low Debt (Healthy) -> Green
+                barDebt.style.backgroundColor = '#4caf50';
+                barDebt.style.color = 'white';
+            } else if (state.debt < 50) {
+                // Medium Debt (Warning) -> Yellow
+                barDebt.style.backgroundColor = '#ffeb3b';
+                barDebt.style.color = '#333';
+            } else {
+                // High Debt (Critical) -> Red
+                barDebt.style.backgroundColor = '#f44336';
+                barDebt.style.color = 'white';
+            }
         }
+
+        // --- MORALE BAR ---
         if (barMorale) {
             barMorale.style.height = Math.max(MIN_BAR_PCT, state.morale) + '%';
             barMorale.textContent = String(Math.round(state.morale));
+            
+            if (state.morale >= 80) {
+                 // High Morale (Happy) -> Green
+                barMorale.style.backgroundColor = '#4caf50';
+                barMorale.style.color = 'white';
+            } else if (state.morale >= 50) {
+                 // Med Morale (Anxious) -> Yellow
+                barMorale.style.backgroundColor = '#ffeb3b';
+                barMorale.style.color = '#333';
+            } else {
+                 // Low Morale (Burnout) -> Red
+                barMorale.style.backgroundColor = '#f44336';
+                barMorale.style.color = 'white';
+            }
         }
+
         if (tickLabel) tickLabel.textContent = 'Week ' + state.tick;
-        if (log) log.textContent = getLogMessage(state, refactorRate);
+        if (log) log.textContent = getLogMessage(state);
     }
 
     const containers = document.querySelectorAll('.tech-debt-sim');
@@ -251,6 +295,7 @@
                     render(state, refactorRate, container);
                 });
             }
+
             container.querySelectorAll('.sim-preset').forEach(function(btn) {
                 const val = btn.getAttribute('data-refactor');
                 if (val !== null) {
@@ -262,7 +307,9 @@
                     }
                 }
             });
+
             render(state, refactorRate, container);
+
             if (document.visibilityState === 'visible') {
                 startLoop();
             }
