@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/explorable-explanations/my-thoughts-on-technical-debt/","tags":["gardenEntry"]}
+{"dg-publish":true,"permalink":"/explorable-explanations/my-thoughts-on-technical-debt/"}
 ---
 
 Technical debt isn't just a metaphor; it's a mathematical drag coefficient on your velocity.
