@@ -176,6 +176,13 @@
             tickTimer = setInterval(tick, TICK_MS);
         }
 
+        function stopLoop() {
+            if (tickTimer !== null) {
+                clearInterval(tickTimer);
+                tickTimer = null;
+            }
+        }
+
         function init() {
             const slider = container.querySelector('.sim-refactor-slider');
             if (slider instanceof HTMLInputElement) {
@@ -187,7 +194,16 @@
                 });
             }
             render(state, refactorRate, container);
-            startLoop();
+            if (document.visibilityState === 'visible') {
+                startLoop();
+            }
+            document.addEventListener('visibilitychange', function() {
+                if (document.visibilityState === 'hidden') {
+                    stopLoop();
+                } else {
+                    startLoop();
+                }
+            });
         }
 
         if (document.readyState === 'loading') {
