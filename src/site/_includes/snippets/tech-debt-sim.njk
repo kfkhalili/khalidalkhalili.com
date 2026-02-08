@@ -98,15 +98,15 @@
      */
     function nextState(current, refactorRate) {
         const r = refactorRate / 100;
-        const growth = (1 - r) * DEBT_GROWTH_PER_TICK;
-        const payback = r * DEBT_PAYBACK_PER_TICK;
+        const complexityFactor = 1 + (current.debt / 50); 
+        const growth = (1 - r) * DEBT_GROWTH_PER_TICK * complexityFactor;        const payback = r * DEBT_PAYBACK_PER_TICK;
         const debtDelta = growth - payback;
         const newDebt = clamp(current.debt + debtDelta);
 
-        const debtDrag = newDebt * 0.35;
-        const refactorTax = refactorRate * 0.25;
+        const debtDrag = newDebt * 1.0;
+        const refactorTax = refactorRate * 1.0;
         const newVelocity = clamp(100 - debtDrag - refactorTax);
-        const newMorale = clamp(100 - newDebt * 0.4 - (100 - newVelocity) * 0.25);
+        const newMorale = clamp(100 - newDebt * 0.4 - (100 - newVelocity) * 0.5);
 
         return {
             debt: newDebt,
@@ -116,18 +116,63 @@
         };
     }
 
-    /**
+/**
      * Pure: derive log message from state and refactor rate.
      * @param {SimState} state
      * @param {number} refactorRate
      * @returns {string}
      */
-    function getLogMessage(state, refactorRate) {
-        if (state.debt >= 85) return 'CRITICAL: Legacy code is paralyzing the team.';
-        if (state.debt >= 60) return 'WARNING: Debt is building. Consider increasing refactor allocation.';
-        if (state.velocity >= 75 && state.debt <= 25) return 'Healthy: Shipping steadily with manageable debt.';
-        if (state.debt <= 15 && refactorRate > 50) return 'Low debt, but a lot of time on refactor—velocity could be higher.';
-        return 'Project running. Adjust the slider to see how refactor allocation affects the team.';
+     function getLogMessage(state, refactorRate) {
+        // 1. Calculate the trend
+        const r = refactorRate / 100;
+        const complexityFactor = 1 + (state.debt / 50); 
+        const growth = (1 - r) * 1.5 * complexityFactor;
+        const payback = r * 3.5;
+        const netChange = growth - payback;
+
+        // 2. Calculate the exact "Break Even" point for this debt level
+        // Math: Growth = Payback  ->  (1-r)*1.5*C = r*3.5  ->  r = (1.5*C) / (3.5 + 1.5*C)
+        const breakEvenRate = (1.5 * complexityFactor) / (3.5 + 1.5 * complexityFactor);
+        const breakEvenPct = Math.round(breakEvenRate * 100);
+
+        // --- SCENARIO 0: TOTAL COLLAPSE (GAME OVER) ---
+        if (state.debt >= 95) {
+             if (netChange < -1) return 'System Reset: You are effectively rewriting the app. Keep going, but expect zero features for weeks.';
+             return 'GAME OVER: The team is paralyzed. You cannot ship. You must switch to 100% refactoring to survive.';
+        }
+
+        // --- SCENARIO 1: CRITICAL DEBT (80-95) ---
+        if (state.debt >= 80) {
+            if (netChange < -0.5) return 'CRITICAL: Good. You are paying down the debt, but it will take time to recover velocity.';
+            if (netChange < 0) return 'CRITICAL: Debt is slowly decreasing. Push harder (increase refactor) to escape the death spiral.';
+            return 'CRITICAL: The system is collapsing. You are still accumulating debt. STOP SHIPPING FEATURES immediately.';
+        }
+
+        // --- SCENARIO 2: HIGH DEBT (50-80) ---
+        if (state.debt >= 50) {
+            if (netChange < 0) return 'Recovering: Debt is high, but the trend is positive. Morale will improve soon.';
+            // USE THE CALCULATED VALUE HERE
+            return 'WARNING: High debt is compounding. You need at least ' + breakEvenPct + '% allocation just to stop it from growing.';
+        }
+
+        // --- SCENARIO 3: MODERATE DEBT (25-50) ---
+        if (state.debt >= 25) {
+            if (netChange > 0.1) return 'Caution: Debt is creeping up. Don\'t let it compound.';
+            // Only say "Grinding" if they are actually trying to fix it (netChange <= 0)
+            if (state.velocity < 50 && netChange <= 0) return 'Grinding: The debt drag is heavy, but you are doing the right thing. Hold the line.';
+            if (state.velocity < 50) return 'Stuck: Velocity is low because of debt. You are not refactoring enough to fix it.';
+        }
+
+        // --- SCENARIO 4: LOW DEBT (<25) ---
+        if (state.debt < 25) {
+            if (refactorRate > 60) return 'Gold Plating: The code is pristine. You can likely afford to ship more features (lower the slider).';
+            if (netChange > 0.5) return 'Sugar Rush: You are shipping fast, but debt is piling up quickly. Watch out!';
+            if (state.velocity > 70) return 'Sustainable: The team is in the zone. Great balance.';
+        }
+
+        // Fallback
+        if (netChange > 0) return 'Drifting: Debt is slowly accumulating. Keep an eye on it.';
+        return 'Stable: The codebase is healthy.';
     }
 
     /**
@@ -164,7 +209,7 @@
     const containers = document.querySelectorAll('.tech-debt-sim');
     containers.forEach(function(container) {
         /** @type {SimState} */
-        let state = { debt: 20, velocity: 82, morale: 84, tick: 0 };
+        let state = { debt: 0, velocity: 70, morale: 85, tick: 0 };
         /** @type {number} */
         let refactorRate = 30;
         /** @type {ReturnType<typeof setInterval> | null} */
