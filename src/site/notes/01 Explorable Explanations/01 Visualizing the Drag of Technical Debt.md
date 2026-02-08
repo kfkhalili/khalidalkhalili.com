@@ -31,27 +31,27 @@ This simulation isn't random. It is driven by the battle between two opposing fo
 ## Hindsight is 20/20
 
 <details style="margin-bottom: 12px;">
-<summary><p style="display: inline-block; margin: 0">1. 100% Velocity is a Warning Sign</p></summary>
+<summary><p style="display: inline-block; margin: 0">100% Velocity is a Warning Sign</p></summary>
 If a team is moving at "100," they are borrowing time from the future. The "missing" 30% velocity in a healthy team isn't waste; it is the <strong>Cost of Doing Business</strong>. Communication, design, and maintenance are hard work.
 </details>
 <details style="margin-bottom: 12px;">
-<summary><p style="display: inline-block; margin: 0">2. The Myth of the Euphoric Developer</p></summary>
+<summary><p style="display: inline-block; margin: 0">The Myth of the Euphoric Developer</p></summary>
 A morale of 85–90% is the realistic ceiling. The gap between 85 and 100 represents <strong>Professional Discipline</strong>—the necessary friction of writing tests, documentation, and code reviews. "Perfectly happy" usually implies skipping the hard parts.
 </details>
 <details style="margin-bottom: 12px;">
-<summary><p style="display: inline-block; margin: 0">3. Debt Earns Interest</p></summary>
+<summary><p style="display: inline-block; margin: 0">Debt Earns Interest</p></summary>
 Technical debt doesn't just sit there; it compounds. As complexity grows, the "tax" on every new line of code increases. If you wait too long, the <strong>Break-Even Point</strong> for refactoring becomes impossibly high.
 </details>
 <details style="margin-bottom: 12px;">
-<summary><p style="display: inline-block; margin: 0">4. Shipping is Oxygen</p></summary>
+<summary><p style="display: inline-block; margin: 0">Shipping is Oxygen</p></summary>
 While developers hate bad code, they also hate <em>not</em> shipping. A strategy of 100% refactoring (Gold Plating) kills morale just as fast as 0% refactoring (Spaghetti Code). Engineers need to feel the momentum of delivery to stay engaged.
 </details>
 <details style="margin-bottom: 12px;">
-<summary><p style="display: inline-block; margin: 0">5. The "Economic" Point of No Return</p></summary>
+<summary><p style="display: inline-block; margin: 0">The "Economic" Point of No Return</p></summary>
 Technical debt is fatal not when code is unfixable, but when the <strong>cost of recovery</strong> becomes unpayable. At saturation, the required "Full Refactor" means shipping nothing for months. This is <strong>Economic Bankruptcy</strong>.
 </details>
 <details style="margin-bottom: 12px;">
-<summary><p style="display: inline-block; margin: 0">6. Clean Code is Not the Goal</p></summary>
+<summary><p style="display: inline-block; margin: 0">Clean Code is Not the Goal</p></summary>
 <strong>70% Velocity</strong> (with its associated maintenance cost) is better than <strong>40% Velocity</strong> (perfect code). If you have 0% debt but are moving slowly because you are polishing code, you are failing just as badly as the team with high debt. The goal is the <em>sustainable maximum</em>.
 </details>
 ## Conclusion
