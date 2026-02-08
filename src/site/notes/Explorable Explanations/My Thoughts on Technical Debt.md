@@ -50,6 +50,14 @@ The point of the model: **complexity (debt) accumulates when you don’t invest 
 
 In *[A Philosophy of Software Design](https://www.amazon.com/dp/1732102201)*, **John Ousterhout** defines complexity as *“anything related to the structure of a software system that makes it hard to understand and modify.”* He distinguishes **tactical programming** (ship the feature fast, add a bit of complexity) from **strategic programming** (invest in design so the system stays simple and easy to change). The simulator’s “refactor allocation” is exactly that investment: spending 10–20% of effort on design and cleanup so complexity doesn’t pile up. When you modify existing code, he argues you should **stay strategic**: *“refactor the system so that you end up with the best possible design”* rather than the smallest possible change.
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/fPIuFo9V3Lk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> 
+<iframe 
+  width="100%" 
+  style="aspect-ratio: 16/9" 
+  src="https://www.youtube.com/embed/fPIuFo9V3Lk" 
+  title="YouTube video player" 
+  frameborder="0" 
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+  allowfullscreen>
+</iframe>
 
 I attended this talk at TNG's [Big Techday](https://www.bigtechday.com/) 24; it’s a clear summary of the main ideas (tactical vs strategic, complexity, and the investment mindset).
