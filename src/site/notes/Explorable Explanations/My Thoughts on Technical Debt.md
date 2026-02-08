@@ -31,12 +31,11 @@ If you allocate little time to refactoring, debt grows. The model uses:
 
 At **30% refactor**, growth and payback are equal (1.05 vs 1.05), so debt stays roughly flat. That’s the “healthy” baseline. If you **lower** the slider, growth exceeds payback and debt climbs; if you **raise** it, you pay debt down.
 
-- **Velocity**
+#### Velocity
 
 Feature velocity is reduced by:
 
 1. **Debt drag**: existing debt slows you down (debt × 0.35).
-
 2. **Refactor tax**: time spent refactoring isn’t spent on features (refactor% × 0.25).
 
 So velocity = `100 − debtDrag − refactorTax`, clamped to 0–100.
