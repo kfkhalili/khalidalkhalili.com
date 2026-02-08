@@ -1,3 +1,4 @@
+{% if 'gardenEntry' not in (tags or []) and 'pg-home' not in (tags or []) %}
 <div id="share-container" class="share-container" data-site-name="{{ meta.siteName }}">
 </div>
 
@@ -28,3 +29,4 @@
     renderLinks('share-container');
   })();
 </script>
+{% endif %}
