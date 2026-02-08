@@ -29,12 +29,24 @@ This simulation isn't random. It is driven by the battle between two opposing fo
 **The Trap:** If you stop refactoring, you save time initially (velocity spikes). But as debt accumulates, the "Drag" component gets massive, eventually strangling your speed far more than the refactoring ever would have.
 
 ## Hindsight is 20/20
-- **100% Velocity is a Warning Sign.** If a team is moving at "100," they are borrowing time from the future, and that's reckless. The "missing" 30% velocity in a healthy team isn't waste; it is the **Cost of Doing Business**. Communication, design, and maintenance are hard work.
-- **The Myth of the Euphoric Developer.** A morale of 85–90% is the realistic ceiling. The gap between 85 and 100 represents **Professional Discipline**, the necessary friction of writing tests, documentation, and code reviews. A team that is "perfectly happy" usually implies they are skipping the hard parts.
-- **Debt Earns Interest.** Technical debt doesn't just sit there; it compounds. As complexity grows, the "tax" on every new line of code increases. If you wait too long, the **Break-Even Point** for refactoring will completely kill velocity.
-- **Shipping is Oxygen.** While developers hate bad code, they also hate _not_ shipping. A strategy of 100% refactoring (Gold Plating) kills morale just as fast as 0% refactoring (Spaghetti Code). Engineers need to feel the momentum of delivery to stay engaged.
-- **The Point of No Return Exists.** Tech debt is fatal not when code is unfixable, but when the **cost of recovery** becomes unpayable. A full refactor might save the codebase, but not shipping for months means you will have lost the market. This is **Economic Bankruptcy**.
-- **Clean Code is Not the Goal.** We learned that **70% Velocity** (with its associated maintenance cost) is better than **40% Velocity** (perfect code). If you have 0% debt but are moving slowly because you are polishing code that works, you are failing just as badly as the team with high debt. The goal is the _sustainable maximum_, not perfection.
+
+<details> <summary><h3 style="display: inline-block; margin: 0">100% Velocity is a Warning Sign</h3></summary>
+If a team is moving at "100," they are borrowing time from the future, and that's reckless. The "missing" 30% velocity in a healthy team isn't waste; it is the <strong>Cost of Doing Business</strong>. Communication, design, and maintenance are hard work.</details>
+
+<details><summary><h3 style="display: inline-block; margin: 0">The Myth of the Euphoric Developer</h3></summary>
+A morale of 85–90% is the realistic ceiling. The gap between 85 and 100 represents <strong>Professional Discipline</strong>, the necessary friction of writing tests, documentation, and code reviews. A team that is "perfectly happy" usually implies they are skipping the hard parts.</details>
+
+<details> <summary><h3 style="display: inline-block; margin: 0">Debt Earns Interest</h3></summary>
+Technical debt doesn't just sit there; it compounds. As complexity grows, the "tax" on every new line of code increases. If you wait too long, the <strong>Break-Even Point</strong> for refactoring will completely kill velocity.</details>
+
+<details> <summary><h3 style="display: inline-block; margin: 0">Shipping is Oxygen</h3></summary>
+While developers hate bad code, they also hate <em>not</em> shipping. A strategy of 100% refactoring (Gold Plating) kills morale just as fast as 0% refactoring (Spaghetti Code). Engineers need to feel the momentum of delivery to stay engaged.</details>
+
+<details> <summary><h3 style="display: inline-block; margin: 0">The Point of No Return Exists</h3></summary>
+Tech debt is fatal not when code is unfixable, but when the <strong>cost of recovery</strong> becomes unpayable. A full refactor might save the codebase, but not shipping for months means you will have lost the market. This is <strong>Economic Bankruptcy</strong></details>
+
+<details> <summary><h3 style="display: inline-block; margin: 0">Clean Code is Not the Goal</h3></summary>
+<strong>70% Velocity</strong> (with its associated maintenance cost) is better than <strong>40% Velocity</strong> (perfect code). If you have 0% debt but are moving slowly because you are polishing code that works, you are failing just as badly as the team with high debt. The goal is the <em>sustainable maximum</em>, not perfection.</details>
 
 ## Conclusion
 
