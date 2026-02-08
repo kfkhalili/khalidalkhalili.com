@@ -35,7 +35,7 @@ This simulation isn't random. It is driven by the battle between two opposing fo
 If a team is moving at "100," they are borrowing time from the future. The "missing" 30% velocity in a healthy team isn't waste; it is the <strong>Cost of Doing Business</strong>. Communication, design, and maintenance are hard work.
 </details>
 <details style="margin-bottom: 12px;">
-<summary><p style="display: inline-block; margin: 0">The Myth of the Euphoric Developer</p></summary>
+<summary><p style="display: inline-block; margin: 0">The Euphoric Developer is a Myth</p></summary>
 A morale of 85–90% is the realistic ceiling. The gap between 85 and 100 represents <strong>Professional Discipline</strong>—the necessary friction of writing tests, documentation, and code reviews. "Perfectly happy" usually implies skipping the hard parts.
 </details>
 <details style="margin-bottom: 12px;">
@@ -47,7 +47,7 @@ Technical debt doesn't just sit there; it compounds. As complexity grows, the "t
 While developers hate bad code, they also hate <em>not</em> shipping. A strategy of 100% refactoring (Gold Plating) kills morale just as fast as 0% refactoring (Spaghetti Code). Engineers need to feel the momentum of delivery to stay engaged.
 </details>
 <details style="margin-bottom: 12px;">
-<summary><p style="display: inline-block; margin: 0">The "Economic" Point of No Return</p></summary>
+<summary><p style="display: inline-block; margin: 0">Beware the "Economic" Point of No Return</p></summary>
 Technical debt is fatal not when code is unfixable, but when the <strong>cost of recovery</strong> becomes unpayable. At saturation, the required "Full Refactor" means shipping nothing for months. This is <strong>Economic Bankruptcy</strong>.
 </details>
 <details style="margin-bottom: 12px;">
