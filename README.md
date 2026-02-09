@@ -16,6 +16,23 @@ Docs are available at [dg-docs.ole.dev](https://dg-docs.ole.dev/)
    This runs the theme fetcher, builds Sass once, then watches both Sass and Eleventy. The site is served (typically at **http://localhost:8080**).
 3. **Build for production:** `npm run build`
 
+### Behind a corporate proxy
+
+If you're on a corporate network that uses an HTTP/HTTPS proxy:
+
+1. **npm** (for `npm install` and package fetches): set proxy in env or npm config:
+   - `export HTTP_PROXY=http://proxy.company.com:8080`
+   - `export HTTPS_PROXY=http://proxy.company.com:8080`
+   - Or: `npm config set proxy http://proxy.company.com:8080` and `npm config set https-proxy http://proxy.company.com:8080`
+   - If the proxy uses auth: `export HTTPS_PROXY=http://user:password@proxy.company.com:8080` (same for HTTP_PROXY).
+
+2. **Theme fetch** (run by `npm run dev`): the theme fetcher reads `HTTPS_PROXY` and `HTTP_PROXY`. Set them as above so the fetch in `get-theme.js` uses your proxy.
+
+3. **SSL / custom CA**: if the corporate proxy does SSL inspection, Node may reject the certificate. You can:
+   - Add the corporate CA to your system trust store, or
+   - Point Node at the CA file: `export NODE_EXTRA_CA_CERTS=/path/to/corporate-ca.pem`
+   - As a last resort on a locked-down machine, some use `npm config set strict-ssl false` and/or `NODE_TLS_REJECT_UNAUTHORIZED=0` for local dev only (insecure; avoid on shared or production systems).
+
 To test custom components (e.g. the Technical Debt Simulator), open any note page. User components in the `afterContent` slot appear below the main content on every note.
 
 ---
