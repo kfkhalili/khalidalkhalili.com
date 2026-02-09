@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/01-explorable-explanations/visualizing-the-drag-of-technical-debt/","updated":"2026-02-08T22:07:38.777+01:00"}
+{"dg-publish":true,"permalink":"/01-explorable-explanations/visualizing-the-drag-of-technical-debt/","updated":"2026-02-09T08:38:22.783+01:00"}
 ---
 
 Technical debt is often discussed as a metaphor, but it behaves more like a physical law: it is a drag coefficient on your team's velocity.
@@ -47,7 +47,7 @@ Technical debt doesn't just sit there; it compounds. As complexity grows, the "t
 While developers hate bad code, they also hate <em>not</em> shipping. A strategy of 100% refactoring (Gold Plating) kills morale just as fast as 0% refactoring (Spaghetti Code). Engineers need to feel the momentum of delivery to stay engaged.
 </details>
 <details style="margin-bottom: 12px;">
-<summary><p style="display: inline-block; margin: 0">Beware the "Economic" Point of No Return</p></summary>
+<summary><p style="display: inline-block; margin: 0">"Economic" Point of No Return</p></summary>
 Technical debt is fatal not when code is unfixable, but when the <strong>cost of recovery</strong> becomes unpayable. At saturation, the required "Full Refactor" means shipping nothing for months. This is <strong>Economic Bankruptcy</strong>.
 </details>
 <details style="margin-bottom: 12px;">
