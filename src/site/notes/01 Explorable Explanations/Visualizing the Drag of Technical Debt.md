@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/01-explorable-explanations/visualizing-the-drag-of-technical-debt/","updated":"2026-02-09T08:38:22.783+01:00"}
+{"dg-publish":true,"permalink":"/01-explorable-explanations/visualizing-the-drag-of-technical-debt/","created":"2026-02-07T20:14:17.314+01:00","updated":"2026-02-09T08:38:22.783+01:00"}
 ---
 
 Technical debt is often discussed as a metaphor, but it behaves more like a physical law: it is a drag coefficient on your team's velocity.
