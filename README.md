@@ -1,257 +1,58 @@
-# Digital Obsidian Garden
-This is the template to be used together with the [Digital Garden Obsidian Plugin](https://github.com/oleeskild/Obsidian-Digital-Garden).
-See the README in the plugin repo for information on how to set it up.
+# khalidalkhalili.com
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/oleeskild/digitalgarden)
+My personal site — a home for interactive **explorable explanations**, essays, and
+notes. Built to make ideas playable, not just readable.
 
----
-## Docs
-Docs are available at [dg-docs.ole.dev](https://dg-docs.ole.dev/)
+## Stack
 
----
-## Local development
+- **[Next.js 16](https://nextjs.org)** (App Router, Turbopack) — fully native TSX, no MDX
+- **[Tailwind CSS v4](https://tailwindcss.com)** — CSS-first theming (`@theme` in `app/globals.css`)
+- **[next-themes](https://github.com/pacocoursey/next-themes)** — light/dark toggle
+- Deployed on **[Vercel](https://vercel.com)**
 
-1. **Install dependencies:** `npm install`
-2. **Start the dev server:** `npm start`  
-   This runs the theme fetcher, builds Sass once, then watches both Sass and Eleventy. The site is served (typically at **http://localhost:8080**).
-3. **Build for production:** `npm run build`
+## Develop
 
-### Behind a corporate proxy
-
-If you're on a corporate network that uses an HTTP/HTTPS proxy:
-
-1. **npm** (for `npm install` and package fetches): set proxy in env or npm config:
-   - `export HTTP_PROXY=http://proxy.company.com:8080`
-   - `export HTTPS_PROXY=http://proxy.company.com:8080`
-   - Or: `npm config set proxy http://proxy.company.com:8080` and `npm config set https-proxy http://proxy.company.com:8080`
-   - If the proxy uses auth: `export HTTPS_PROXY=http://user:password@proxy.company.com:8080` (same for HTTP_PROXY).
-
-2. **Theme fetch** (run by `npm run dev`): the theme fetcher reads `HTTPS_PROXY` and `HTTP_PROXY`. Set them as above so the fetch in `get-theme.js` uses your proxy.
-
-3. **SSL / custom CA**: if the corporate proxy does SSL inspection, Node may reject the certificate. You can:
-   - Add the corporate CA to your system trust store, or
-   - Point Node at the CA file: `export NODE_EXTRA_CA_CERTS=/path/to/corporate-ca.pem`
-   - As a last resort on a locked-down machine, some use `npm config set strict-ssl false` and/or `NODE_TLS_REJECT_UNAUTHORIZED=0` for local dev only (insecure; avoid on shared or production systems).
-
-To test custom components (e.g. the Technical Debt Simulator), open any note page. User components in the `afterContent` slot appear below the main content on every note.
-
----
-## User components (Digital Garden slots)
-
-Custom HTML/JS components are included via **slots**. Put `.njk` files in:
-
-```
-src/site/_includes/components/user/<namespace>/<slot>/
+```bash
+npm install
+npm run dev      # http://localhost:3000
 ```
 
-- **Namespaces:** `index` (home only), `notes` (note pages only), `common` (all pages).
-- **Slots:** `head`, `header`, `beforeContent`, `afterContent`, `footer`.
+Other scripts:
 
-Example: a component that appears below the content on every page goes in:
-
-`src/site/_includes/components/user/common/afterContent/your-component.njk`
-
-**Embedding a component only in specific notes:** Use a code fence in your Obsidian note where you want it. The Technical Debt Simulator is available as a fenced block—in the note where you want it (e.g. "My Thoughts on Technical Debt"), add:
-
-````
-```tech-debt-sim
-```
-````
-
-(The block can be empty.) The simulator is then rendered only at that spot. The snippet lives in `src/site/_includes/snippets/tech-debt-sim.njk`.
-
----
-## CSS Variables
-
-The digital garden is fully customizable through CSS variables. Override these in `src/site/styles/custom-style.scss` to customize your garden's appearance.
-
-### How to Customize
-
-Add your overrides to `custom-style.scss`:
-
-```scss
-body {
-    --dg-content-max-width: 800px;
-    --dg-content-font-size: 16px;
-    --dg-sidebar-max-width: 400px;
-}
+```bash
+npm run build    # production build
+npm run start    # serve the production build
+npm run lint     # eslint
 ```
 
-### Responsive Layout Notes
+## Structure
 
-- Content will never overlap the filetree, regardless of `--dg-content-max-width` value
-- The right sidebar (TOC/graph/backlinks) automatically hides when there isn't enough viewport space
-- To make the sidebar appear at smaller viewports, reduce `--dg-sidebar-max-width`
+```
+app/
+  layout.tsx                        # root layout: fonts, theme provider, header/footer
+  page.tsx                          # home
+  globals.css                       # Tailwind + theme tokens + prose + sim styles
+  icon.svg                          # favicon (emerald khatam star)
+  about/page.tsx
+  writing/
+    page.tsx                        # writing index
+    technical-debt/page.tsx         # the article — native TSX, embeds <TechDebtSim/>
+components/
+  tech-debt-sim.tsx                 # the interactive technical-debt simulation
+  site-header.tsx / site-footer.tsx
+  theme-provider.tsx / theme-toggle.tsx
+  article-card.tsx
+  geometry.tsx                      # subtle eight-pointed-star (khatam) motif
+lib/
+  site.ts                           # site metadata + nav
+  articles.ts                       # article registry + date helpers
+```
 
-### Available Variables
+## Adding an article
 
-#### Color Variables
-You can override the base Obsidian theme color variables directly:
-
-| Variable | Description |
-|----------|-------------|
-| `--text-normal` | Normal text color |
-| `--text-muted` | Muted/secondary text |
-| `--text-faint` | Faint text |
-| `--text-accent` | Accent color |
-| `--text-accent-hover` | Accent hover color |
-| `--link-color` | Link color |
-| `--link-color-hover` | Link color hover |
-| `--link-unresolved-color` | Link color unresolved |
-| `--link-unresolved-opacity` | Link color unresolved opacity |
-| `--background-primary` | Primary background |
-| `--background-primary-alt` | Alt primary background |
-| `--background-secondary` | Secondary background |
-| `--background-secondary-alt` | Alt secondary background |
-| `--interactive-normal` | Interactive element color |
-| `--interactive-hover` | Interactive hover color |
-| `--interactive-accent` | Interactive accent |
-| `--interactive-accent-hover` | Interactive accent hover |
-
-#### Layout Variables
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `--dg-content-max-width` | `700px` | Maximum width of content area |
-| `--dg-content-margin-top` | `90px` | Top margin for content |
-| `--dg-content-margin-top-mobile` | `75px` | Top margin on mobile |
-| `--dg-content-font-size` | `18px` | Base font size for content |
-| `--dg-content-line-height` | `1.5` | Line height for content |
-
-#### Sidebar (Right) Variables
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `--dg-sidebar-top` | `75px` | Sidebar top offset |
-| `--dg-sidebar-gap` | `80px` | Gap between content and sidebar |
-| `--dg-sidebar-min-width` | `25px` | Minimum sidebar width |
-| `--dg-sidebar-max-width` | `350px` | Maximum sidebar width |
-| `--dg-sidebar-container-padding` | `20px` | Sidebar container padding |
-| `--dg-sidebar-container-height` | `87%` | Sidebar container height |
-
-#### Graph Variables
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `--dg-graph-width` | `250px` | Graph component width |
-| `--dg-graph-height` | `250px` | Graph component height |
-| `--dg-graph-border-radius` | `10px` | Graph border radius |
-| `--dg-graph-margin-bottom` | `20px` | Graph bottom margin |
-| `--dg-graph-fullscreen-width` | `600px` | Fullscreen graph width |
-| `--dg-graph-fullscreen-height` | `600px` | Fullscreen graph height |
-
-#### Filetree (Left Sidebar) Variables
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `--dg-filetree-width` | `250px` | Filetree sidebar width |
-| `--dg-filetree-min-width` | `250px` | Minimum filetree width |
-| `--dg-filetree-padding` | `10px 20px` | Filetree padding |
-| `--dg-filetree-gap` | `80px` | Gap from content |
-| `--dg-filetree-title-size` | `32px` | Filetree title font size |
-
-#### TOC (Table of Contents) Variables
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `--dg-toc-padding` | `5px` | TOC container padding |
-| `--dg-toc-font-size` | `0.9rem` | TOC font size |
-| `--dg-toc-max-height` | `220px` | TOC max height |
-| `--dg-toc-title-size` | `1.2rem` | TOC title font size |
-| `--dg-toc-item-padding` | `2px 0 2px 8px` | TOC item padding |
-| `--dg-toc-indent` | `1em` | TOC nested list indent |
-
-#### Backlinks Variables
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `--dg-backlinks-margin-top` | `10px` | Backlinks section top margin |
-| `--dg-backlinks-max-height` | `250px` | Backlinks list max height |
-| `--dg-backlinks-title-size` | `0.9rem` | Backlinks title font size |
-| `--dg-backlinks-card-size` | `0.85rem` | Backlink card font size |
-| `--dg-backlinks-card-padding` | `6px 0` | Backlink card padding |
-| `--dg-backlinks-icon-size` | `14px` | Backlink icon size |
-
-#### Search Variables
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `--dg-search-box-width` | `900px` | Search box width |
-| `--dg-search-box-max-width` | `80%` | Search box max width |
-| `--dg-search-box-radius` | `15px` | Search box border radius |
-| `--dg-search-box-padding` | `10px` | Search box padding |
-| `--dg-search-input-size` | `2rem` | Search input font size |
-| `--dg-search-input-padding` | `10px` | Search input padding |
-| `--dg-search-input-radius` | `5px` | Search input border radius |
-| `--dg-search-results-max-height` | `50vh` | Search results max height |
-| `--dg-search-result-size` | `1.2rem` | Search result font size |
-| `--dg-search-result-radius` | `10px` | Search result border radius |
-| `--dg-search-link-size` | `1.4rem` | Search link font size |
-
-#### Search Button Variables
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `--dg-search-btn-radius` | `8px` | Search button border radius |
-| `--dg-search-btn-height` | `32px` | Search button height |
-| `--dg-search-btn-padding` | `0 10px` | Search button padding |
-| `--dg-search-btn-gap` | `8px` | Search button icon/text gap |
-| `--dg-search-btn-font-size` | `0.85rem` | Search button font size |
-| `--dg-search-btn-icon-size` | `14px` | Search button icon size |
-
-#### Navbar Variables
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `--dg-navbar-title-size-mobile` | `18px` | Navbar title size on mobile |
-| `--dg-navbar-search-margin` | `20px` | Navbar search button margin |
-| `--dg-navbar-search-min-width` | `36px` | Navbar search min width |
-| `--dg-logo-height` | `40px` | Site logo height on desktop |
-| `--dg-logo-height-mobile` | `32px` | Site logo height on mobile |
-| `--dg-logo-margin` | `10px 15px` | Site logo margin |
-
-#### Note Link / Filetree Item Variables
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `--dg-notelink-padding` | `4px 8px 4px 12px` | Note link padding |
-| `--dg-notelink-size` | `0.85rem` | Note link font size |
-| `--dg-notelink-border-width` | `2px` | Note link left border width |
-| `--dg-notelink-hover-bg` | `rgba(255, 255, 255, 0.05)` | Note link hover background |
-| `--dg-folder-margin` | `4px 0 4px 2px` | Folder name margin |
-| `--dg-folder-icon-size` | `14px` | Folder icon size |
-| `--dg-inner-folder-padding` | `3px 0 3px 0` | Inner folder padding |
-| `--dg-inner-folder-margin` | `12px` | Inner folder left margin |
-| `--dg-filelist-margin` | `8px` | File list left margin |
-
-#### Graph Controls Variables
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `--dg-graph-ctrl-padding` | `6px 10px` | Graph controls padding |
-| `--dg-graph-ctrl-radius` | `6px` | Graph controls border radius |
-| `--dg-graph-ctrl-margin` | `10px` | Graph controls margin |
-| `--dg-graph-ctrl-size` | `0.7rem` | Graph controls font size |
-| `--dg-graph-ctrl-icon-size` | `14px` | Graph control icon size |
-| `--dg-graph-ctrl-gap` | `10px` | Graph controls gap |
-| `--dg-depth-slider-width` | `50px` | Depth slider width |
-| `--dg-depth-display-size` | `1.1rem` | Depth display size |
-
-#### Timestamps Variables
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `--dg-timestamps-size` | `0.8em` | Timestamps font size |
-| `--dg-timestamps-gap` | `10px` | Timestamps gap |
-| `--dg-timestamps-margin-top` | `20px` | Timestamps top margin |
-
-#### Misc Component Variables
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `--dg-overlay-bg` | `rgba(0, 0, 0, 0.5)` | Overlay background color |
-| `--dg-mermaid-radius` | `25px` | Mermaid diagram border radius |
-| `--dg-mermaid-padding` | `10px` | Mermaid diagram padding |
-| `--dg-transclusion-padding` | `8px` | Transclusion container padding |
-| `--dg-external-link-icon-size` | `13px` | External link icon size |
-| `--dg-external-link-padding` | `16px` | External link right padding |
+1. Register it in [`lib/articles.ts`](lib/articles.ts) (slug, title, description, date, tags).
+2. Create `app/writing/<slug>/page.tsx` — a native React component. Copy the
+   technical-debt article as a template: export `metadata`, render the header from the
+   registry, and write the body as JSX inside a `<div className="prose">` wrapper
+   (the `.prose` styles in `app/globals.css` handle typography).
+3. Embed any interactive component by importing it directly into the page.
