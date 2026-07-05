@@ -26,8 +26,23 @@ export function ProjectCard({
     >
       <div className="flex items-center gap-3">
         {project.icon && (
-          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-border bg-card-2">
-            <Image src={project.icon} alt="" width={28} height={28} />
+          <span
+            className={`flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-border ${project.iconBg ? "p-1.5" : "bg-card-2"}`}
+            style={
+              project.iconBg ? { backgroundColor: project.iconBg } : undefined
+            }
+          >
+            <Image
+              src={project.icon}
+              alt=""
+              width={44}
+              height={44}
+              className={
+                project.iconBg
+                  ? "h-full w-full object-contain"
+                  : "h-11 w-11 object-cover"
+              }
+            />
           </span>
         )}
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
