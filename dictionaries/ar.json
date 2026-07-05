@@ -32,7 +32,7 @@
     "viewProfile": "ملفي الشخصي على Chess.com",
     "unavailable": "ملفي الشخصي على Chess.com"
   },
-  "article": { "back": "الكتابات", "minRead": "دقائق قراءة" },
+  "article": { "back": "الكتابات" },
   "footer": { "tagline": "وُجد ليُستكشَف." },
   "theme": { "toggle": "تبديل المظهر" },
   "language": { "label": "اللغة" }

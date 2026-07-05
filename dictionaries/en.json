@@ -32,7 +32,7 @@
     "viewProfile": "My Chess.com profile",
     "unavailable": "My Chess.com profile"
   },
-  "article": { "back": "Writing", "minRead": "min read" },
+  "article": { "back": "Writing" },
   "footer": { "tagline": "Made to be explored." },
   "theme": { "toggle": "Toggle theme" },
   "language": { "label": "Language" }

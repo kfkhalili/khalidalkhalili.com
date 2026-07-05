@@ -32,7 +32,7 @@
     "viewProfile": "Mein Chess.com-Profil",
     "unavailable": "Mein Chess.com-Profil"
   },
-  "article": { "back": "Texte", "minRead": "Min. Lesezeit" },
+  "article": { "back": "Texte" },
   "footer": { "tagline": "Zum Entdecken gemacht." },
   "theme": { "toggle": "Design umschalten" },
   "language": { "label": "Sprache" }

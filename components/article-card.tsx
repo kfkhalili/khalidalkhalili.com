@@ -1,14 +1,12 @@
 import Link from "next/link";
-import { formatDate, type Article } from "@/lib/articles";
-import { languageBadge, type Dictionary } from "@/lib/i18n";
+import { formatDate, formatReadingTime, type Article } from "@/lib/articles";
+import { languageBadge } from "@/lib/i18n";
 
 export function ArticleCard({
   lang,
-  dict,
   article,
 }: {
   lang: string;
-  dict: Dictionary;
   article: Article;
 }) {
   const badge = languageBadge(article.lang, lang);
@@ -42,9 +40,7 @@ export function ArticleCard({
       <div className="mt-3 flex items-center gap-2 font-mono text-xs text-faint">
         <time dateTime={article.date}>{formatDate(article.date, lang)}</time>
         <span aria-hidden>·</span>
-        <span>
-          {article.readingTime} {dict.article.minRead}
-        </span>
+        <span>{formatReadingTime(article.readingTime, lang)}</span>
       </div>
     </Link>
   );

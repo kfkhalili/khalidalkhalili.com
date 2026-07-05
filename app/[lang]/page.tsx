@@ -66,7 +66,7 @@ export default async function Home({
               {dict.home.allWriting} {forward}
             </Link>
           </div>
-          <ArticleCard lang={lang} dict={dict} article={featured} />
+          <ArticleCard lang={lang} article={featured} />
         </section>
       )}
     </div>

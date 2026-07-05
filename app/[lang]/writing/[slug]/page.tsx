@@ -6,6 +6,7 @@ import {
   getEssayContent,
   getExplorable,
   formatDate,
+  formatReadingTime,
 } from "@/lib/articles";
 import { EXPLORABLE_SLUGS } from "@/lib/explorables";
 import { resolveLocale, dirOf, languageBadge } from "@/lib/i18n";
@@ -78,9 +79,7 @@ export default async function ArticlePage({
               {formatDate(article.date, article.lang)}
             </time>
             <span aria-hidden>·</span>
-            <span>
-              {article.readingTime} {dict.article.minRead}
-            </span>
+            <span>{formatReadingTime(article.readingTime, article.lang)}</span>
           </div>
         </header>
 

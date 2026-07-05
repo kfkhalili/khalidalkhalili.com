@@ -90,3 +90,24 @@ export function formatDate(iso: string, lang: string): string {
     day: "numeric",
   });
 }
+
+/**
+ * Reading time as a localized phrase. Arabic needs full number agreement for the
+ * counted noun (دقيقة / دقيقتا / دقائق / دقيقة); en and de use an invariant unit.
+ * One place owns how a reading time reads in each language.
+ */
+export function formatReadingTime(minutes: number, lang: string): string {
+  if (lang === "de") return `${minutes} Min. Lesezeit`;
+  if (lang !== "ar") return `${minutes} min read`;
+
+  switch (new Intl.PluralRules("ar").select(minutes)) {
+    case "one":
+      return "دقيقة قراءة";
+    case "two":
+      return "دقيقتان قراءة";
+    case "few":
+      return `${minutes} دقائق قراءة`;
+    default:
+      return `${minutes} دقيقة قراءة`; // many (11–99), other (0, 100+)
+  }
+}

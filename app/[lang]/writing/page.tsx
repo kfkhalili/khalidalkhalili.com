@@ -33,12 +33,7 @@ export default async function WritingPage({
 
       <div className="mt-10 grid gap-4">
         {articles.map((article) => (
-          <ArticleCard
-            key={article.slug}
-            lang={lang}
-            dict={dict}
-            article={article}
-          />
+          <ArticleCard key={article.slug} lang={lang} article={article} />
         ))}
       </div>
     </div>
