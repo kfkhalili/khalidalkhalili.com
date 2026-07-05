@@ -20,7 +20,7 @@ export default async function WritingPage({
 }) {
   const { lang } = await params;
   const { dict } = await resolveLocale(lang);
-  const articles = getAllArticles();
+  const articles = getAllArticles(lang);
 
   return (
     <div className="mx-auto max-w-3xl px-5 py-16 sm:py-20">

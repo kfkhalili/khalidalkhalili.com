@@ -7,11 +7,11 @@ import {
   getExplorable,
   formatDate,
 } from "@/lib/articles";
-import { EXPLORABLES } from "@/lib/explorables";
+import { EXPLORABLE_SLUGS } from "@/lib/explorables";
 import { resolveLocale, dirOf, languageBadge } from "@/lib/i18n";
 
 export function generateStaticParams() {
-  return [...getEssaySlugs(), ...EXPLORABLES.map((e) => e.slug)].map((slug) => ({
+  return [...getEssaySlugs(), ...EXPLORABLE_SLUGS].map((slug) => ({
     slug,
   }));
 }
@@ -21,8 +21,8 @@ export async function generateMetadata({
 }: {
   params: Promise<{ lang: string; slug: string }>;
 }): Promise<Metadata> {
-  const { slug } = await params;
-  const article = getEssayContent(slug)?.article ?? getExplorable(slug);
+  const { lang, slug } = await params;
+  const article = getEssayContent(slug)?.article ?? getExplorable(slug, lang);
   return article
     ? { title: article.title, description: article.description }
     : {};
@@ -37,12 +37,12 @@ export default async function ArticlePage({
 
   // One render seam, two adapters: markdown (essays) or a component (explorables).
   const essay = getEssayContent(slug);
-  const explorable = getExplorable(slug);
+  const explorable = getExplorable(slug, lang);
   const article = essay?.article ?? explorable;
   if (!article) notFound();
 
   const { dict, back } = await resolveLocale(lang);
-  const badge = languageBadge(article.lang);
+  const badge = languageBadge(article.lang, lang);
 
   return (
     <article className="mx-auto max-w-3xl px-5 py-16 sm:py-20">
@@ -90,7 +90,9 @@ export default async function ArticlePage({
             dangerouslySetInnerHTML={{ __html: essay.html }}
           />
         ) : (
-          <div className="prose mt-10">{explorable && <explorable.Body />}</div>
+          <div className="prose mt-10">
+            {explorable && <explorable.Body lang={lang} />}
+          </div>
         )}
       </div>
     </article>

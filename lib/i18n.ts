@@ -53,8 +53,11 @@ export async function resolveLocale(lang: string): Promise<ResolvedLocale> {
   };
 }
 
-/** Badge label for an article not in the default language, else null. */
-export function languageBadge(articleLang: string): string | null {
-  if (articleLang === DEFAULT_LOCALE) return null;
+/** Badge label for an article whose language differs from the page's, else null. */
+export function languageBadge(
+  articleLang: string,
+  pageLang: string,
+): string | null {
+  if (articleLang === pageLang) return null;
   return LOCALE_META[articleLang as Locale]?.label ?? null;
 }

@@ -1,7 +1,11 @@
 import fs from "node:fs";
 import path from "node:path";
 import { LOCALE_META, DEFAULT_LOCALE } from "@/lib/i18n";
-import { EXPLORABLES, type Explorable } from "@/lib/explorables";
+import {
+  getExplorables,
+  findExplorable,
+  type Explorable,
+} from "@/lib/explorables";
 import { readMarkdown, renderMarkdown } from "@/lib/content";
 
 const WRITING_DIR = path.join(process.cwd(), "content/writing");
@@ -47,10 +51,10 @@ function essayFiles(): string[] {
   return fs.readdirSync(WRITING_DIR).filter((f) => f.endsWith(".md"));
 }
 
-/** All writing (file-based essays + registered explorables), newest first. */
-export function getAllArticles(): Article[] {
+/** All writing (file-based essays + registered explorables), localized, newest first. */
+export function getAllArticles(lang: string): Article[] {
   const essays = essayFiles().map((f) => parseEssay(f).article);
-  return [...essays, ...EXPLORABLES].sort((a, b) =>
+  return [...essays, ...getExplorables(lang)].sort((a, b) =>
     a.date < b.date ? 1 : a.date > b.date ? -1 : 0,
   );
 }
@@ -69,8 +73,11 @@ export function getEssayContent(
   return { article, html: renderMarkdown(body) };
 }
 
-export function getExplorable(slug: string): Explorable | undefined {
-  return EXPLORABLES.find((e) => e.slug === slug);
+export function getExplorable(
+  slug: string,
+  lang: string,
+): Explorable | undefined {
+  return findExplorable(slug, lang);
 }
 
 export function formatDate(iso: string, lang: string): string {

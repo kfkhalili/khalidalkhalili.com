@@ -13,7 +13,7 @@ export default async function Home({
   const { lang } = await params;
   const { dict, forward } = await resolveLocale(lang);
   const { meta } = readContent(lang, "home");
-  const articles = getAllArticles();
+  const articles = getAllArticles(lang);
   const featured = articles.find((a) => a.featured) ?? articles[0];
 
   return (

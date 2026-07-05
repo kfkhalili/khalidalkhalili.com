@@ -11,7 +11,7 @@ export function ArticleCard({
   dict: Dictionary;
   article: Article;
 }) {
-  const badge = languageBadge(article.lang);
+  const badge = languageBadge(article.lang, lang);
 
   return (
     <Link

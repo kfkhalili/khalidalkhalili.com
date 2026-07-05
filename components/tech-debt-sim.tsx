@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import type { SimStrings } from "@/components/explorables/technical-debt.content";
 
 /* ---------------------------------------------------------------------------
    Model — pure, deterministic stock-and-flow of technical debt.
@@ -63,15 +64,12 @@ function nextState(current: SimState, refactorRate: number): SimState {
   };
 }
 
-function getLogMessage(state: SimState): string {
-  if (state.tdr >= 80) return "CRITICAL: System ossified. Rewrite required.";
-  if (state.tdr >= 40)
-    return 'WARNING: You have passed the "Tipping Point". Interest is compounding fast.';
-  if (state.velocity < 20)
-    return 'STALLED: The "Vicious Cycle" has consumed all velocity.';
-  if (state.tdr < 10 && state.velocity > 60)
-    return "Healthy: The team is maintaining a sustainable, professional pace.";
-  return 'Operating normally. Watch the "Refactor Allocation" slider.';
+function getLogMessage(state: SimState, log: SimStrings["log"]): string {
+  if (state.tdr >= 80) return log.critical;
+  if (state.tdr >= 40) return log.warning;
+  if (state.velocity < 20) return log.stalled;
+  if (state.tdr < 10 && state.velocity > 60) return log.healthy;
+  return log.normal;
 }
 
 /**
@@ -89,13 +87,8 @@ function settle(refactorRate: number): SimState {
 
 const INITIAL: SimState = settle(DEFAULT_RATE);
 
-// Archetypes match the four described in the accompanying article.
-const PRESETS = [
-  { label: "Startup Rush", value: 10 },
-  { label: "Sustainable", value: 30 },
-  { label: "Enterprise Safe", value: 50 },
-  { label: "Full Refactor", value: 80 },
-] as const;
+// Archetype allocations, aligned by index with the localized preset labels.
+const PRESETS = [10, 30, 50, 80] as const;
 
 type Tone = "good" | "warn" | "bad";
 const TONE_BG: Record<Tone, string> = {
@@ -146,7 +139,7 @@ function Bar({
   );
 }
 
-export function TechDebtSim() {
+export function TechDebtSim({ strings }: { strings: SimStrings }) {
   const [state, setState] = useState<SimState>(INITIAL);
   const [refactorRate, setRefactorRate] = useState(DEFAULT_RATE);
   const [onScreen, setOnScreen] = useState(true);
@@ -192,7 +185,7 @@ export function TechDebtSim() {
     >
       <div className="mb-4">
         <div className="flex flex-wrap items-baseline gap-x-2 text-sm">
-          <span className="text-muted">Refactor allocation</span>
+          <span className="text-muted">{strings.allocation}</span>
           <span className="font-semibold tabular-nums text-foreground">
             {refactorRate}%
           </span>
@@ -204,18 +197,18 @@ export function TechDebtSim() {
           value={refactorRate}
           onChange={(e) => setRefactorRate(parseInt(e.target.value, 10))}
           className="sim-range mt-3 w-full"
-          aria-label="Refactor allocation percentage"
+          aria-label={strings.allocationAria}
         />
       </div>
 
       <div className="mb-6 flex flex-wrap gap-2">
-        {PRESETS.map((p) => {
-          const active = refactorRate === p.value;
+        {PRESETS.map((value, i) => {
+          const active = refactorRate === value;
           return (
             <button
-              key={p.value}
+              key={value}
               type="button"
-              onClick={() => setRefactorRate(p.value)}
+              onClick={() => setRefactorRate(value)}
               className={
                 "rounded-md border px-2.5 py-1 text-xs transition-colors " +
                 (active
@@ -223,24 +216,28 @@ export function TechDebtSim() {
                   : "border-border text-muted hover:text-foreground")
               }
             >
-              {p.label} <span className="text-faint">{p.value}%</span>
+              {strings.presets[i]} <span className="text-faint">{value}%</span>
             </button>
           );
         })}
       </div>
 
       <div className="flex gap-3">
-        <Bar label="Velocity" value={state.velocity} tone={velocityTone(state.velocity)} />
-        <Bar label="Tech debt" value={state.tdr} tone={tdrTone(state.tdr)} />
-        <Bar label="Morale" value={state.morale} tone={moraleTone(state.morale)} />
+        <Bar label={strings.bars[0]} value={state.velocity} tone={velocityTone(state.velocity)} />
+        <Bar label={strings.bars[1]} value={state.tdr} tone={tdrTone(state.tdr)} />
+        <Bar label={strings.bars[2]} value={state.morale} tone={moraleTone(state.morale)} />
       </div>
 
       <div className="mt-4 flex items-center justify-between text-xs text-muted">
-        <span>Week {state.tick}</span>
-        <span className="text-faint">{running ? "● running" : "❚❚ paused"}</span>
+        <span>
+          {strings.week} {state.tick}
+        </span>
+        <span className="text-faint">
+          {running ? strings.running : strings.paused}
+        </span>
       </div>
       <p className="mt-3 min-h-[1.4em] border-t border-border pt-3 text-sm text-muted">
-        {getLogMessage(state)}
+        {getLogMessage(state, strings.log)}
       </p>
     </div>
   );
