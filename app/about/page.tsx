@@ -36,9 +36,8 @@ export default function AboutPage() {
             to think out loud in public.
           </p>
           <p>
-            I&rsquo;m a Muslim, and I try to let that show up as care — for
-            craft, for honesty, and above all for people. I love people.
-            That&rsquo;s the short version.
+            I try to lead with care — for craft, for honesty, and above all for
+            people. I love people. That&rsquo;s the short version.
           </p>
           <p>
             This site is my corner of the internet: a place for the ideas worth
