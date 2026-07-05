@@ -9,7 +9,7 @@
   "projects": {
     "title": "Projekte",
     "subtitle": "Produkte, die ich baue, und Experimente, an denen ich bastle. Manches ist live, manches nimmt noch Gestalt an.",
-    "status": { "live": "Live", "beta": "Beta", "building": "In Arbeit" }
+    "status": { "live": "Live", "beta": "Beta", "building": "Bald verfügbar" }
   },
   "writing": {
     "title": "Texte",

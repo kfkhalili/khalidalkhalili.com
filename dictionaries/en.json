@@ -9,7 +9,7 @@
   "projects": {
     "title": "Projects",
     "subtitle": "Products I'm building and experiments I tinker with. Some are live, some are still taking shape.",
-    "status": { "live": "Live", "beta": "Beta", "building": "Building" }
+    "status": { "live": "Live", "beta": "Beta", "building": "Coming soon" }
   },
   "writing": {
     "title": "Writing",

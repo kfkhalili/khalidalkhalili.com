@@ -8,7 +8,7 @@ export type Project = {
   name: string;
   url: string;
   status: ProjectStatus;
-  year: string;
+  date: string; // last commit date (ISO), used for ordering
   description: string;
   tags: string[];
   icon?: string;
@@ -24,7 +24,7 @@ type ProjectDef = {
   name: string;
   url: string;
   status: ProjectStatus;
-  year: string;
+  date: string; // last commit date (ISO), used for ordering
   icon?: string;
   iconBg?: string;
   copy: Record<Locale, ProjectCopy>;
@@ -37,7 +37,7 @@ const DEFS: ProjectDef[] = [
     name: "Tickered",
     url: "https://www.tickered.com",
     status: "beta",
-    year: "2026",
+    date: "2026-06-27",
     icon: "/projects/tickered.png",
     copy: {
       en: {
@@ -62,7 +62,7 @@ const DEFS: ProjectDef[] = [
     name: "ScaleCanvas",
     url: "https://www.scalecanvas.com",
     status: "live",
-    year: "2026",
+    date: "2026-03-12",
     icon: "/projects/scalecanvas.png",
     copy: {
       en: {
@@ -83,11 +83,62 @@ const DEFS: ProjectDef[] = [
     },
   },
   {
+    slug: "halal-ada",
+    name: "Halal ADA",
+    url: "https://www.halalada.com",
+    status: "live",
+    date: "2025-12-20",
+    icon: "/projects/halalada.png",
+    iconBg: "#2e2e2e",
+    copy: {
+      en: {
+        description:
+          "A halal staking pool on Cardano. Delegate ADA to earn rewards with no lending or interest, on transparent, professionally run infrastructure.",
+        tags: ["Cardano", "Halal finance"],
+      },
+      de: {
+        description:
+          "Ein Halal-Staking-Pool auf Cardano. Delegiere ADA und verdiene Belohnungen, ganz ohne Verleih oder Zinsen, auf transparenter, professionell betriebener Infrastruktur.",
+        tags: ["Cardano", "Halal-Finanzen"],
+      },
+      ar: {
+        description:
+          "مجمّع تفويضٍ حلال على شبكة كاردانو. فوّض عملات ADA لتكسب مكافآت دون إقراضٍ أو فائدة، على بنيةٍ تحتيةٍ شفّافةٍ ومُدارةٍ باحتراف.",
+        tags: ["كاردانو", "تمويل حلال"],
+      },
+    },
+  },
+  {
+    slug: "deen-trusts",
+    name: "Deen Trusts",
+    url: "https://www.deentrusts.com",
+    status: "building",
+    date: "2026-06-30",
+    icon: "/projects/deentrusts.png",
+    copy: {
+      en: {
+        description:
+          "A page-faithful Quran reader with authentic typography, tafsir, recitation, and memorization. Fully offline, with no accounts, no ads, and no tracking.",
+        tags: ["Quran", "Mobile app"],
+      },
+      de: {
+        description:
+          "Ein seitengetreuer Koran-Leser mit authentischer Typografie, Tafsir, Rezitation und Auswendiglernen. Komplett offline, ohne Konten, ohne Werbung und ohne Tracking.",
+        tags: ["Koran", "Mobile App"],
+      },
+      ar: {
+        description:
+          "مصحفٌ رقميٌّ مطابقٌ للصفحة بخطٍّ أصيل، مع التفسير والتلاوة والحفظ. يعمل دون اتصال بالكامل، بلا حسابات ولا إعلانات ولا تتبّع.",
+        tags: ["القرآن", "تطبيق جوال"],
+      },
+    },
+  },
+  {
     slug: "zallija",
     name: "Zallija",
     url: "https://www.zallija.com",
     status: "live",
-    year: "2026",
+    date: "2026-07-04",
     icon: "/projects/zallija.png",
     iconBg: "#f6f1e7",
     copy: {
@@ -113,7 +164,7 @@ const DEFS: ProjectDef[] = [
     name: "GCP Icons",
     url: "https://gcp-icons-showcase.vercel.app/",
     status: "live",
-    year: "2026",
+    date: "2026-03-06",
     copy: {
       en: {
         description:
@@ -142,7 +193,7 @@ function resolve(def: ProjectDef, lang: string): Project {
     name: def.name,
     url: def.url,
     status: def.status,
-    year: def.year,
+    date: def.date,
     icon: def.icon,
     iconBg: def.iconBg,
     description: c.description,
@@ -150,7 +201,9 @@ function resolve(def: ProjectDef, lang: string): Project {
   };
 }
 
-/** All projects, localized to `lang`, in curated order. */
+/** All projects, localized to `lang`, newest last-commit date first. */
 export function getProjects(lang: string): Project[] {
-  return DEFS.map((def) => resolve(def, lang));
+  return DEFS.map((def) => resolve(def, lang)).sort((a, b) =>
+    a.date < b.date ? 1 : a.date > b.date ? -1 : 0,
+  );
 }
