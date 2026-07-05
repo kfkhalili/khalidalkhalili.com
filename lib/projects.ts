@@ -33,6 +33,31 @@ type ProjectDef = {
 // Curated order, most notable first.
 const DEFS: ProjectDef[] = [
   {
+    slug: "x-trust-radar",
+    name: "X Trust Radar",
+    url: "https://www.xtrustradar.com",
+    status: "live",
+    date: "2026-07-05",
+    icon: "/projects/xtrustradar.png",
+    copy: {
+      en: {
+        description:
+          "Check how trustworthy an X (Twitter) account is through metadata analysis. A quick credibility signal for researchers, journalists, and anyone vetting an account.",
+        tags: ["Twitter", "Verification"],
+      },
+      de: {
+        description:
+          "Prüfe die Vertrauenswürdigkeit eines X-(Twitter-)Kontos per Metadaten-Analyse. Ein schnelles Glaubwürdigkeits-Signal für Recherche, Journalismus und alle, die ein Konto prüfen.",
+        tags: ["Twitter", "Verifizierung"],
+      },
+      ar: {
+        description:
+          "تحقّق من مدى موثوقية حساب X (تويتر) عبر تحليل البيانات الوصفية. مؤشّرٌ سريعٌ للمصداقية للباحثين والصحفيين ولكلّ من يريد التحقّق من حساب.",
+        tags: ["تويتر", "تحقّق"],
+      },
+    },
+  },
+  {
     slug: "tickered",
     name: "Tickered",
     url: "https://www.tickered.com",
