@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import type { SimStrings } from "@/components/explorables/technical-debt.content";
 
 /* ---------------------------------------------------------------------------
-   Model — pure, deterministic stock-and-flow of technical debt.
+   Model: pure, deterministic stock-and-flow of technical debt.
    Ported 1:1 from the original vanilla-JS sim; the reducer is unchanged.
 --------------------------------------------------------------------------- */
 
@@ -19,14 +19,14 @@ const BASE_DEBT_GROWTH = 2.0;
 const TICK_MS = 1000;
 const MIN_BAR_PCT = 12;
 const INTEREST_EXPONENT = 1.04; // debt compounds: interest rises with TDR
-const DEFAULT_RATE = 30; // "Sustainable" — the allocation the sim opens on
+const DEFAULT_RATE = 30; // "Sustainable": the allocation the sim opens on
 const BASELINE_TDR = 10; // the healthy debt level Sustainable is meant to hold flat
 
 // Calibrate refactoring efficiency so the Sustainable allocation is a *true* steady
 // state at a healthy debt level: pick the value where, at r = DEFAULT_RATE and
 // TDR = BASELINE_TDR, new debt exactly cancels paid-down debt
-// (inflow === outflow). This is what makes 30% actually sustainable — the bars hold
-// flat and green — instead of drifting up to a higher, amber equilibrium.
+// (inflow === outflow). This is what makes 30% actually sustainable: the bars hold
+// flat and green, instead of drifting up to a higher, amber equilibrium.
 const REFACTOR_EFFICIENCY =
   ((1 - DEFAULT_RATE / 100) * BASE_DEBT_GROWTH * (1 + BASELINE_TDR / 100)) /
   ((DEFAULT_RATE / 100) * Math.pow(INTEREST_EXPONENT, BASELINE_TDR));
@@ -73,7 +73,7 @@ function getLogMessage(state: SimState, log: SimStrings["log"]): string {
 }
 
 /**
- * The steady state for a refactor rate — where debt inflow and outflow balance.
+ * The steady state for a refactor rate, where debt inflow and outflow balance.
  * Starting the sim here means the default (Sustainable) allocation holds flat:
  * the bars don't move until you change the slider. Previously the sim opened on
  * arbitrary "healthy" numbers (TDR 10 / velocity 80) that then drifted toward

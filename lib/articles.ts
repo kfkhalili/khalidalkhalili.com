@@ -63,7 +63,7 @@ export function getEssaySlugs(): string[] {
   return essayFiles().map((f) => f.replace(/\.md$/, ""));
 }
 
-/** An essay's metadata plus its body rendered to HTML — one interface for the page. */
+/** An essay's metadata plus its body rendered to HTML: one interface for the page. */
 export function getEssayContent(
   slug: string,
 ): { article: Article; html: string } | undefined {

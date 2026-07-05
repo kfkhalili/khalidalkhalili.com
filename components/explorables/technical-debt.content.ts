@@ -1,6 +1,6 @@
 import { DEFAULT_LOCALE, isLocale, type Locale } from "@/lib/i18n";
 
-/** Labels the interactive sim needs — passed from the (server) body to the client sim. */
+/** Labels the interactive sim needs, passed from the (server) body to the client sim. */
 export type SimStrings = {
   allocation: string;
   allocationAria: string;
@@ -20,7 +20,7 @@ export type SimStrings = {
 
 /**
  * All copy for the technical-debt explorable, per locale. Prose strings may carry
- * inline HTML (<strong>, <em>, <a>, <code>) — they're authored here, not user
+ * inline HTML (<strong>, <em>, <a>, <code>); they're authored here, not user
  * input, and rendered via dangerouslySetInnerHTML inside a single JSX skeleton.
  */
 export type TechDebtContent = {
@@ -50,7 +50,7 @@ const TALK = `https://www.bigtechday.com/`;
 
 const en: TechDebtContent = {
   title: `Visualizing the Drag of Technical Debt`,
-  description: `An interactive model of technical debt as a drag coefficient on team velocity — the tension between shipping fast now and investing in design.`,
+  description: `An interactive model of technical debt as a drag coefficient on team velocity: the tension between shipping fast now and investing in design.`,
   tags: [`Explorable`, `Software Design`],
   intro: `Technical debt is often discussed as a metaphor, but it behaves more like a physical law: it is a drag coefficient on your team's velocity.`,
   ousterhout: `In <em><a href="${BOOK}" target="_blank" rel="noopener noreferrer">A Philosophy of Software Design</a></em>, John Ousterhout defines complexity as "anything related to the structure of a software system that makes it hard to understand and modify". This interactive model visualizes that friction. It explores the tension between <strong>Tactical Programming</strong> (shipping fast now) and <strong>Strategic Programming</strong> (investing in design for the future).`,
@@ -65,7 +65,7 @@ const en: TechDebtContent = {
   modelHeading: `How the Model Works`,
   modelIntro: `This simulation isn't random. It is driven by the battle between two opposing forces: <strong>Entropy</strong> and <strong>Investment</strong>.`,
   modelSteps: [
-    `<strong>The Growth of Complexity (Entropy).</strong> Software naturally tends toward disorder as features are added, and if you do nothing, debt grows — and the more it grows, the more it compounds.`,
+    `<strong>The Growth of Complexity (Entropy).</strong> Software naturally tends toward disorder as features are added, and if you do nothing, debt grows, and the more it grows, the more it compounds.`,
     `<strong>The Payback (Investment).</strong> By allocating time to cleanup, you generate a "payback" rate. The goal is to find the equilibrium where your payback matches the natural growth of complexity.`,
     `<strong>The Drag on Velocity.</strong> This is the core mechanic: velocity isn't just about how fast you type. It is <code>100% − (Drag from Debt) − (Time Spent Refactoring)</code>.`,
   ],
@@ -78,7 +78,7 @@ const en: TechDebtContent = {
     ],
     [
       `The Euphoric Developer is a Myth`,
-      `A morale of 85–90% is the realistic ceiling. The gap between 85 and 100 represents <strong>Professional Discipline</strong> — the necessary friction of writing tests, documentation, and code reviews. "Perfectly happy" usually implies skipping the hard parts.`,
+      `A morale of 85–90% is the realistic ceiling. The gap between 85 and 100 represents <strong>Professional Discipline</strong>: the necessary friction of writing tests, documentation, and code reviews. "Perfectly happy" usually implies skipping the hard parts.`,
     ],
     [
       `Debt Earns Interest`,
@@ -121,11 +121,11 @@ const en: TechDebtContent = {
 
 const de: TechDebtContent = {
   title: `Die Bremswirkung technischer Schulden sichtbar gemacht`,
-  description: `Ein interaktives Modell technischer Schulden als Bremskoeffizient auf die Geschwindigkeit eines Teams — das Spannungsfeld zwischen schnellem Ausliefern und Investition in gutes Design.`,
+  description: `Ein interaktives Modell technischer Schulden als Bremskoeffizient auf die Geschwindigkeit eines Teams: das Spannungsfeld zwischen schnellem Ausliefern und Investition in gutes Design.`,
   tags: [`Explorable`, `Softwaredesign`],
   intro: `Technische Schulden werden oft als Metapher behandelt, doch sie verhalten sich eher wie ein Naturgesetz: Sie sind ein Bremskoeffizient auf die Geschwindigkeit deines Teams.`,
   ousterhout: `In <em><a href="${BOOK}" target="_blank" rel="noopener noreferrer">A Philosophy of Software Design</a></em> definiert John Ousterhout Komplexität als „alles an der Struktur eines Softwaresystems, das es schwer verständlich und schwer änderbar macht". Dieses interaktive Modell macht diese Reibung sichtbar. Es beleuchtet das Spannungsfeld zwischen <strong>taktischer Programmierung</strong> (jetzt schnell ausliefern) und <strong>strategischer Programmierung</strong> (in Design für die Zukunft investieren).`,
-  accumulate: `Komplexität sammelt sich an, ob es uns gefällt oder nicht. Das Einzige, worauf wir Einfluss haben, ist, wie viel Zeit wir uns nehmen, um mit ihr umzugehen. Mehr Zeit für Bugfixes und Refactoring bedeutet weniger Zeit, um Features auszuliefern — du brauchst also eine Strategie.`,
+  accumulate: `Komplexität sammelt sich an, ob es uns gefällt oder nicht. Das Einzige, worauf wir Einfluss haben, ist, wie viel Zeit wir uns nehmen, um mit ihr umzugehen. Mehr Zeit für Bugfixes und Refactoring bedeutet weniger Zeit, um Features auszuliefern. Du brauchst also eine Strategie.`,
   archetypesHeading: `Vier Archetypen`,
   archetypes: [
     `<strong>Startup-Rush (10 %):</strong> Der „taktische" Ansatz. Anfangs lieferst du schnell, doch du borgst dir Zeit aus der Zukunft. Irgendwann wird die Schuldenlast so schwer, dass Moral und Geschwindigkeit zusammenbrechen.`,
@@ -136,7 +136,7 @@ const de: TechDebtContent = {
   modelHeading: `Wie das Modell funktioniert`,
   modelIntro: `Diese Simulation ist nicht zufällig. Sie wird vom Kampf zwischen zwei gegensätzlichen Kräften angetrieben: <strong>Entropie</strong> und <strong>Investition</strong>.`,
   modelSteps: [
-    `<strong>Das Wachstum der Komplexität (Entropie).</strong> Software neigt von Natur aus zur Unordnung, je mehr Features hinzukommen. Tust du nichts, wachsen die Schulden — und je mehr sie wachsen, desto stärker verzinsen sie sich.`,
+    `<strong>Das Wachstum der Komplexität (Entropie).</strong> Software neigt von Natur aus zur Unordnung, je mehr Features hinzukommen. Tust du nichts, wachsen die Schulden, und je mehr sie wachsen, desto stärker verzinsen sie sich.`,
     `<strong>Die Tilgung (Investition).</strong> Indem du Zeit fürs Aufräumen einplanst, erzeugst du eine „Tilgungsrate". Das Ziel ist das Gleichgewicht, in dem deine Tilgung dem natürlichen Wachstum der Komplexität entspricht.`,
     `<strong>Die Bremswirkung auf die Geschwindigkeit.</strong> Das ist der Kernmechanismus: Geschwindigkeit hängt nicht nur davon ab, wie schnell du tippst. Sie ist <code>100 % − (Bremse durch Schulden) − (Zeit fürs Refactoring)</code>.`,
   ],
@@ -149,7 +149,7 @@ const de: TechDebtContent = {
     ],
     [
       `Der euphorische Entwickler ist ein Mythos`,
-      `Eine Moral von 85–90 % ist die realistische Obergrenze. Die Lücke zwischen 85 und 100 steht für <strong>professionelle Disziplin</strong> — die notwendige Reibung durch Tests, Dokumentation und Code-Reviews. „Rundum glücklich" heißt meist, die harten Teile auszulassen.`,
+      `Eine Moral von 85–90 % ist die realistische Obergrenze. Die Lücke zwischen 85 und 100 steht für <strong>professionelle Disziplin</strong>: die notwendige Reibung durch Tests, Dokumentation und Code-Reviews. „Rundum glücklich" heißt meist, die harten Teile auszulassen.`,
     ],
     [
       `Schulden werfen Zinsen ab`,
@@ -157,7 +157,7 @@ const de: TechDebtContent = {
     ],
     [
       `Ausliefern ist Sauerstoff`,
-      `Entwickler hassen schlechten Code — aber sie hassen es genauso, <em>nicht</em> auszuliefern. Eine Strategie mit 100 % Refactoring (Gold Plating) tötet die Moral genauso schnell wie 0 % Refactoring (Spaghetticode). Ingenieure müssen den Schwung der Auslieferung spüren, um bei der Sache zu bleiben.`,
+      `Entwickler hassen schlechten Code, aber sie hassen es genauso, <em>nicht</em> auszuliefern. Eine Strategie mit 100 % Refactoring (Gold Plating) tötet die Moral genauso schnell wie 0 % Refactoring (Spaghetticode). Ingenieure müssen den Schwung der Auslieferung spüren, um bei der Sache zu bleiben.`,
     ],
     [
       `Der „ökonomische" Punkt ohne Wiederkehr`,
@@ -192,35 +192,35 @@ const de: TechDebtContent = {
 
 const ar: TechDebtContent = {
   title: `الأثر الكابح للدَّين التقني`,
-  description: `نموذجٌ تفاعليّ يُظهر الدَّين التقني بوصفه معاملَ كبحٍ على سرعة الفريق — التوتر بين الإطلاق السريع الآن والاستثمار في التصميم.`,
+  description: `نموذجٌ تفاعليّ يُظهر الدَّين التقني بوصفه معاملَ كبحٍ على سرعة الفريق: التوتر بين الإطلاق السريع الآن والاستثمار في التصميم.`,
   tags: [`استكشاف تفاعلي`, `تصميم البرمجيات`],
   intro: `غالبًا ما يُناقَش الدَّين التقني بوصفه استعارة، لكنه يتصرّف أشبه بقانونٍ فيزيائي: فهو معاملُ كبحٍ يُبطّئ سرعة فريقك.`,
   ousterhout: `في كتاب <em><a href="${BOOK}" target="_blank" rel="noopener noreferrer">A Philosophy of Software Design</a></em>، يُعرّف جون أوسترهاوت التعقيد بأنه «كل ما يتعلّق ببنية نظامٍ برمجي ويجعله صعب الفهم والتعديل». يجسّد هذا النموذج التفاعلي ذلك الاحتكاك، ويستكشف التوتر بين <strong>البرمجة التكتيكية</strong> (الإطلاق السريع الآن) و<strong>البرمجة الاستراتيجية</strong> (الاستثمار في التصميم من أجل المستقبل).`,
-  accumulate: `يتراكم التعقيد شئنا أم أبينا. وكل ما نملك التأثير فيه هو مقدار الوقت الذي نخصّصه للتعامل معه. فالمزيد من الوقت لإصلاح العيوب وإعادة هيكلة الشيفرة يعني وقتًا أقل لإطلاق الميزات — لذا لا بدّ من استراتيجيةٍ ما.`,
+  accumulate: `يتراكم التعقيد شئنا أم أبينا. وكل ما نملك التأثير فيه هو مقدار الوقت الذي نخصّصه للتعامل معه. فالمزيد من الوقت لإصلاح العيوب وإعادة هيكلة الشيفرة يعني وقتًا أقل لإطلاق الميزات، لذا لا بدّ من استراتيجيةٍ ما.`,
   archetypesHeading: `أربعة أنماط`,
   archetypes: [
     `<strong>اندفاع الانطلاقة (10%):</strong> النهج «التكتيكي». تُطلق بسرعةٍ في البداية، لكنك تقترض من المستقبل. وفي النهاية تصبح حِمولة الدَّين ثقيلةً إلى حدٍّ تنهار عنده المعنويات والسرعة.`,
     `<strong>مستدام (30%):</strong> نقطة التوازن «الاستراتيجية». تستثمر ما يكفي تمامًا (نحو ثلث وقتك) لإبقاء الدَّين ثابتًا. وهذا يحقّق أعلى سرعةٍ على المدى الطويل.`,
-    `<strong>أمان المؤسسة (50%):</strong> نهجٌ منخفض المخاطر وأبطأ، تُقدَّم فيه الاستقرارية على الميزات الجديدة.`,
+    `<strong>أمان المؤسسة (50%):</strong> نهجٌ منخفض المخاطر وأبطأ، يُقدَّم فيه الاستقرار على الميزات الجديدة.`,
     `<strong>إعادة هيكلة شاملة (80%):</strong> مكابح الطوارئ. تتوقّف عن الإطلاق لتنظيف الفوضى. ينجح الأمر، لكنه تعافٍ بطيءٌ ومؤلم.`,
   ],
   modelHeading: `كيف يعمل النموذج`,
   modelIntro: `هذه المحاكاة ليست عشوائية. إنها مدفوعةٌ بصراعٍ بين قوّتين متضادّتين: <strong>الإنتروبيا</strong> و<strong>الاستثمار</strong>.`,
   modelSteps: [
-    `<strong>نموّ التعقيد (الإنتروبيا).</strong> تميل البرمجيات بطبيعتها إلى الفوضى كلما أُضيفت ميزات، وإن لم تفعل شيئًا نما الدَّين — وكلما نما، تضاعف أسرع.`,
+    `<strong>نموّ التعقيد (الإنتروبيا).</strong> تميل البرمجيات بطبيعتها إلى الفوضى كلما أُضيفت ميزات، وإن لم تفعل شيئًا نما الدَّين، وكلما نما تضاعف بوتيرةٍ أسرع.`,
     `<strong>السداد (الاستثمار).</strong> بتخصيص وقتٍ للتنظيف، تُولّد معدّل «سداد». والهدف هو بلوغ التوازن الذي يعادل فيه سدادُك النموَّ الطبيعي للتعقيد.`,
     `<strong>الكبح على السرعة.</strong> هذه هي الآلية الجوهرية: السرعة ليست مجرّد مدى سرعة كتابتك، بل هي <code dir="ltr">100% − (كبح الدَّين) − (وقت إعادة الهيكلة)</code>.`,
   ],
-  trap: `<strong>الفخّ:</strong> إن توقّفت عن إعادة الهيكلة، وفّرت وقتًا في البداية (فتقفز السرعة). لكن مع تراكم الدَّين، يتضخّم عنصر «الكبح» حتى يخنق سرعتك أكثر بكثيرٍ مما كانت إعادة الهيكلة لتفعله.`,
+  trap: `<strong>الفخّ:</strong> إن توقّفت عن إعادة الهيكلة، وفّرت وقتًا في البداية (فتقفز السرعة). لكن مع تراكم الدَّين، يتضخّم عنصر «الكبح» حتى يخنق سرعتك أكثر بكثيرٍ مما كان الاستمرار في إعادة الهيكلة ليكلّفك.`,
   hindsightHeading: `الرؤية واضحةٌ بعد فوات الأوان`,
   details: [
     [
       `سرعة 100% إشارةُ إنذار`,
-      `إن كان الفريق يتحرّك بسرعة «100»، فهو يقترض وقتًا من المستقبل. والـ30% «المفقودة» من سرعة الفريق السليم ليست هدرًا؛ إنها <strong>كلفة ممارسة العمل</strong>. فالتواصل والتصميم والصيانة عملٌ شاقّ.`,
+      `إن كان الفريق يتحرّك بسرعة «100»، فهو يقترض وقتًا من المستقبل. والـ30% «المفقودة» من سرعة الفريق السليم ليست هدرًا؛ إنها <strong>الكلفة الطبيعية للعمل</strong>. فالتواصل والتصميم والصيانة عملٌ شاقّ.`,
     ],
     [
       `المطوّر المبتهج وهمٌ`,
-      `سقف المعنويات الواقعي هو 85–90%. والفجوة بين 85 و100 تمثّل <strong>الانضباط المهني</strong> — الاحتكاك الضروري لكتابة الاختبارات والتوثيق ومراجعات الشيفرة. أما «السعادة التامة» فتعني عادةً تخطّي الأجزاء الصعبة.`,
+      `سقف المعنويات الواقعي هو 85–90%. والفجوة بين 85 و100 تمثّل <strong>الانضباط المهني</strong>: الاحتكاك الضروري لكتابة الاختبارات والتوثيق ومراجعات الشيفرة. أما «السعادة التامة» فتعني عادةً تخطّي الأجزاء الصعبة.`,
     ],
     [
       `الدَّين يجني فائدة`,
@@ -240,7 +240,7 @@ const ar: TechDebtContent = {
     ],
   ],
   conclusionHeading: `الخلاصة`,
-  conclusion: `تُبرهن المحاكاة أطروحة أوسترهاوت المركزية: <strong>التعقيد يتراكم حين لا تستثمر في التصميم.</strong> فأكثر الفرق فعاليةً ليست تلك التي تكتب أسرع، بل التي تحافظ على توازنٍ «مستدام» يمنع معاملَ الكبح من السيطرة.`,
+  conclusion: `تُثبت المحاكاة أطروحة أوسترهاوت المركزية: <strong>التعقيد يتراكم حين لا تستثمر في التصميم.</strong> فأكثر الفرق فعاليةً ليست تلك التي تكتب أسرع، بل التي تحافظ على توازنٍ «مستدام» يمنع معاملَ الكبح من السيطرة.`,
   talkIntro: `شاهد المحاضرة التي حضرتُها في <a href="${TALK}" target="_blank" rel="noopener noreferrer">Big Techday</a> 24 من TNG:`,
   videoTitle: `مشغّل فيديو يوتيوب`,
   sim: {

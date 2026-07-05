@@ -4,7 +4,7 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  /* Warm, minimal light palette — near-white paper, ink, one emerald accent. */
+  /* Warm, minimal light palette: near-white paper, ink, one emerald accent. */
   --background: #fcfcfb;
   --foreground: #1b1b19;
   --muted: #6d6d66;
@@ -69,7 +69,7 @@ body {
 }
 
 /* ---------------------------------------------------------------------------
-   Prose — hand-rolled reading styles for MDX articles. Kept compact and tuned
+   Prose: hand-rolled reading styles for MDX articles. Kept compact and tuned
    for a comfortable measure rather than pulling in the typography plugin.
 --------------------------------------------------------------------------- */
 .prose {
@@ -186,7 +186,7 @@ body {
 }
 
 /* ---------------------------------------------------------------------------
-   Tech-debt sim — value pulse (re-triggered by remounting the number via key).
+   Tech-debt sim: value pulse (re-triggered by remounting the number via key).
 --------------------------------------------------------------------------- */
 @keyframes sim-pulse {
   0% {
@@ -207,7 +207,7 @@ body {
   animation: sim-pulse 0.55s ease-out;
 }
 
-/* Range input for the sim — accent thumb on a slim track, both themes. */
+/* Range input for the sim: accent thumb on a slim track, both themes. */
 .sim-range {
   -webkit-appearance: none;
   appearance: none;

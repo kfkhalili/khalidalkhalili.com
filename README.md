@@ -1,15 +1,15 @@
 # khalidalkhalili.com
 
-My personal site — a home for interactive **explorable explanations**, essays, and
+My personal site: a home for interactive **explorable explanations**, essays, and
 notes. Multilingual (English · German · Arabic), built to make ideas playable.
 
 ## Stack
 
-- **[Next.js 16](https://nextjs.org)** (App Router, Turbopack) — fully native TSX
-- **Locale-routed i18n** (`/en`, `/de`, `/ar`) with **RTL** for Arabic — no library, just a `proxy` + a dictionaries folder
-- **[Tailwind CSS v4](https://tailwindcss.com)** — CSS-first theming
+- **[Next.js 16](https://nextjs.org)** (App Router, Turbopack): fully native TSX
+- **Locale-routed i18n** (`/en`, `/de`, `/ar`) with **RTL** for Arabic: no library, just a `proxy` + a dictionaries folder
+- **[Tailwind CSS v4](https://tailwindcss.com)**: CSS-first theming
 - **Content in markdown** (`gray-matter` + `marked`)
-- **[next-themes](https://github.com/pacocoursey/next-themes)** — light/dark
+- **[next-themes](https://github.com/pacocoursey/next-themes)**: light/dark
 - Deployed on **[Vercel](https://vercel.com)**
 
 ## Develop
@@ -28,7 +28,7 @@ app/
     page.tsx                   # home
     about/page.tsx
     writing/
-      page.tsx                 # index — merges essays + explorables
+      page.tsx                 # index: merges essays + explorables
       [slug]/page.tsx          # file-based essays
       technical-debt/page.tsx  # an interactive explorable (React page)
   globals.css

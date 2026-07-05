@@ -12,7 +12,7 @@
   },
   "reading": {
     "title": "Lesen",
-    "subtitle": "Bücher, die ich gelesen habe, und was ich gerade lese — live aus meinen Goodreads-Regalen.",
+    "subtitle": "Bücher, die ich gelesen habe, und was ich gerade lese, live aus meinen Goodreads-Regalen.",
     "currentlyReading": "Ich lese gerade",
     "recentlyRead": "Zuletzt gelesen",
     "viewOnGoodreads": "Mein ganzes Regal auf Goodreads",
@@ -20,7 +20,7 @@
   },
   "chess": {
     "title": "Schach",
-    "subtitle": "Meine aktuellen Wertungen und eine Wiederholung meiner letzten Partie — von Chess.com.",
+    "subtitle": "Meine aktuellen Wertungen und eine Wiederholung meiner letzten Partie, direkt von Chess.com.",
     "ratings": "Wertungen",
     "tactics": "Taktik",
     "puzzleRush": "Puzzle Rush",

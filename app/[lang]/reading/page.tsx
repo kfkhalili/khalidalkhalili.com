@@ -3,7 +3,7 @@ import { resolveLocale } from "@/lib/i18n";
 import { getBookshelf, type Book } from "@/lib/goodreads";
 import { site } from "@/lib/site";
 
-// Render on demand — pull the current Goodreads shelf each time the page loads.
+// Render on demand: pull the current Goodreads shelf each time the page loads.
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata({

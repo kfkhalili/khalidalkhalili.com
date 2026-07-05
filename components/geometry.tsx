@@ -1,5 +1,5 @@
 /**
- * A faint, repeating eight-pointed star (khatam) — two overlapped squares, the
+ * A faint, repeating eight-pointed star (khatam): two overlapped squares, the
  * classic seed of Islamic strapwork. Purely decorative; inherits `currentColor`
  * so callers control tint and opacity via Tailwind text-color + opacity utils.
  */
@@ -29,7 +29,7 @@ export function StarPattern({
           <g fill="none" stroke="currentColor" strokeWidth="1">
             {/* axis-aligned square */}
             <polygon points="15,15 49,15 49,49 15,49" />
-            {/* 45°-rotated square — together they read as an 8-point star */}
+            {/* 45°-rotated square; together they read as an 8-point star */}
             <polygon points="32,8 56,32 32,56 8,32" />
           </g>
         </pattern>

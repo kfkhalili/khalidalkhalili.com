@@ -7,7 +7,7 @@ function Html({ as: Tag = "p", html }: { as?: "p" | "li"; html: string }) {
 }
 
 /**
- * Body of the technical-debt explorable — the prose + live simulation, in the
+ * Body of the technical-debt explorable: the prose + live simulation, in the
  * page's language. One JSX skeleton; all copy comes from the locale-keyed content
  * module. Rendered inside the shared `.prose` wrapper by the article route via the
  * explorables registry (the "component adapter" behind the article render seam).

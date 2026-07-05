@@ -12,7 +12,7 @@
   },
   "reading": {
     "title": "Reading",
-    "subtitle": "Books I've read and what I'm in the middle of — pulled live from my Goodreads shelves.",
+    "subtitle": "Books I've read and what I'm in the middle of, pulled live from my Goodreads shelves.",
     "currentlyReading": "Currently reading",
     "recentlyRead": "Recently read",
     "viewOnGoodreads": "See my full shelf on Goodreads",
@@ -20,7 +20,7 @@
   },
   "chess": {
     "title": "Chess",
-    "subtitle": "My live ratings, and a replay of my most recent game — pulled from Chess.com.",
+    "subtitle": "My live ratings and a replay of my most recent game, pulled from Chess.com.",
     "ratings": "Ratings",
     "tactics": "Tactics",
     "puzzleRush": "Puzzle Rush",

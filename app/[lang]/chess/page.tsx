@@ -3,7 +3,7 @@ import { resolveLocale } from "@/lib/i18n";
 import { getChessStats, getLatestGame, CHESS_PROFILE_URL } from "@/lib/chess";
 import { ChessBoard } from "@/components/chess-board";
 
-// On demand — pull live ratings + the latest game each page load.
+// On demand: pull live ratings + the latest game each page load.
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
