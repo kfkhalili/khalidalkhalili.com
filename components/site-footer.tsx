@@ -3,7 +3,7 @@ import { site } from "@/lib/site";
 import { StarPattern } from "@/components/geometry";
 
 export function SiteFooter() {
-  const year = 2026;
+  const year = new Date().getFullYear();
 
   return (
     <footer className="relative mt-24 overflow-hidden border-t border-border">
