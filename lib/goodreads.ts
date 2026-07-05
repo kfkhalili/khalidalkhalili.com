@@ -58,7 +58,7 @@ async function fetchShelf(shelf: string): Promise<Book[]> {
   const url = `https://www.goodreads.com/review/list_rss/${USER_ID}?shelf=${shelf}&sort=date_read`;
   const res = await fetch(url, {
     headers: { "user-agent": UA },
-    next: { revalidate: REVALIDATE_SECONDS },
+    next: { revalidate: REVALIDATE_SECONDS, tags: ["goodreads"] },
   });
   if (!res.ok) throw new Error(`Goodreads ${shelf} → ${res.status}`);
   return parse(await res.text());
