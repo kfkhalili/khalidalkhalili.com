@@ -1,7 +1,6 @@
 const USER_ID = "6598624";
 const UA =
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36";
-const REVALIDATE_SECONDS = 21600; // ~6h — the shelf changes slowly
 
 export type Book = {
   title: string;
@@ -58,7 +57,7 @@ async function fetchShelf(shelf: string): Promise<Book[]> {
   const url = `https://www.goodreads.com/review/list_rss/${USER_ID}?shelf=${shelf}&sort=date_read`;
   const res = await fetch(url, {
     headers: { "user-agent": UA },
-    next: { revalidate: REVALIDATE_SECONDS, tags: ["goodreads"] },
+    cache: "no-store", // fetch the live shelf on every request
   });
   if (!res.ok) throw new Error(`Goodreads ${shelf} → ${res.status}`);
   return parse(await res.text());
