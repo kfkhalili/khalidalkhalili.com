@@ -2,9 +2,11 @@ import Link from "next/link";
 import { StarPattern } from "@/components/geometry";
 import { ArticleCard } from "@/components/article-card";
 import { articles } from "@/lib/articles";
+import { readContent, renderInline } from "@/lib/content";
 
 export default function Home() {
   const featured = articles.find((a) => a.featured) ?? articles[0];
+  const { meta } = readContent("home");
 
   return (
     <div className="mx-auto max-w-3xl px-5">
@@ -14,16 +16,14 @@ export default function Home() {
           <StarPattern id="hero-khatam" className="h-full w-full" />
         </div>
 
-        <p className="font-mono text-sm text-accent-strong">Builder · Writer</p>
+        <p className="font-mono text-sm text-accent-strong">{meta.eyebrow}</p>
         <h1 className="mt-4 text-4xl font-semibold leading-[1.1] tracking-tight text-foreground sm:text-5xl">
-          Hi, I&rsquo;m Khalid.
+          {meta.heading}
         </h1>
-        <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted">
-          I&rsquo;m a builder who can&rsquo;t stop making things, and a writer
-          still figuring out what he thinks. I work in software, tinker at the
-          edges of what I can vibe into existence, and write to understand. This
-          is where I keep the ideas worth exploring.
-        </p>
+        <p
+          className="mt-6 max-w-xl text-lg leading-relaxed text-muted"
+          dangerouslySetInnerHTML={{ __html: renderInline(meta.lead) }}
+        />
 
         <div className="mt-8 flex flex-wrap items-center gap-3">
           <Link

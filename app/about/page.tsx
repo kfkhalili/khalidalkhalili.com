@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { StarPattern } from "@/components/geometry";
-import { site } from "@/lib/site";
+import { readContent, renderMarkdown } from "@/lib/content";
+
+const { meta, body } = readContent("about");
 
 export const metadata: Metadata = {
-  title: "About",
-  description: "A little about Khalid Alkhalili — builder, writer, and someone who loves people.",
+  title: meta.title,
+  description: meta.description,
 };
 
 export default function AboutPage() {
@@ -16,41 +18,13 @@ export default function AboutPage() {
         </div>
 
         <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-          About
+          {meta.title}
         </h1>
 
-        <div className="prose mt-8">
-          <p>
-            I&rsquo;m Khalid — I work in IT, and at heart I&rsquo;m a builder. I
-            vibe-code my way through projects, following curiosity more than any
-            roadmap, and I&rsquo;ve shipped more small things than I can count.
-          </p>
-          <p>
-            Lately I&rsquo;m trying to grow toward consulting — to spend more
-            time on the <em>why</em> behind what teams build, not just the{" "}
-            <em>how</em>.
-          </p>
-          <p>
-            When I&rsquo;m not building, I write. Sometimes essays, sometimes
-            something more creative. I read online, I write online, and I like
-            to think out loud in public.
-          </p>
-          <p>
-            I try to lead with care — for craft, for honesty, and above all for
-            people. I love people. That&rsquo;s the short version.
-          </p>
-          <p>
-            This site is my corner of the internet: a place for the ideas worth
-            making interactive.
-          </p>
-          <p>
-            Want to connect? Find me on{" "}
-            <a href={site.linkedin} target="_blank" rel="noopener noreferrer">
-              LinkedIn
-            </a>
-            .
-          </p>
-        </div>
+        <div
+          className="prose mt-8"
+          dangerouslySetInnerHTML={{ __html: renderMarkdown(body) }}
+        />
       </section>
     </div>
   );
