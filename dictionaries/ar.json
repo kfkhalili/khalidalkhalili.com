@@ -1,5 +1,5 @@
 {
-  "nav": { "writing": "كتابات", "about": "عنّي" },
+  "nav": { "writing": "كتابات", "reading": "قراءات", "about": "عنّي" },
   "home": {
     "ctaExplore": "جرّب محاكاة الدَّين التقني",
     "ctaRead": "اقرأ الكتابات",
@@ -9,6 +9,14 @@
   "writing": {
     "title": "كتابات",
     "subtitle": "استكشافات تفاعلية ومقالات عن البرمجيات والأنظمة ومن يبنونها. والمزيد قادم."
+  },
+  "reading": {
+    "title": "قراءات",
+    "subtitle": "كتبٌ قرأتها وما أنا بصدد قراءته الآن — مأخوذة مباشرةً من رفوفي على Goodreads.",
+    "currentlyReading": "أقرأ حاليًا",
+    "recentlyRead": "قرأت مؤخرًا",
+    "viewOnGoodreads": "رفّي الكامل على Goodreads",
+    "unavailable": "رفّي على Goodreads"
   },
   "article": { "back": "الكتابات", "minRead": "دقيقة قراءة" },
   "footer": { "tagline": "مصنوع يدويًا، وُجد ليُستكشَف." },

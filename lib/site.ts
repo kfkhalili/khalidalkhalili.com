@@ -7,8 +7,5 @@ export const site = {
   url: "https://khalidalkhalili.com",
   author: "Khalid Alkhalili",
   linkedin: "https://www.linkedin.com/in/kfkhalili/",
-  nav: [
-    { href: "/writing", label: "Writing" },
-    { href: "/about", label: "About" },
-  ],
+  goodreads: "https://www.goodreads.com/user/show/6598624",
 } as const;

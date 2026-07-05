@@ -1,5 +1,5 @@
 {
-  "nav": { "writing": "Texte", "about": "Über mich" },
+  "nav": { "writing": "Texte", "reading": "Lesen", "about": "Über mich" },
   "home": {
     "ctaExplore": "Zur Tech-Debt-Simulation",
     "ctaRead": "Zu den Texten",
@@ -9,6 +9,14 @@
   "writing": {
     "title": "Texte",
     "subtitle": "Interaktive Explorables und Essays über Software, Systeme und die Menschen, die sie bauen. Mehr folgt."
+  },
+  "reading": {
+    "title": "Lesen",
+    "subtitle": "Bücher, die ich gelesen habe, und was ich gerade lese — live aus meinen Goodreads-Regalen.",
+    "currentlyReading": "Ich lese gerade",
+    "recentlyRead": "Zuletzt gelesen",
+    "viewOnGoodreads": "Mein ganzes Regal auf Goodreads",
+    "unavailable": "Mein Regal auf Goodreads"
   },
   "article": { "back": "Texte", "minRead": "Min. Lesezeit" },
   "footer": { "tagline": "Von Hand gebaut. Zum Entdecken gemacht." },
