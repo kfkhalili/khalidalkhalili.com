@@ -2,14 +2,24 @@ import type { Metadata } from "next";
 import { StarPattern } from "@/components/geometry";
 import { readContent, renderMarkdown } from "@/lib/content";
 
-const { meta, body } = readContent("about");
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ lang: string }>;
+}): Promise<Metadata> {
+  const { lang } = await params;
+  const { meta } = readContent(lang, "about");
+  return { title: meta.title, description: meta.description };
+}
 
-export const metadata: Metadata = {
-  title: meta.title,
-  description: meta.description,
-};
+export default async function AboutPage({
+  params,
+}: {
+  params: Promise<{ lang: string }>;
+}) {
+  const { lang } = await params;
+  const { meta, body } = readContent(lang, "about");
 
-export default function AboutPage() {
   return (
     <div className="mx-auto max-w-3xl px-5 py-16 sm:py-20">
       <section className="relative isolate">

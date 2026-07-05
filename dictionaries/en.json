@@ -1,0 +1,17 @@
+{
+  "nav": { "writing": "Writing", "about": "About" },
+  "home": {
+    "ctaExplore": "Explore the technical-debt sim",
+    "ctaRead": "Read the writing",
+    "featured": "Featured explorable",
+    "allWriting": "All writing"
+  },
+  "writing": {
+    "title": "Writing",
+    "subtitle": "Interactive explorables and essays on software, systems, and the people who build them. More to come."
+  },
+  "article": { "back": "Writing", "minRead": "min read" },
+  "footer": { "tagline": "Built by hand. Made to be explored." },
+  "theme": { "toggle": "Toggle theme" },
+  "language": { "label": "Language" }
+}

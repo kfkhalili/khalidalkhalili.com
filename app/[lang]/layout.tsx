@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import { Inter, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import { Inter, Geist_Mono, Noto_Sans_Arabic } from "next/font/google";
+import "../globals.css";
 import { site } from "@/lib/site";
+import { LOCALES, dirOf, getDictionary } from "@/lib/i18n";
 import { ThemeProvider } from "@/components/theme-provider";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
@@ -15,6 +16,12 @@ const inter = Inter({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: "swap",
+});
+
+const notoArabic = Noto_Sans_Arabic({
+  variable: "--font-arabic",
+  subsets: ["arabic"],
   display: "swap",
 });
 
@@ -39,22 +46,32 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export function generateStaticParams() {
+  return LOCALES.map((lang) => ({ lang }));
+}
+
+export default async function RootLayout({
   children,
+  params,
 }: Readonly<{
   children: React.ReactNode;
+  params: Promise<{ lang: string }>;
 }>) {
+  const { lang } = await params;
+  const dict = await getDictionary(lang);
+
   return (
     <html
-      lang="en"
+      lang={lang}
+      dir={dirOf(lang)}
       suppressHydrationWarning
-      className={`${inter.variable} ${geistMono.variable} h-full`}
+      className={`${inter.variable} ${geistMono.variable} ${notoArabic.variable} h-full`}
     >
       <body className="flex min-h-full flex-col antialiased">
         <ThemeProvider>
-          <SiteHeader />
+          <SiteHeader lang={lang} dict={dict} />
           <main className="w-full flex-1">{children}</main>
-          <SiteFooter />
+          <SiteFooter lang={lang} dict={dict} />
         </ThemeProvider>
       </body>
     </html>

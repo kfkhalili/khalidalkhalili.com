@@ -1,10 +1,21 @@
 import Link from "next/link";
 import { formatDate, type Article } from "@/lib/articles";
+import { LOCALE_META, type Dictionary } from "@/lib/i18n";
 
-export function ArticleCard({ article }: { article: Article }) {
+export function ArticleCard({
+  lang,
+  dict,
+  article,
+}: {
+  lang: string;
+  dict: Dictionary;
+  article: Article;
+}) {
+  const langMeta = LOCALE_META[article.lang as keyof typeof LOCALE_META];
+
   return (
     <Link
-      href={`/writing/${article.slug}`}
+      href={`/${lang}/writing/${article.slug}`}
       className="group block rounded-xl border border-border bg-card p-5 transition-colors hover:border-accent/60"
     >
       <div className="flex flex-wrap items-center gap-1.5">
@@ -16,6 +27,11 @@ export function ArticleCard({ article }: { article: Article }) {
             {t}
           </span>
         ))}
+        {article.lang !== "en" && langMeta && (
+          <span className="rounded-full border border-accent/40 px-2 py-0.5 text-xs text-accent-strong">
+            {langMeta.label}
+          </span>
+        )}
       </div>
       <h3 className="mt-3 text-lg font-semibold tracking-tight text-foreground transition-colors group-hover:text-accent-strong">
         {article.title}
@@ -24,9 +40,11 @@ export function ArticleCard({ article }: { article: Article }) {
         {article.description}
       </p>
       <div className="mt-3 flex items-center gap-2 font-mono text-xs text-faint">
-        <time dateTime={article.date}>{formatDate(article.date)}</time>
+        <time dateTime={article.date}>{formatDate(article.date, lang)}</time>
         <span aria-hidden>·</span>
-        <span>{article.readingTime}</span>
+        <span>
+          {article.readingTime} {dict.article.minRead}
+        </span>
       </div>
     </Link>
   );

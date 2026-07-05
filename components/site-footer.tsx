@@ -1,8 +1,15 @@
 import Link from "next/link";
 import { site } from "@/lib/site";
 import { StarPattern } from "@/components/geometry";
+import type { Dictionary } from "@/lib/i18n";
 
-export function SiteFooter() {
+export function SiteFooter({
+  lang,
+  dict,
+}: {
+  lang: string;
+  dict: Dictionary;
+}) {
   const year = new Date().getFullYear();
 
   return (
@@ -18,18 +25,16 @@ export function SiteFooter() {
             {site.shortName.toLowerCase()}
             <span className="text-accent">.</span>
           </div>
-          <p className="mt-1 text-sm text-muted">
-            Built by hand. Made to be explored.
-          </p>
+          <p className="mt-1 text-sm text-muted">{dict.footer.tagline}</p>
         </div>
 
         <div className="flex flex-col gap-1 text-sm text-muted sm:items-end">
           <div className="flex items-center gap-4">
-            <Link href="/writing" className="hover:text-foreground">
-              Writing
+            <Link href={`/${lang}/writing`} className="hover:text-foreground">
+              {dict.nav.writing}
             </Link>
-            <Link href="/about" className="hover:text-foreground">
-              About
+            <Link href={`/${lang}/about`} className="hover:text-foreground">
+              {dict.nav.about}
             </Link>
             <a
               href={site.linkedin}

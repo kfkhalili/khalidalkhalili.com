@@ -1,58 +1,83 @@
 # khalidalkhalili.com
 
 My personal site — a home for interactive **explorable explanations**, essays, and
-notes. Built to make ideas playable, not just readable.
+notes. Multilingual (English · German · Arabic), built to make ideas playable.
 
 ## Stack
 
-- **[Next.js 16](https://nextjs.org)** (App Router, Turbopack) — fully native TSX, no MDX
-- **[Tailwind CSS v4](https://tailwindcss.com)** — CSS-first theming (`@theme` in `app/globals.css`)
-- **[next-themes](https://github.com/pacocoursey/next-themes)** — light/dark toggle
+- **[Next.js 16](https://nextjs.org)** (App Router, Turbopack) — fully native TSX
+- **Locale-routed i18n** (`/en`, `/de`, `/ar`) with **RTL** for Arabic — no library, just a `proxy` + a dictionaries folder
+- **[Tailwind CSS v4](https://tailwindcss.com)** — CSS-first theming
+- **Content in markdown** (`gray-matter` + `marked`)
+- **[next-themes](https://github.com/pacocoursey/next-themes)** — light/dark
 - Deployed on **[Vercel](https://vercel.com)**
 
 ## Develop
 
 ```bash
 npm install
-npm run dev      # http://localhost:3000
-```
-
-Other scripts:
-
-```bash
-npm run build    # production build
-npm run start    # serve the production build
-npm run lint     # eslint
+npm run dev      # http://localhost:3000  (redirects to /en)
 ```
 
 ## Structure
 
 ```
 app/
-  layout.tsx                        # root layout: fonts, theme provider, header/footer
-  page.tsx                          # home
-  globals.css                       # Tailwind + theme tokens + prose + sim styles
-  icon.svg                          # favicon (emerald khatam star)
-  about/page.tsx
-  writing/
-    page.tsx                        # writing index
-    technical-debt/page.tsx         # the article — native TSX, embeds <TechDebtSim/>
-components/
-  tech-debt-sim.tsx                 # the interactive technical-debt simulation
-  site-header.tsx / site-footer.tsx
-  theme-provider.tsx / theme-toggle.tsx
-  article-card.tsx
-  geometry.tsx                      # subtle eight-pointed-star (khatam) motif
+  [lang]/
+    layout.tsx                 # root: <html lang/dir>, fonts (Latin + Arabic), header/footer
+    page.tsx                   # home
+    about/page.tsx
+    writing/
+      page.tsx                 # index — merges essays + explorables
+      [slug]/page.tsx          # file-based essays
+      technical-debt/page.tsx  # an interactive explorable (React page)
+  globals.css
+  icon.svg
+proxy.ts                       # locale detection + redirect (Next 16 middleware convention)
+dictionaries/{en,de,ar}.json   # translated chrome strings (nav, buttons, labels)
+content/
+  {en,de,ar}/home.md, about.md # per-locale page copy (missing locale → falls back to en)
+  writing/<slug>.md            # essays
 lib/
-  site.ts                           # site metadata + nav
-  articles.ts                       # article registry + date helpers
+  i18n.ts                      # locales, direction, dictionaries
+  content.ts                   # markdown reader/renderer
+  articles.ts                  # essays (files) + explorables (registry), merged
+  explorables.ts               # registry for interactive code-page explorables
 ```
 
-## Adding an article
+## Write an essay
 
-1. Register it in [`lib/articles.ts`](lib/articles.ts) (slug, title, description, date, tags).
-2. Create `app/writing/<slug>/page.tsx` — a native React component. Copy the
-   technical-debt article as a template: export `metadata`, render the header from the
-   registry, and write the body as JSX inside a `<div className="prose">` wrapper
-   (the `.prose` styles in `app/globals.css` handle typography).
-3. Embed any interactive component by importing it directly into the page.
+Drop a markdown file in `content/writing/<slug>.md`:
+
+```markdown
+---
+title: My essay
+description: One-line summary for the card + meta.
+date: "2026-07-05"
+tags: ["Essay"]
+lang: en          # en | de | ar   (ar renders right-to-left)
+---
+
+Body in plain markdown…
+```
+
+It appears in the writing index automatically (newest first), with a language
+badge for non-English posts, at `/<locale>/writing/<slug>`.
+
+## Translate
+
+- **Page copy:** add `content/<locale>/home.md` or `about.md` (missing → English is shown).
+- **Chrome (nav/buttons/labels):** edit `dictionaries/<locale>.json`.
+
+## Add a language
+
+1. Add its code to `LOCALES` + `LOCALE_META` in [`lib/i18n.ts`](lib/i18n.ts) (label, `dir`, `dateLocale`).
+2. Add `dictionaries/<code>.json`.
+
+Routing, the language switcher, and static generation pick it up automatically.
+
+## Explorables
+
+Interactive explorables (like the technical-debt sim) are React pages under
+`app/[lang]/writing/<slug>/`, listed via [`lib/explorables.ts`](lib/explorables.ts) so
+they appear alongside file-based essays. Prose = markdown; interactive = code.

@@ -2,14 +2,25 @@ import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
 import { marked } from "marked";
+import { DEFAULT_LOCALE } from "@/lib/i18n";
 
 const CONTENT_DIR = path.join(process.cwd(), "content");
 
 export type ContentMeta = Record<string, string>;
 
-/** Read content/<slug>.md, split into frontmatter (meta) and markdown body. */
-export function readContent(slug: string): { meta: ContentMeta; body: string } {
-  const raw = fs.readFileSync(path.join(CONTENT_DIR, `${slug}.md`), "utf8");
+/**
+ * Read content/<locale>/<slug>.md, falling back to the default locale when a
+ * translation for this locale doesn't exist yet.
+ */
+export function readContent(
+  locale: string,
+  slug: string,
+): { meta: ContentMeta; body: string } {
+  let file = path.join(CONTENT_DIR, locale, `${slug}.md`);
+  if (!fs.existsSync(file)) {
+    file = path.join(CONTENT_DIR, DEFAULT_LOCALE, `${slug}.md`);
+  }
+  const raw = fs.readFileSync(file, "utf8");
   const { data, content } = matter(raw);
   return { meta: data as ContentMeta, body: content.trim() };
 }

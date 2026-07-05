@@ -1,0 +1,17 @@
+{
+  "nav": { "writing": "Texte", "about": "Über mich" },
+  "home": {
+    "ctaExplore": "Zur Tech-Debt-Simulation",
+    "ctaRead": "Zu den Texten",
+    "featured": "Ausgewähltes Explorable",
+    "allWriting": "Alle Texte"
+  },
+  "writing": {
+    "title": "Texte",
+    "subtitle": "Interaktive Explorables und Essays über Software, Systeme und die Menschen, die sie bauen. Mehr folgt."
+  },
+  "article": { "back": "Texte", "minRead": "Min. Lesezeit" },
+  "footer": { "tagline": "Von Hand gebaut. Zum Entdecken gemacht." },
+  "theme": { "toggle": "Design umschalten" },
+  "language": { "label": "Sprache" }
+}
