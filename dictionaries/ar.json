@@ -1,5 +1,5 @@
 {
-  "nav": { "writing": "كتابات", "reading": "قراءات", "about": "عنّي" },
+  "nav": { "writing": "كتابات", "reading": "قراءات", "chess": "شطرنج", "about": "عنّي" },
   "home": {
     "ctaExplore": "جرّب محاكاة الدَّين التقني",
     "ctaRead": "اقرأ الكتابات",
@@ -17,6 +17,20 @@
     "recentlyRead": "قرأت مؤخرًا",
     "viewOnGoodreads": "رفّي الكامل على Goodreads",
     "unavailable": "رفّي على Goodreads"
+  },
+  "chess": {
+    "title": "شطرنج",
+    "subtitle": "تصنيفاتي الحالية وإعادةٌ لآخر مبارياتي — من Chess.com.",
+    "ratings": "التصنيفات",
+    "tactics": "تكتيكات",
+    "puzzleRush": "Puzzle Rush",
+    "lastGame": "آخر مباراة",
+    "won": "فوز",
+    "lost": "خسارة",
+    "drew": "تعادل",
+    "reviewGame": "عرض على Chess.com",
+    "viewProfile": "ملفي على Chess.com",
+    "unavailable": "ملفي على Chess.com"
   },
   "article": { "back": "الكتابات", "minRead": "دقيقة قراءة" },
   "footer": { "tagline": "وُجد ليُستكشَف." },

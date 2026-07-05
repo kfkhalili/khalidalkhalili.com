@@ -1,5 +1,5 @@
 {
-  "nav": { "writing": "Texte", "reading": "Lesen", "about": "Über mich" },
+  "nav": { "writing": "Texte", "reading": "Lesen", "chess": "Schach", "about": "Über mich" },
   "home": {
     "ctaExplore": "Zur Tech-Debt-Simulation",
     "ctaRead": "Zu den Texten",
@@ -17,6 +17,20 @@
     "recentlyRead": "Zuletzt gelesen",
     "viewOnGoodreads": "Mein ganzes Regal auf Goodreads",
     "unavailable": "Mein Regal auf Goodreads"
+  },
+  "chess": {
+    "title": "Schach",
+    "subtitle": "Meine aktuellen Wertungen und eine Wiederholung meiner letzten Partie — von Chess.com.",
+    "ratings": "Wertungen",
+    "tactics": "Taktik",
+    "puzzleRush": "Puzzle Rush",
+    "lastGame": "Letzte Partie",
+    "won": "Gewonnen",
+    "lost": "Verloren",
+    "drew": "Remis",
+    "reviewGame": "Auf Chess.com ansehen",
+    "viewProfile": "Mein Chess.com-Profil",
+    "unavailable": "Mein Chess.com-Profil"
   },
   "article": { "back": "Texte", "minRead": "Min. Lesezeit" },
   "footer": { "tagline": "Zum Entdecken gemacht." },

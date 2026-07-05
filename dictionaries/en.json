@@ -1,5 +1,5 @@
 {
-  "nav": { "writing": "Writing", "reading": "Reading", "about": "About" },
+  "nav": { "writing": "Writing", "reading": "Reading", "chess": "Chess", "about": "About" },
   "home": {
     "ctaExplore": "Explore the technical-debt sim",
     "ctaRead": "Read the writing",
@@ -17,6 +17,20 @@
     "recentlyRead": "Recently read",
     "viewOnGoodreads": "See my full shelf on Goodreads",
     "unavailable": "My shelf on Goodreads"
+  },
+  "chess": {
+    "title": "Chess",
+    "subtitle": "My live ratings, and a replay of my most recent game — pulled from Chess.com.",
+    "ratings": "Ratings",
+    "tactics": "Tactics",
+    "puzzleRush": "Puzzle Rush",
+    "lastGame": "Last game",
+    "won": "Won",
+    "lost": "Lost",
+    "drew": "Drew",
+    "reviewGame": "Review on Chess.com",
+    "viewProfile": "My Chess.com profile",
+    "unavailable": "My Chess.com profile"
   },
   "article": { "back": "Writing", "minRead": "min read" },
   "footer": { "tagline": "Made to be explored." },

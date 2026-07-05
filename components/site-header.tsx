@@ -15,6 +15,7 @@ export function SiteHeader({ lang, dict }: { lang: string; dict: Dictionary }) {
   const nav = [
     { href: `/${lang}/writing`, label: dict.nav.writing },
     { href: `/${lang}/reading`, label: dict.nav.reading },
+    { href: `/${lang}/chess`, label: dict.nav.chess },
     { href: `/${lang}/about`, label: dict.nav.about },
   ];
   const isActive = (href: string) =>

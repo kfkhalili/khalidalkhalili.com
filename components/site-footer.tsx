@@ -36,6 +36,9 @@ export function SiteFooter({
             <Link href={`/${lang}/reading`} className="hover:text-foreground">
               {dict.nav.reading}
             </Link>
+            <Link href={`/${lang}/chess`} className="hover:text-foreground">
+              {dict.nav.chess}
+            </Link>
             <Link href={`/${lang}/about`} className="hover:text-foreground">
               {dict.nav.about}
             </Link>
