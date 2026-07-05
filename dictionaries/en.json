@@ -19,7 +19,7 @@
     "unavailable": "My shelf on Goodreads"
   },
   "article": { "back": "Writing", "minRead": "min read" },
-  "footer": { "tagline": "Built by hand. Made to be explored." },
+  "footer": { "tagline": "Made to be explored." },
   "theme": { "toggle": "Toggle theme" },
   "language": { "label": "Language" }
 }

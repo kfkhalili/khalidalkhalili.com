@@ -19,7 +19,7 @@
     "unavailable": "Mein Regal auf Goodreads"
   },
   "article": { "back": "Texte", "minRead": "Min. Lesezeit" },
-  "footer": { "tagline": "Von Hand gebaut. Zum Entdecken gemacht." },
+  "footer": { "tagline": "Zum Entdecken gemacht." },
   "theme": { "toggle": "Design umschalten" },
   "language": { "label": "Sprache" }
 }
