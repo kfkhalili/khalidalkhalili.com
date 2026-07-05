@@ -1,11 +1,19 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getEssaySlugs, getEssayContent, formatDate } from "@/lib/articles";
+import {
+  getEssaySlugs,
+  getEssayContent,
+  getExplorable,
+  formatDate,
+} from "@/lib/articles";
+import { EXPLORABLES } from "@/lib/explorables";
 import { resolveLocale, dirOf, languageBadge } from "@/lib/i18n";
 
 export function generateStaticParams() {
-  return getEssaySlugs().map((slug) => ({ slug }));
+  return [...getEssaySlugs(), ...EXPLORABLES.map((e) => e.slug)].map((slug) => ({
+    slug,
+  }));
 }
 
 export async function generateMetadata({
@@ -14,22 +22,25 @@ export async function generateMetadata({
   params: Promise<{ lang: string; slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const found = getEssayContent(slug);
-  return found
-    ? { title: found.article.title, description: found.article.description }
+  const article = getEssayContent(slug)?.article ?? getExplorable(slug);
+  return article
+    ? { title: article.title, description: article.description }
     : {};
 }
 
-export default async function EssayPage({
+export default async function ArticlePage({
   params,
 }: {
   params: Promise<{ lang: string; slug: string }>;
 }) {
   const { lang, slug } = await params;
-  const found = getEssayContent(slug);
-  if (!found) notFound();
 
-  const { article, html } = found;
+  // One render seam, two adapters: markdown (essays) or a component (explorables).
+  const essay = getEssayContent(slug);
+  const explorable = getExplorable(slug);
+  const article = essay?.article ?? explorable;
+  if (!article) notFound();
+
   const { dict, back } = await resolveLocale(lang);
   const badge = languageBadge(article.lang);
 
@@ -73,10 +84,14 @@ export default async function EssayPage({
           </div>
         </header>
 
-        <div
-          className="prose mt-10"
-          dangerouslySetInnerHTML={{ __html: html }}
-        />
+        {essay ? (
+          <div
+            className="prose mt-10"
+            dangerouslySetInnerHTML={{ __html: essay.html }}
+          />
+        ) : (
+          <div className="prose mt-10">{explorable && <explorable.Body />}</div>
+        )}
       </div>
     </article>
   );

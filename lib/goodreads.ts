@@ -33,7 +33,8 @@ function field(item: string, name: string): string {
   return match ? decode(match[1]) : "";
 }
 
-function parse(xml: string): Book[] {
+/** Pure RSS → Book[] transform. Exposed as the test surface — no network. */
+export function parseShelf(xml: string): Book[] {
   return xml
     .split("<item>")
     .slice(1)
@@ -60,7 +61,7 @@ async function fetchShelf(shelf: string): Promise<Book[]> {
     cache: "no-store", // fetch the live shelf on every request
   });
   if (!res.ok) throw new Error(`Goodreads ${shelf} → ${res.status}`);
-  return parse(await res.text());
+  return parseShelf(await res.text());
 }
 
 /** Reads the public Goodreads shelves via RSS. Never throws — degrades to a link. */

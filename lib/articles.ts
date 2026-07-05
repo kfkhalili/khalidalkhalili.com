@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { LOCALE_META, DEFAULT_LOCALE } from "@/lib/i18n";
-import { EXPLORABLES } from "@/lib/explorables";
+import { EXPLORABLES, type Explorable } from "@/lib/explorables";
 import { readMarkdown, renderMarkdown } from "@/lib/content";
 
 const WRITING_DIR = path.join(process.cwd(), "content/writing");
@@ -69,7 +69,7 @@ export function getEssayContent(
   return { article, html: renderMarkdown(body) };
 }
 
-export function getExplorable(slug: string): Article | undefined {
+export function getExplorable(slug: string): Explorable | undefined {
   return EXPLORABLES.find((e) => e.slug === slug);
 }
 

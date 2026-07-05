@@ -5,9 +5,9 @@ interactive explorable explanations, essays, and notes.
 
 ## Domain terms
 
-- **Explorable** — an interactive explanation rendered as a React page (e.g. the
-  technical-debt sim). Appears in the writing index via the explorables registry
-  (`lib/explorables.ts`).
+- **Explorable** — an interactive explanation whose body is a React component (e.g.
+  the technical-debt sim), carried in the explorables registry (`lib/explorables.ts`)
+  and shown through the shared article route.
 - **Essay** — a prose piece authored as a markdown file in `content/writing/`,
   rendered on the dynamic `writing/[slug]` route.
 - **Article** — either an Explorable or an Essay; the writing index merges both.
@@ -26,3 +26,10 @@ interactive explorable explanations, essays, and notes.
   `back` / `forward` arrows. `languageBadge` gives an article's language label.
   Pages cross this one interface instead of assembling from `getDictionary` +
   `dirOf` + `LOCALE_META`.
+- **Article render seam** (`app/[lang]/writing/[slug]`) — the one place an article
+  renders. Two adapters satisfy it: a **markdown adapter** (essays → HTML) and a
+  **component adapter** (explorables → their `Body`). Registry entries carry a typed
+  `Body`, so the registry↔renderer link can't silently break.
+- **Goodreads parse** (`parseShelf` in `lib/goodreads.ts`) — the pure RSS → `Book[]`
+  transform, exposed as the test surface. `lib/goodreads.test.ts` feeds it fixtures
+  with no network.
