@@ -30,6 +30,9 @@ export function SiteFooter({
 
         <div className="flex flex-col gap-1 text-sm text-muted sm:items-end">
           <div className="flex items-center gap-4">
+            <Link href={`/${lang}/projects`} className="hover:text-foreground">
+              {dict.nav.projects}
+            </Link>
             <Link href={`/${lang}/writing`} className="hover:text-foreground">
               {dict.nav.writing}
             </Link>

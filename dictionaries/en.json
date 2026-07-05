@@ -1,10 +1,15 @@
 {
-  "nav": { "writing": "Writing", "reading": "Reading", "chess": "Chess", "about": "About" },
+  "nav": { "projects": "Projects", "writing": "Writing", "reading": "Reading", "chess": "Chess", "about": "About" },
   "home": {
     "ctaExplore": "Explore the technical-debt sim",
     "ctaRead": "Read the writing",
     "featured": "Featured explorable",
     "allWriting": "All writing"
+  },
+  "projects": {
+    "title": "Projects",
+    "subtitle": "Products I'm building and experiments I tinker with. Some are live, some are still taking shape.",
+    "status": { "live": "Live", "beta": "Beta", "building": "Building" }
   },
   "writing": {
     "title": "Writing",

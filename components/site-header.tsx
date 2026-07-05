@@ -13,6 +13,7 @@ export function SiteHeader({ lang, dict }: { lang: string; dict: Dictionary }) {
   const [open, setOpen] = useState(false);
 
   const nav = [
+    { href: `/${lang}/projects`, label: dict.nav.projects },
     { href: `/${lang}/writing`, label: dict.nav.writing },
     { href: `/${lang}/reading`, label: dict.nav.reading },
     { href: `/${lang}/chess`, label: dict.nav.chess },

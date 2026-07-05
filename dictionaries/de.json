@@ -1,10 +1,15 @@
 {
-  "nav": { "writing": "Texte", "reading": "Lesen", "chess": "Schach", "about": "Über mich" },
+  "nav": { "projects": "Projekte", "writing": "Texte", "reading": "Lesen", "chess": "Schach", "about": "Über mich" },
   "home": {
     "ctaExplore": "Zur Tech-Debt-Simulation",
     "ctaRead": "Zu den Texten",
     "featured": "Ausgewähltes Explorable",
     "allWriting": "Alle Texte"
+  },
+  "projects": {
+    "title": "Projekte",
+    "subtitle": "Produkte, die ich baue, und Experimente, an denen ich bastle. Manches ist live, manches nimmt noch Gestalt an.",
+    "status": { "live": "Live", "beta": "Beta", "building": "In Arbeit" }
   },
   "writing": {
     "title": "Texte",
