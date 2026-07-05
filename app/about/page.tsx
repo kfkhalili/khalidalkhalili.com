@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { StarPattern } from "@/components/geometry";
+import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "About",
@@ -42,6 +43,13 @@ export default function AboutPage() {
           <p>
             This site is my corner of the internet: a place for the ideas worth
             making interactive.
+          </p>
+          <p>
+            Want to connect? Find me on{" "}
+            <a href={site.linkedin} target="_blank" rel="noopener noreferrer">
+              LinkedIn
+            </a>
+            .
           </p>
         </div>
       </section>
