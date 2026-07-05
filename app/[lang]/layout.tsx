@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Geist_Mono, Noto_Sans_Arabic } from "next/font/google";
 import "../globals.css";
 import { site } from "@/lib/site";
-import { LOCALES, dirOf, getDictionary } from "@/lib/i18n";
+import { LOCALES, resolveLocale } from "@/lib/i18n";
 import { ThemeProvider } from "@/components/theme-provider";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
@@ -58,12 +58,12 @@ export default async function RootLayout({
   params: Promise<{ lang: string }>;
 }>) {
   const { lang } = await params;
-  const dict = await getDictionary(lang);
+  const { dict, dir } = await resolveLocale(lang);
 
   return (
     <html
       lang={lang}
-      dir={dirOf(lang)}
+      dir={dir}
       suppressHydrationWarning
       className={`${inter.variable} ${geistMono.variable} ${notoArabic.variable} h-full`}
     >

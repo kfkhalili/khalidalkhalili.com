@@ -32,3 +32,29 @@ const dictionaries: Record<Locale, () => Promise<Dictionary>> = {
 export async function getDictionary(locale: string): Promise<Dictionary> {
   return dictionaries[isLocale(locale) ? locale : DEFAULT_LOCALE]();
 }
+
+export type ResolvedLocale = {
+  lang: string;
+  dir: "ltr" | "rtl";
+  dict: Dictionary;
+  back: string; // arrow pointing "back" in this locale's reading direction
+  forward: string; // arrow pointing "forward"
+};
+
+/** Everything a page needs about its locale, behind one interface. */
+export async function resolveLocale(lang: string): Promise<ResolvedLocale> {
+  const dir = dirOf(lang);
+  return {
+    lang,
+    dir,
+    dict: await getDictionary(lang),
+    back: dir === "rtl" ? "→" : "←",
+    forward: dir === "rtl" ? "←" : "→",
+  };
+}
+
+/** Badge label for an article not in the default language, else null. */
+export function languageBadge(articleLang: string): string | null {
+  if (articleLang === DEFAULT_LOCALE) return null;
+  return LOCALE_META[articleLang as Locale]?.label ?? null;
+}

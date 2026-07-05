@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { TechDebtSim } from "@/components/tech-debt-sim";
 import { getExplorable, formatDate } from "@/lib/articles";
-import { getDictionary, dirOf } from "@/lib/i18n";
+import { resolveLocale } from "@/lib/i18n";
 
 const article = getExplorable("technical-debt")!;
 
@@ -16,8 +16,7 @@ export default async function TechnicalDebtPage({
   params: Promise<{ lang: string }>;
 }) {
   const { lang } = await params;
-  const dict = await getDictionary(lang);
-  const back = dirOf(lang) === "rtl" ? "→" : "←";
+  const { dict, back } = await resolveLocale(lang);
 
   return (
     <article className="mx-auto max-w-3xl px-5 py-16 sm:py-20">

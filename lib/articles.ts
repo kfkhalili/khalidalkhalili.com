@@ -1,8 +1,8 @@
 import fs from "node:fs";
 import path from "node:path";
-import matter from "gray-matter";
 import { LOCALE_META, DEFAULT_LOCALE } from "@/lib/i18n";
 import { EXPLORABLES } from "@/lib/explorables";
+import { readMarkdown, renderMarkdown } from "@/lib/content";
 
 const WRITING_DIR = path.join(process.cwd(), "content/writing");
 
@@ -24,9 +24,7 @@ function toDate(value: unknown): string {
 }
 
 function parseEssay(file: string): { article: Article; body: string } {
-  const raw = fs.readFileSync(path.join(WRITING_DIR, file), "utf8");
-  const { data, content } = matter(raw);
-  const body = content.trim();
+  const { meta: data, body } = readMarkdown(path.join(WRITING_DIR, file));
   const words = body.split(/\s+/).filter(Boolean).length;
   return {
     article: {
@@ -61,12 +59,14 @@ export function getEssaySlugs(): string[] {
   return essayFiles().map((f) => f.replace(/\.md$/, ""));
 }
 
+/** An essay's metadata plus its body rendered to HTML — one interface for the page. */
 export function getEssayContent(
   slug: string,
-): { article: Article; body: string } | undefined {
+): { article: Article; html: string } | undefined {
   const file = `${slug}.md`;
   if (!fs.existsSync(path.join(WRITING_DIR, file))) return undefined;
-  return parseEssay(file);
+  const { article, body } = parseEssay(file);
+  return { article, html: renderMarkdown(body) };
 }
 
 export function getExplorable(slug: string): Article | undefined {

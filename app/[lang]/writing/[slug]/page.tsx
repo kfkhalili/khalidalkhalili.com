@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getEssaySlugs, getEssayContent, formatDate } from "@/lib/articles";
-import { renderMarkdown } from "@/lib/content";
-import { getDictionary, dirOf, LOCALE_META } from "@/lib/i18n";
+import { resolveLocale, dirOf, languageBadge } from "@/lib/i18n";
 
 export function generateStaticParams() {
   return getEssaySlugs().map((slug) => ({ slug }));
@@ -30,10 +29,9 @@ export default async function EssayPage({
   const found = getEssayContent(slug);
   if (!found) notFound();
 
-  const { article, body } = found;
-  const dict = await getDictionary(lang);
-  const back = dirOf(lang) === "rtl" ? "→" : "←";
-  const langMeta = LOCALE_META[article.lang as keyof typeof LOCALE_META];
+  const { article, html } = found;
+  const { dict, back } = await resolveLocale(lang);
+  const badge = languageBadge(article.lang);
 
   return (
     <article className="mx-auto max-w-3xl px-5 py-16 sm:py-20">
@@ -44,7 +42,7 @@ export default async function EssayPage({
         {back} {dict.article.back}
       </Link>
 
-      <div lang={article.lang} dir={langMeta?.dir ?? "ltr"}>
+      <div lang={article.lang} dir={dirOf(article.lang)}>
         <header className="mt-8">
           <div className="flex flex-wrap items-center gap-1.5">
             {article.tags.map((t) => (
@@ -55,9 +53,9 @@ export default async function EssayPage({
                 {t}
               </span>
             ))}
-            {article.lang !== "en" && langMeta && (
+            {badge && (
               <span className="rounded-full border border-accent/40 px-2 py-0.5 text-xs text-accent-strong">
-                {langMeta.label}
+                {badge}
               </span>
             )}
           </div>
@@ -77,7 +75,7 @@ export default async function EssayPage({
 
         <div
           className="prose mt-10"
-          dangerouslySetInnerHTML={{ __html: renderMarkdown(body) }}
+          dangerouslySetInnerHTML={{ __html: html }}
         />
       </div>
     </article>

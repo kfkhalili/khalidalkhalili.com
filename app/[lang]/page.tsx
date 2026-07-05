@@ -3,7 +3,7 @@ import { StarPattern } from "@/components/geometry";
 import { ArticleCard } from "@/components/article-card";
 import { getAllArticles } from "@/lib/articles";
 import { readContent, renderInline } from "@/lib/content";
-import { getDictionary, dirOf } from "@/lib/i18n";
+import { resolveLocale } from "@/lib/i18n";
 
 export default async function Home({
   params,
@@ -11,11 +11,10 @@ export default async function Home({
   params: Promise<{ lang: string }>;
 }) {
   const { lang } = await params;
-  const dict = await getDictionary(lang);
+  const { dict, forward } = await resolveLocale(lang);
   const { meta } = readContent(lang, "home");
   const articles = getAllArticles();
   const featured = articles.find((a) => a.featured) ?? articles[0];
-  const fwd = dirOf(lang) === "rtl" ? "←" : "→";
 
   return (
     <div className="mx-auto max-w-3xl px-5">
@@ -41,7 +40,7 @@ export default async function Home({
               className="inline-flex items-center gap-1.5 rounded-lg bg-accent px-4 py-2 text-sm font-medium text-accent-fg transition-opacity hover:opacity-90"
             >
               {dict.home.ctaExplore}
-              <span aria-hidden>{fwd}</span>
+              <span aria-hidden>{forward}</span>
             </Link>
           )}
           <Link
@@ -64,7 +63,7 @@ export default async function Home({
               href={`/${lang}/writing`}
               className="text-sm text-muted transition-colors hover:text-foreground"
             >
-              {dict.home.allWriting} {fwd}
+              {dict.home.allWriting} {forward}
             </Link>
           </div>
           <ArticleCard lang={lang} dict={dict} article={featured} />

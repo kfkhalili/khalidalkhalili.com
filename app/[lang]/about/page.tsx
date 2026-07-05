@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { StarPattern } from "@/components/geometry";
-import { readContent, renderMarkdown } from "@/lib/content";
+import { readContent } from "@/lib/content";
 
 export async function generateMetadata({
   params,
@@ -18,7 +18,7 @@ export default async function AboutPage({
   params: Promise<{ lang: string }>;
 }) {
   const { lang } = await params;
-  const { meta, body } = readContent(lang, "about");
+  const { meta, html } = readContent(lang, "about");
 
   return (
     <div className="mx-auto max-w-3xl px-5 py-16 sm:py-20">
@@ -33,7 +33,7 @@ export default async function AboutPage({
 
         <div
           className="prose mt-8"
-          dangerouslySetInnerHTML={{ __html: renderMarkdown(body) }}
+          dangerouslySetInnerHTML={{ __html: html }}
         />
       </section>
     </div>

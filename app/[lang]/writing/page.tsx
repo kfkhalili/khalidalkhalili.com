@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { ArticleCard } from "@/components/article-card";
 import { getAllArticles } from "@/lib/articles";
-import { getDictionary } from "@/lib/i18n";
+import { resolveLocale } from "@/lib/i18n";
 
 export async function generateMetadata({
   params,
@@ -9,7 +9,7 @@ export async function generateMetadata({
   params: Promise<{ lang: string }>;
 }): Promise<Metadata> {
   const { lang } = await params;
-  const dict = await getDictionary(lang);
+  const { dict } = await resolveLocale(lang);
   return { title: dict.writing.title, description: dict.writing.subtitle };
 }
 
@@ -19,7 +19,7 @@ export default async function WritingPage({
   params: Promise<{ lang: string }>;
 }) {
   const { lang } = await params;
-  const dict = await getDictionary(lang);
+  const { dict } = await resolveLocale(lang);
   const articles = getAllArticles();
 
   return (

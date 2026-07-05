@@ -8,21 +8,13 @@ const CONTENT_DIR = path.join(process.cwd(), "content");
 
 export type ContentMeta = Record<string, string>;
 
-/**
- * Read content/<locale>/<slug>.md, falling back to the default locale when a
- * translation for this locale doesn't exist yet.
- */
-export function readContent(
-  locale: string,
-  slug: string,
-): { meta: ContentMeta; body: string } {
-  let file = path.join(CONTENT_DIR, locale, `${slug}.md`);
-  if (!fs.existsSync(file)) {
-    file = path.join(CONTENT_DIR, DEFAULT_LOCALE, `${slug}.md`);
-  }
-  const raw = fs.readFileSync(file, "utf8");
-  const { data, content } = matter(raw);
-  return { meta: data as ContentMeta, body: content.trim() };
+/** The one primitive: read a markdown file → frontmatter + trimmed body. */
+export function readMarkdown(absPath: string): {
+  meta: Record<string, unknown>;
+  body: string;
+} {
+  const { data, content } = matter(fs.readFileSync(absPath, "utf8"));
+  return { meta: data, body: content.trim() };
 }
 
 // Content is our own trusted files, so rendering straight to HTML is safe.
@@ -41,4 +33,21 @@ export function renderMarkdown(md: string): string {
 /** Inline markdown → HTML with no wrapping <p>, for a single styled line. */
 export function renderInline(md: string): string {
   return withExternalLinks(marked.parseInline(md) as string);
+}
+
+/**
+ * Page copy: content/<locale>/<slug>.md, falling back to the default locale
+ * when a translation doesn't exist yet. Returns frontmatter, the raw body, and
+ * the body rendered to HTML.
+ */
+export function readContent(
+  locale: string,
+  slug: string,
+): { meta: ContentMeta; body: string; html: string } {
+  const localeFile = path.join(CONTENT_DIR, locale, `${slug}.md`);
+  const file = fs.existsSync(localeFile)
+    ? localeFile
+    : path.join(CONTENT_DIR, DEFAULT_LOCALE, `${slug}.md`);
+  const { meta, body } = readMarkdown(file);
+  return { meta: meta as ContentMeta, body, html: renderMarkdown(body) };
 }

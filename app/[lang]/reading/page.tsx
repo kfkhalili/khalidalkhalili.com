@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getDictionary } from "@/lib/i18n";
+import { resolveLocale } from "@/lib/i18n";
 import { getBookshelf, type Book } from "@/lib/goodreads";
 import { site } from "@/lib/site";
 
@@ -12,7 +12,7 @@ export async function generateMetadata({
   params: Promise<{ lang: string }>;
 }): Promise<Metadata> {
   const { lang } = await params;
-  const dict = await getDictionary(lang);
+  const { dict } = await resolveLocale(lang);
   return { title: dict.reading.title, description: dict.reading.subtitle };
 }
 
@@ -81,7 +81,7 @@ export default async function ReadingPage({
   params: Promise<{ lang: string }>;
 }) {
   const { lang } = await params;
-  const dict = await getDictionary(lang);
+  const { dict } = await resolveLocale(lang);
   const shelf = await getBookshelf();
 
   return (

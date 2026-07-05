@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { formatDate, type Article } from "@/lib/articles";
-import { LOCALE_META, type Dictionary } from "@/lib/i18n";
+import { languageBadge, type Dictionary } from "@/lib/i18n";
 
 export function ArticleCard({
   lang,
@@ -11,7 +11,7 @@ export function ArticleCard({
   dict: Dictionary;
   article: Article;
 }) {
-  const langMeta = LOCALE_META[article.lang as keyof typeof LOCALE_META];
+  const badge = languageBadge(article.lang);
 
   return (
     <Link
@@ -27,9 +27,9 @@ export function ArticleCard({
             {t}
           </span>
         ))}
-        {article.lang !== "en" && langMeta && (
+        {badge && (
           <span className="rounded-full border border-accent/40 px-2 py-0.5 text-xs text-accent-strong">
-            {langMeta.label}
+            {badge}
           </span>
         )}
       </div>
