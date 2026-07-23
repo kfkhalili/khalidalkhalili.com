@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { StarPattern } from "@/components/geometry";
 import {
   getEssaySlugs,
   getEssayContent,
@@ -46,7 +47,12 @@ export default async function ArticlePage({
   const badge = languageBadge(article.lang, lang);
 
   return (
-    <article className="mx-auto max-w-3xl px-5 py-16 sm:py-20">
+    <article className="relative isolate mx-auto max-w-3xl px-5 py-16 sm:py-20">
+      {/* Faint geometry band behind the header; light mode only, like the hero. */}
+      <div className="pointer-events-none absolute -inset-x-24 -top-24 -z-10 h-[380px] text-accent opacity-[0.08] dark:hidden">
+        <StarPattern id="article-khatam" className="h-full w-full" />
+      </div>
+
       <Link
         href={`/${lang}/writing`}
         className="font-mono text-sm text-muted transition-colors hover:text-foreground"
