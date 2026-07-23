@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 import type { DiagnosticStrings } from "@/components/explorables/the-third-thing.content";
 
 type Answer = 0 | 1 | null;
@@ -30,6 +30,7 @@ function getVerdict(
 
 export function ContractDiagnostic({ strings }: { strings: DiagnosticStrings }) {
   const [answers, setAnswers] = useState<Answer[]>([null, null, null, null]);
+  const id = useId();
 
   const verdict = getVerdict(answers, strings.verdicts);
   const answered = answers.filter((a) => a !== null).length;
@@ -46,15 +47,25 @@ export function ContractDiagnostic({ strings }: { strings: DiagnosticStrings }) 
             key={qi}
             className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2"
           >
-            <span className="text-sm text-muted">{question.q}</span>
-            <div className="flex gap-2">
+            <span id={`${id}-q${qi}`} className="text-sm text-muted">
+              {question.q}
+            </span>
+            {/* Radio semantics: the options are mutually exclusive and cannot
+                be deselected, and the group label ties the otherwise identical
+                option names back to their question for assistive tech. */}
+            <div
+              role="radiogroup"
+              aria-labelledby={`${id}-q${qi}`}
+              className="flex gap-2"
+            >
               {question.options.map((option, oi) => {
                 const active = answers[qi] === oi;
                 return (
                   <button
                     key={oi}
                     type="button"
-                    aria-pressed={active}
+                    role="radio"
+                    aria-checked={active}
                     onClick={() =>
                       setAnswers((prev) =>
                         prev.map((a, i) => (i === qi ? (oi as Answer) : a)),

@@ -124,12 +124,12 @@ const de: TechDebtContent = {
   description: `Ein interaktives Modell technischer Schulden als Bremskoeffizient auf die Geschwindigkeit eines Teams: das Spannungsfeld zwischen schnellem Ausliefern und Investition in gutes Design.`,
   tags: [`Explorable`, `Softwaredesign`],
   intro: `Technische Schulden werden oft als Metapher behandelt, doch sie verhalten sich eher wie ein Naturgesetz: Sie sind ein Bremskoeffizient auf die Geschwindigkeit deines Teams.`,
-  ousterhout: `In <em><a href="${BOOK}" target="_blank" rel="noopener noreferrer">A Philosophy of Software Design</a></em> definiert John Ousterhout Komplexität als „alles an der Struktur eines Softwaresystems, das es schwer verständlich und schwer änderbar macht". Dieses interaktive Modell macht diese Reibung sichtbar. Es beleuchtet das Spannungsfeld zwischen <strong>taktischer Programmierung</strong> (jetzt schnell ausliefern) und <strong>strategischer Programmierung</strong> (in Design für die Zukunft investieren).`,
+  ousterhout: `In <em><a href="${BOOK}" target="_blank" rel="noopener noreferrer">A Philosophy of Software Design</a></em> definiert John Ousterhout Komplexität als „alles an der Struktur eines Softwaresystems, das es schwer verständlich und schwer änderbar macht“. Dieses interaktive Modell macht diese Reibung sichtbar. Es beleuchtet das Spannungsfeld zwischen <strong>taktischer Programmierung</strong> (jetzt schnell ausliefern) und <strong>strategischer Programmierung</strong> (in Design für die Zukunft investieren).`,
   accumulate: `Komplexität sammelt sich an, ob es uns gefällt oder nicht. Das Einzige, worauf wir Einfluss haben, ist, wie viel Zeit wir uns nehmen, um mit ihr umzugehen. Mehr Zeit für Bugfixes und Refactoring bedeutet weniger Zeit, um Features auszuliefern. Du brauchst also eine Strategie.`,
   archetypesHeading: `Vier Archetypen`,
   archetypes: [
-    `<strong>Startup-Rush (10 %):</strong> Der „taktische" Ansatz. Anfangs lieferst du schnell, doch du borgst dir Zeit aus der Zukunft. Irgendwann wird die Schuldenlast so schwer, dass Moral und Geschwindigkeit zusammenbrechen.`,
-    `<strong>Nachhaltig (30 %):</strong> Der „strategische" Sweet Spot. Du investierst gerade genug (etwa ein Drittel deiner Zeit), um die Schulden konstant zu halten. Das bringt langfristig die höchste Geschwindigkeit.`,
+    `<strong>Startup-Rush (10 %):</strong> Der „taktische“ Ansatz. Anfangs lieferst du schnell, doch du borgst dir Zeit aus der Zukunft. Irgendwann wird die Schuldenlast so schwer, dass Moral und Geschwindigkeit zusammenbrechen.`,
+    `<strong>Nachhaltig (30 %):</strong> Der „strategische“ Sweet Spot. Du investierst gerade genug (etwa ein Drittel deiner Zeit), um die Schulden konstant zu halten. Das bringt langfristig die höchste Geschwindigkeit.`,
     `<strong>Enterprise-sicher (50 %):</strong> Ein risikoarmer, langsamerer Ansatz, bei dem Stabilität Vorrang vor neuen Features hat.`,
     `<strong>Komplettes Refactoring (80 %):</strong> Die Notbremse. Du lieferst nichts mehr aus, um aufzuräumen. Es funktioniert, aber die Erholung ist schmerzhaft und langsam.`,
   ],
@@ -137,31 +137,31 @@ const de: TechDebtContent = {
   modelIntro: `Diese Simulation ist nicht zufällig. Sie wird vom Kampf zwischen zwei gegensätzlichen Kräften angetrieben: <strong>Entropie</strong> und <strong>Investition</strong>.`,
   modelSteps: [
     `<strong>Das Wachstum der Komplexität (Entropie).</strong> Software neigt von Natur aus zur Unordnung, je mehr Features hinzukommen. Tust du nichts, wachsen die Schulden, und je mehr sie wachsen, desto stärker verzinsen sie sich.`,
-    `<strong>Die Tilgung (Investition).</strong> Indem du Zeit fürs Aufräumen einplanst, erzeugst du eine „Tilgungsrate". Das Ziel ist das Gleichgewicht, in dem deine Tilgung dem natürlichen Wachstum der Komplexität entspricht.`,
+    `<strong>Die Tilgung (Investition).</strong> Indem du Zeit fürs Aufräumen einplanst, erzeugst du eine „Tilgungsrate“. Das Ziel ist das Gleichgewicht, in dem deine Tilgung dem natürlichen Wachstum der Komplexität entspricht.`,
     `<strong>Die Bremswirkung auf die Geschwindigkeit.</strong> Das ist der Kernmechanismus: Geschwindigkeit hängt nicht nur davon ab, wie schnell du tippst. Sie ist <code>100 % − (Bremse durch Schulden) − (Zeit fürs Refactoring)</code>.`,
   ],
-  trap: `<strong>Die Falle:</strong> Hörst du mit dem Refactoring auf, sparst du zunächst Zeit (die Geschwindigkeit schnellt hoch). Doch während die Schulden anwachsen, wird die „Bremse" gewaltig und würgt dein Tempo weit stärker ab, als das Refactoring es je getan hätte.`,
+  trap: `<strong>Die Falle:</strong> Hörst du mit dem Refactoring auf, sparst du zunächst Zeit (die Geschwindigkeit schnellt hoch). Doch während die Schulden anwachsen, wird die „Bremse“ gewaltig und würgt dein Tempo weit stärker ab, als das Refactoring es je getan hätte.`,
   hindsightHeading: `Hinterher ist man immer klüger`,
   details: [
     [
       `100 % Geschwindigkeit ist ein Warnsignal`,
-      `Bewegt sich ein Team mit „100", borgt es sich Zeit aus der Zukunft. Die „fehlenden" 30 % Geschwindigkeit in einem gesunden Team sind keine Verschwendung; sie sind die <strong>Betriebskosten</strong>. Kommunikation, Design und Wartung sind harte Arbeit.`,
+      `Bewegt sich ein Team mit „100“, borgt es sich Zeit aus der Zukunft. Die „fehlenden“ 30 % Geschwindigkeit in einem gesunden Team sind keine Verschwendung; sie sind die <strong>Betriebskosten</strong>. Kommunikation, Design und Wartung sind harte Arbeit.`,
     ],
     [
       `Der euphorische Entwickler ist ein Mythos`,
-      `Eine Moral von 85–90 % ist die realistische Obergrenze. Die Lücke zwischen 85 und 100 steht für <strong>professionelle Disziplin</strong>: die notwendige Reibung durch Tests, Dokumentation und Code-Reviews. „Rundum glücklich" heißt meist, die harten Teile auszulassen.`,
+      `Eine Moral von 85–90 % ist die realistische Obergrenze. Die Lücke zwischen 85 und 100 steht für <strong>professionelle Disziplin</strong>: die notwendige Reibung durch Tests, Dokumentation und Code-Reviews. „Rundum glücklich“ heißt meist, die harten Teile auszulassen.`,
     ],
     [
       `Schulden werfen Zinsen ab`,
-      `Technische Schulden liegen nicht einfach herum; sie verzinsen sich. Mit wachsender Komplexität steigt die „Steuer" auf jede neue Codezeile. Wartest du zu lange, wird der <strong>Break-Even-Punkt</strong> fürs Refactoring unerreichbar hoch.`,
+      `Technische Schulden liegen nicht einfach herum; sie verzinsen sich. Mit wachsender Komplexität steigt die „Steuer“ auf jede neue Codezeile. Wartest du zu lange, wird der <strong>Break-Even-Punkt</strong> fürs Refactoring unerreichbar hoch.`,
     ],
     [
       `Ausliefern ist Sauerstoff`,
       `Entwickler hassen schlechten Code, aber sie hassen es genauso, <em>nicht</em> auszuliefern. Eine Strategie mit 100 % Refactoring (Gold Plating) tötet die Moral genauso schnell wie 0 % Refactoring (Spaghetticode). Ingenieure müssen den Schwung der Auslieferung spüren, um bei der Sache zu bleiben.`,
     ],
     [
-      `Der „ökonomische" Punkt ohne Wiederkehr`,
-      `Technische Schulden sind nicht dann tödlich, wenn der Code unreparierbar ist, sondern wenn die <strong>Kosten der Erholung</strong> unbezahlbar werden. Bei Sättigung bedeutet das nötige „komplette Refactoring", monatelang nichts auszuliefern. Das ist <strong>wirtschaftlicher Bankrott</strong>.`,
+      `Der „ökonomische“ Punkt ohne Wiederkehr`,
+      `Technische Schulden sind nicht dann tödlich, wenn der Code unreparierbar ist, sondern wenn die <strong>Kosten der Erholung</strong> unbezahlbar werden. Bei Sättigung bedeutet das nötige „komplette Refactoring“, monatelang nichts auszuliefern. Das ist <strong>wirtschaftlicher Bankrott</strong>.`,
     ],
     [
       `Sauberer Code ist nicht das Ziel`,
@@ -169,7 +169,7 @@ const de: TechDebtContent = {
     ],
   ],
   conclusionHeading: `Fazit`,
-  conclusion: `Die Simulation belegt Ousterhouts zentrale These: <strong>Komplexität sammelt sich an, wenn man nicht in Design investiert.</strong> Die effektivsten Teams sind nicht die, die am schnellsten tippen; es sind die, die eine „nachhaltige" Balance halten und verhindern, dass der Bremskoeffizient die Oberhand gewinnt.`,
+  conclusion: `Die Simulation belegt Ousterhouts zentrale These: <strong>Komplexität sammelt sich an, wenn man nicht in Design investiert.</strong> Die effektivsten Teams sind nicht die, die am schnellsten tippen; es sind die, die eine „nachhaltige“ Balance halten und verhindern, dass der Bremskoeffizient die Oberhand gewinnt.`,
   talkIntro: `Sieh dir den Vortrag an, den ich auf TNGs <a href="${TALK}" target="_blank" rel="noopener noreferrer">Big Techday</a> 24 besucht habe:`,
   videoTitle: `YouTube-Videoplayer`,
   sim: {
@@ -182,10 +182,10 @@ const de: TechDebtContent = {
     paused: `❚❚ pausiert`,
     log: {
       critical: `KRITISCH: System verkalkt. Neuschreiben erforderlich.`,
-      warning: `WARNUNG: Du hast den „Kipppunkt" überschritten. Die Zinsen wachsen rasant.`,
-      stalled: `STILLSTAND: Der „Teufelskreis" hat die gesamte Geschwindigkeit verschlungen.`,
+      warning: `WARNUNG: Du hast den „Kipppunkt“ überschritten. Die Zinsen wachsen rasant.`,
+      stalled: `STILLSTAND: Der „Teufelskreis“ hat die gesamte Geschwindigkeit verschlungen.`,
       healthy: `Gesund: Das Team hält ein nachhaltiges, professionelles Tempo.`,
-      normal: `Normalbetrieb. Behalte den Regler „Refactoring-Anteil" im Auge.`,
+      normal: `Normalbetrieb. Behalte den Regler „Refactoring-Anteil“ im Auge.`,
     },
   },
 };

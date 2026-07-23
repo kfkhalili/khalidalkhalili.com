@@ -45,7 +45,7 @@ export function ZeroBitStatus({ strings }: { strings: StatusPageStrings }) {
                   aria-hidden="true"
                   className={
                     "inline-block shrink-0 font-mono text-xs text-faint transition-transform duration-200 " +
-                    (isOpen ? "rotate-90" : "")
+                    (isOpen ? "rotate-90" : "rtl:rotate-180")
                   }
                 >
                   ›
