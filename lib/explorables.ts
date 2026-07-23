@@ -2,6 +2,8 @@ import type { ComponentType } from "react";
 import type { Article } from "@/lib/articles";
 import { TechnicalDebtArticle } from "@/components/explorables/technical-debt";
 import { TD_CONTENT } from "@/components/explorables/technical-debt.content";
+import { ThirdThingArticle } from "@/components/explorables/the-third-thing";
+import { TT_CONTENT } from "@/components/explorables/the-third-thing.content";
 import { DEFAULT_LOCALE, isLocale, type Locale } from "@/lib/i18n";
 
 /** An explorable = article metadata + the component that renders its body (in a locale). */
@@ -22,6 +24,14 @@ type ExplorableDef = {
 };
 
 const DEFS: ExplorableDef[] = [
+  {
+    slug: "the-third-thing",
+    date: "2026-07-23",
+    featured: true,
+    readingTime: 10,
+    Body: ThirdThingArticle,
+    content: TT_CONTENT,
+  },
   {
     slug: "technical-debt",
     date: "2026-02-09",
