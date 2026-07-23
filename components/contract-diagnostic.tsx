@@ -29,9 +29,14 @@ export function ContractDiagnostic({ strings }: { strings: DiagnosticStrings }) 
   const [answers, setAnswers] = useState<Answer[]>([null, null, null, null]);
 
   const verdict = getVerdict(answers, strings.verdicts);
+  const answered = answers.filter((a) => a !== null).length;
+  const remaining = answers.length - answered;
 
   return (
     <div className="not-prose rounded-xl border border-border bg-card p-5 sm:p-6">
+      <p className="mb-4 text-sm font-semibold text-foreground">
+        {strings.heading}
+      </p>
       <div className="flex flex-col gap-4">
         {strings.questions.map((question, qi) => (
           <div
@@ -68,25 +73,28 @@ export function ContractDiagnostic({ strings }: { strings: DiagnosticStrings }) 
         ))}
       </div>
 
-      {verdict && (
-        <div
-          className="mt-4 border-t border-border pt-3"
-          role="status"
-        >
+      <div className="mt-4 border-t border-border pt-3" role="status">
+        {verdict ? (
+          // Remounting via key replays the pulse when the verdict changes.
           <div
+            key={verdict.text}
             className="border-s-2 ps-3"
             style={{ borderColor: verdict.color }}
           >
             <span
-              className="font-mono text-xs uppercase tracking-wide"
+              className="sim-pulse font-mono text-xs uppercase tracking-wide"
               style={{ color: verdict.color }}
             >
               {strings.verdictLabel}
             </span>
             <p className="mt-1 text-sm text-foreground">{verdict.text}</p>
           </div>
-        </div>
-      )}
+        ) : (
+          <p key={remaining} className="sim-pulse font-mono text-xs text-faint">
+            {answered === 0 ? strings.prompt : strings.countdown[remaining - 1]}
+          </p>
+        )}
+      </div>
     </div>
   );
 }
