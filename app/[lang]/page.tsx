@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { StarPattern } from "@/components/geometry";
 import { ArticleCard } from "@/components/article-card";
 import { getAllArticles } from "@/lib/articles";
 import { readContent, renderInline } from "@/lib/content";
@@ -20,10 +19,6 @@ export default async function Home({
     <div className="mx-auto max-w-3xl px-5">
       {/* Hero */}
       <section className="relative isolate pt-20 pb-16 sm:pt-28">
-        <div className="pointer-events-none absolute -inset-x-24 -top-24 -z-10 h-[380px] text-accent opacity-[0.05] dark:hidden">
-          <StarPattern id="hero-khatam" className="h-full w-full" />
-        </div>
-
         <p className="font-mono text-sm text-accent-strong">{meta.eyebrow}</p>
         <h1 className="mt-4 text-4xl font-semibold leading-[1.1] tracking-tight text-foreground sm:text-5xl">
           {meta.heading}

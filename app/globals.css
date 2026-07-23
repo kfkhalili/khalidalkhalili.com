@@ -4,14 +4,15 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  /* Warm, minimal light palette: near-white paper, ink, one emerald accent. */
-  --background: #fcfcfb;
+  /* Warm, minimal light palette: ivory paper, ink, one emerald accent.
+     White cards sit above the paper; card-2 steps below it. */
+  --background: #f8f6f1;
   --foreground: #1b1b19;
   --muted: #6d6d66;
   --faint: #90908a;
-  --border: #e8e8e2;
+  --border: #e5e1d8;
   --card: #ffffff;
-  --card-2: #f6f6f2;
+  --card-2: #f0ede6;
   --accent: #0f9d76;
   --accent-strong: #0b7f5f;
   --accent-fg: #ffffff;

@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { site } from "@/lib/site";
-import { StarPattern } from "@/components/geometry";
 import type { Dictionary } from "@/lib/i18n";
 
 export function SiteFooter({
@@ -13,12 +12,7 @@ export function SiteFooter({
   const year = new Date().getFullYear();
 
   return (
-    <footer className="relative mt-24 overflow-hidden border-t border-border">
-      {/* Faint geometry band behind the footer text. */}
-      <div className="pointer-events-none absolute inset-0 text-accent opacity-[0.06] dark:hidden">
-        <StarPattern id="footer-khatam" className="h-full w-full" />
-      </div>
-
+    <footer className="relative mt-24 border-t border-border">
       <div className="relative mx-auto flex max-w-3xl flex-col gap-4 px-5 py-12 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <div className="font-mono text-sm font-semibold text-foreground">
