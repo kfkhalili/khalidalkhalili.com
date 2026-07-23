@@ -16,7 +16,11 @@ type SimState = {
 
 const INFLOW = 3; // new problems per sprint
 const FIX_RATE = 0.35; // fraction of *reported* problems fixed per sprint
-const HIDDEN_COMPOUND = 0.03; // unreported problems breed more problems
+// Unreported problems breed more problems. Calibrated so the Watermelon preset
+// (70%) settles with the inside actually red (actual health < 40) while the
+// badge still reads green off the reported bar; much below ~0.1 the inside
+// only ever reaches amber and the preset breaks its own metaphor.
+const HIDDEN_COMPOUND = 0.11;
 const TICK_MS = 1000;
 const MIN_BAR_PCT = 12;
 const DEFAULT_PRESSURE = 30;
