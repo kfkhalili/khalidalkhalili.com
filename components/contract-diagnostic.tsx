@@ -7,7 +7,8 @@ type Answer = 0 | 1 | null;
 
 /**
  * Verdict from [owns, operates, pays, sees], index 0 = first option.
- * "pays" never changes the verdict; asking it is part of the ritual.
+ * "pays" separates the third thing from a plain hosted product: vendor-owned
+ * and vendor-operated is only the disaster when it runs on the customer's bill.
  * For "who can see the work" the options are [we can, we cannot],
  * so sees === 1 means the work is invisible.
  */
@@ -15,10 +16,12 @@ function getVerdict(
   answers: Answer[],
   verdicts: DiagnosticStrings["verdicts"],
 ): { text: string; color: string } | null {
-  const [owns, operates, , sees] = answers;
+  const [owns, operates, pays, sees] = answers;
   if (answers.some((a) => a === null)) return null;
   if (owns === 1 && operates === 1)
-    return { text: verdicts.thirdThing, color: "var(--sim-bad)" };
+    return pays === 1
+      ? { text: verdicts.hosted, color: "var(--sim-good)" }
+      : { text: verdicts.thirdThing, color: "var(--sim-bad)" };
   if (owns === 1 && operates === 0)
     return { text: verdicts.product, color: "var(--sim-good)" };
   if (sees === 1) return { text: verdicts.blind, color: "var(--sim-warn)" };

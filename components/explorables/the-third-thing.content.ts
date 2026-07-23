@@ -48,6 +48,7 @@ export type DiagnosticStrings = {
     product: string;
     service: string;
     thirdThing: string;
+    hosted: string;
     blind: string;
   };
 };
@@ -183,7 +184,8 @@ const en: ThirdThingContent = {
     verdicts: {
       product: `A clean product shape. They own it, you run it. Their roadmap is weather, not a dependency, and you keep the right to leave.`,
       service: `A clean service shape. It is your software, built where you can see it. Pay for delivered stories and keep the exit open.`,
-      thirdThing: `The third thing. They own it and they operate it, so ownership, operation, and visibility all point away from you. Expect spreadsheets.`,
+      thirdThing: `The third thing. They own it, they operate it, and it all runs on your bill. Every lever points away from you. Expect spreadsheets.`,
+      hosted: `A hosted product. They own it, they run it, they pay for it, and you buy the outcome. Fine, as long as the interfaces are clear and you keep the right to leave.`,
       blind: `Your own software, built where you cannot see it. That is a service contract missing its transparency clause. Fix the visibility before it grows a spreadsheet.`,
     },
   },
@@ -292,7 +294,8 @@ const de: ThirdThingContent = {
     verdicts: {
       product: `Eine saubere Produktform. Ihnen gehört es, du betreibst es. Ihre Roadmap ist Wetter, keine Abhängigkeit, und du behältst das Recht zu gehen.`,
       service: `Eine saubere Serviceform. Es ist deine Software, gebaut, wo du zusehen kannst. Bezahle pro gelieferter Story und halte dir den Ausstieg offen.`,
-      thirdThing: `Das dritte Ding. Ihnen gehört es, und sie betreiben es, also zeigen Eigentum, Betrieb und Sichtbarkeit alle von dir weg. Rechne mit Tabellen.`,
+      thirdThing: `Das dritte Ding. Ihnen gehört es, sie betreiben es, und alles läuft auf deine Rechnung. Jeder Hebel zeigt von dir weg. Rechne mit Tabellen.`,
+      hosted: `Ein gehostetes Produkt. Ihnen gehört es, sie betreiben es, sie bezahlen es, und du kaufst das Ergebnis. Völlig in Ordnung, solange die Schnittstellen klar sind und du das Recht behältst zu gehen.`,
       blind: `Deine eigene Software, gebaut, wo du nicht hinsehen kannst. Das ist ein Servicevertrag, dem die Transparenzklausel fehlt. Repariere die Sichtbarkeit, bevor eine Tabelle daraus wächst.`,
     },
   },
@@ -401,7 +404,8 @@ const ar: ThirdThingContent = {
     verdicts: {
       product: `شكل منتَجٍ نظيف. هم يملكونه وأنت تشغّله. خارطة طريقهم أحوالُ طقسٍ لا تبعية، وتحتفظ أنت بحق الرحيل.`,
       service: `شكل خدمةٍ نظيف. البرمجية برمجيتك، تُبنى حيث تستطيع رؤيتها. ادفع مقابلَ القصص المُسلَّمة وأبقِ باب الخروج مفتوحًا.`,
-      thirdThing: `الشيء الثالث. هم يملكونه وهم يشغّلونه، فالملكية والتشغيل والرؤية كلها تشير بعيدًا عنك. توقّع الجداول.`,
+      thirdThing: `الشيء الثالث. هم يملكونه وهم يشغّلونه، وكل ذلك على فاتورتك. كل رافعةٍ تشير بعيدًا عنك. توقّع الجداول.`,
+      hosted: `منتَجٌ مُستضاف. هم يملكونه وهم يشغّلونه وهم يدفعون ثمنه، وأنت تشتري النتيجة. لا بأس بذلك ما دامت الواجهات واضحة وما دمت محتفظًا بحق الرحيل.`,
       blind: `برمجيتك أنت، تُبنى حيث لا تستطيع رؤيتها. هذا عقد خدمةٍ ينقصه بند الشفافية. أصلح الرؤية قبل أن يُنبت الأمر جدولًا.`,
     },
   },
