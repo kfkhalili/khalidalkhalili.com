@@ -15,7 +15,7 @@ export function SiteFooter({
   return (
     <footer className="relative mt-24 overflow-hidden border-t border-border">
       {/* Faint geometry band behind the footer text. */}
-      <div className="pointer-events-none absolute inset-0 text-accent opacity-[0.06]">
+      <div className="pointer-events-none absolute inset-0 text-accent opacity-[0.06] dark:hidden">
         <StarPattern id="footer-khatam" className="h-full w-full" />
       </div>
 

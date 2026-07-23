@@ -4,6 +4,7 @@ import "../globals.css";
 import { site } from "@/lib/site";
 import { LOCALES, resolveLocale } from "@/lib/i18n";
 import { ThemeProvider } from "@/components/theme-provider";
+import { RubHizbBackdrop } from "@/components/geometry";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 
@@ -69,6 +70,7 @@ export default async function RootLayout({
     >
       <body className="flex min-h-full flex-col antialiased">
         <ThemeProvider>
+          <RubHizbBackdrop />
           <SiteHeader lang={lang} dict={dict} />
           <main className="w-full flex-1">{children}</main>
           <SiteFooter lang={lang} dict={dict} />

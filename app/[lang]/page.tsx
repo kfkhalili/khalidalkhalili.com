@@ -20,7 +20,7 @@ export default async function Home({
     <div className="mx-auto max-w-3xl px-5">
       {/* Hero */}
       <section className="relative isolate pt-20 pb-16 sm:pt-28">
-        <div className="pointer-events-none absolute -inset-x-24 -top-24 -z-10 h-[380px] text-accent opacity-[0.05]">
+        <div className="pointer-events-none absolute -inset-x-24 -top-24 -z-10 h-[380px] text-accent opacity-[0.05] dark:hidden">
           <StarPattern id="hero-khatam" className="h-full w-full" />
         </div>
 
