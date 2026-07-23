@@ -25,13 +25,19 @@ const TICK_MS = 1000;
 const MIN_BAR_PCT = 12;
 const DEFAULT_PRESSURE = 30;
 
-// Below this actual health the team is firefighting and fix capacity decays to
-// zero. Without it the model has a false floor: every equilibrium pins reported
+// Below this actual health the team is firefighting and fix capacity decays.
+// Without it the model has a false floor: every equilibrium pins reported
 // health near 73 regardless of how rotten the inside is, because fixes must
-// balance inflow. With it, collapse is absorbing and the report is forced to
-// meet reality on the way down. Must stay below the Watermelon preset's
-// equilibrium actual health (~32) or that preset stops being sustainable.
+// balance inflow. Must stay below the Watermelon preset's equilibrium actual
+// health (~32) or that preset stops being sustainable.
 const CRISIS_FLOOR = 25;
+
+// Even a collapsed project keeps a sliver of fix capacity, so recovery exists:
+// under low pressure, honest reports plus this sliver claw health back, slowly
+// at first, then compounding. Must exceed INFLOW / (FIX_RATE * 100) = 0.086 or
+// recovery can never start, and stay small enough that high blame pressure
+// still holds a collapsed project down.
+const RESIDUAL_CAPACITY = 0.1;
 
 // Archetype pressures, aligned by index with the localized preset labels.
 const PRESETS = [0, 30, 70, 100] as const;
@@ -54,7 +60,11 @@ function reportedProblems(p: number, pressure: number): number {
 /** Core simulation step: only reported problems get fixed; hidden ones compound. */
 function nextState(current: SimState, pressure: number): SimState {
   const rp = reportedProblems(current.p, pressure);
-  const capacity = clamp((100 - current.p) / CRISIS_FLOOR, 0, 1);
+  const capacity = clamp(
+    (100 - current.p) / CRISIS_FLOOR,
+    RESIDUAL_CAPACITY,
+    1,
+  );
   const nextP = clamp(
     current.p +
       INFLOW +
@@ -89,13 +99,23 @@ const healthTone = (v: number): Tone =>
 function getLogMessage(
   actualHealth: number,
   reportedHealth: number,
+  pressure: number,
   log: WatermelonStrings["log"],
 ): string {
-  if (actualHealth < 15) return log.collapse;
+  // Low health with low pressure is a project climbing out, not one held down:
+  // low-pressure equilibria all sit far above these thresholds, so this state
+  // only exists on the way up from a collapse.
+  if (actualHealth < 15) return pressure > 50 ? log.collapse : log.recovery;
   const gap = reportedHealth - actualHealth;
-  if (gap < 5) return log.honest;
+  if (gap < 5)
+    return pressure <= 50 && actualHealth < 70 ? log.recovery : log.honest;
   if (gap < 25) return log.drifting;
-  return log.watermelon;
+  // The watermelon line makes literal color claims ("green outside, red
+  // inside"), so it only fires when the bars actually show those tones;
+  // in the amber in-between states the drifting line stays accurate.
+  return healthTone(actualHealth) === "bad" && healthTone(reportedHealth) === "good"
+    ? log.watermelon
+    : log.drifting;
 }
 
 /* ---------------------------------------------------------------------------
@@ -265,7 +285,7 @@ export function WatermelonSim({ strings }: { strings: WatermelonStrings }) {
         </span>
       </div>
       <p className="mt-3 min-h-[1.4em] border-t border-border pt-3 text-sm text-muted">
-        {getLogMessage(actualHealth, reportedHealth, strings.log)}
+        {getLogMessage(actualHealth, reportedHealth, pressure, strings.log)}
       </p>
     </div>
   );
