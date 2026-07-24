@@ -1,7 +1,7 @@
 {
   "nav": { "projects": "Projects", "writing": "Writing", "reading": "Reading", "chess": "Chess", "about": "About" },
   "home": {
-    "ctaExplore": "Explore the technical-debt sim",
+    "ctaExplore": "Explore the latest explorable",
     "ctaRead": "Read the writing",
     "featured": "Featured explorable",
     "allWriting": "All writing"

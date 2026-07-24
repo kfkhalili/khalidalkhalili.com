@@ -1,7 +1,7 @@
 {
   "nav": { "projects": "Projekte", "writing": "Texte", "reading": "Lesen", "chess": "Schach", "about": "Über mich" },
   "home": {
-    "ctaExplore": "Zur Tech-Debt-Simulation",
+    "ctaExplore": "Zum neuesten Explorable",
     "ctaRead": "Zu den Texten",
     "featured": "Ausgewähltes Explorable",
     "allWriting": "Alle Texte"
