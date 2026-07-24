@@ -1,14 +1,7 @@
-import Link from "next/link";
 import { site } from "@/lib/site";
 import type { Dictionary } from "@/lib/i18n";
 
-export function SiteFooter({
-  lang,
-  dict,
-}: {
-  lang: string;
-  dict: Dictionary;
-}) {
+export function SiteFooter({ dict }: { dict: Dictionary }) {
   const year = new Date().getFullYear();
 
   return (
@@ -24,21 +17,6 @@ export function SiteFooter({
 
         <div className="flex flex-col gap-1 text-sm text-muted sm:items-end">
           <div className="flex items-center gap-4">
-            <Link href={`/${lang}/projects`} className="hover:text-foreground">
-              {dict.nav.projects}
-            </Link>
-            <Link href={`/${lang}/writing`} className="hover:text-foreground">
-              {dict.nav.writing}
-            </Link>
-            <Link href={`/${lang}/reading`} className="hover:text-foreground">
-              {dict.nav.reading}
-            </Link>
-            <Link href={`/${lang}/chess`} className="hover:text-foreground">
-              {dict.nav.chess}
-            </Link>
-            <Link href={`/${lang}/about`} className="hover:text-foreground">
-              {dict.nav.about}
-            </Link>
             <a
               href={site.linkedin}
               target="_blank"
