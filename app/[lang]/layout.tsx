@@ -12,12 +12,17 @@ const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
   display: "swap",
+  // No metric-adjusted local(Arial) fallback face: it carries no
+  // unicode-range, so it would swallow Arabic glyphs before they can
+  // fall through to Noto Sans Arabic.
+  adjustFontFallback: false,
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
   display: "swap",
+  adjustFontFallback: false,
 });
 
 const notoArabic = Noto_Sans_Arabic({
