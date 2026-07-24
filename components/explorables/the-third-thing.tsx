@@ -39,8 +39,6 @@ export function ThirdThingArticle({ lang }: { lang: string }) {
 
       <Html html={c.composite} />
 
-      <hr />
-
       {c.why.map((p, i) => (
         <Html key={i} html={p} />
       ))}
