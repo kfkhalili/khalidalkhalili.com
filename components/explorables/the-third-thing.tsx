@@ -45,6 +45,8 @@ export function ThirdThingArticle({ lang }: { lang: string }) {
         <Html key={i} html={p} />
       ))}
 
+      <Html html={c.simIntro} />
+
       <WatermelonSim strings={c.sim} />
 
       <Html html={c.build} />

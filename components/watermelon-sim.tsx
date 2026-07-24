@@ -266,7 +266,7 @@ export function WatermelonSim({ strings }: { strings: WatermelonStrings }) {
       <div className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs">
         <span className="text-muted">{strings.badgeLabel}</span>
         <span
-          className="rounded-full px-2.5 py-0.5 font-semibold transition-colors duration-300"
+          className="inline-flex items-center justify-center rounded-full px-2.5 pt-1 pb-1 font-semibold leading-none transition-colors duration-300 rtl:pt-1.5 rtl:pb-0.5"
           style={{
             backgroundColor: TONE_BG[badgeTone],
             color: badgeTone === "warn" ? "#1b1b19" : "#ffffff",

@@ -20,7 +20,7 @@ export function ZeroBitStatus({ strings }: { strings: StatusPageStrings }) {
       <div className="flex flex-wrap items-center justify-between gap-2">
         <span className="font-semibold text-foreground">{strings.heading}</span>
         <span
-          className="rounded-full px-2.5 py-0.5 font-mono text-xs font-semibold"
+          className="inline-flex items-center justify-center rounded-full px-2.5 pt-1 pb-1 font-mono text-xs font-semibold leading-none rtl:pt-1.5 rtl:pb-0.5"
           style={{ backgroundColor: "var(--sim-warn)", color: "#1b1b19" }}
         >
           {strings.badge}
@@ -56,7 +56,7 @@ export function ZeroBitStatus({ strings }: { strings: StatusPageStrings }) {
               <p
                 id={panelId}
                 hidden={!isOpen}
-                className="mb-2 mt-1 border-s-2 border-accent/50 ps-3 font-mono text-sm text-muted"
+                className="mb-2 mt-1 border-s-2 border-accent/50 ps-3 font-mono text-xs text-muted"
               >
                 {annotation}
               </p>
