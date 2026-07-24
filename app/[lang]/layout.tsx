@@ -26,26 +26,35 @@ const notoArabic = Noto_Sans_Arabic({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL(site.url),
-  title: {
-    default: site.title,
-    template: `%s · ${site.shortName}`,
-  },
-  description: site.description,
-  openGraph: {
-    title: site.title,
-    description: site.description,
-    url: site.url,
-    siteName: site.name,
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: site.title,
-    description: site.description,
-  },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ lang: string }>;
+}): Promise<Metadata> {
+  const { lang } = await params;
+  const { dict } = await resolveLocale(lang);
+
+  return {
+    metadataBase: new URL(site.url),
+    title: {
+      default: dict.site.title,
+      template: `%s · ${dict.site.shortName}`,
+    },
+    description: dict.site.description,
+    openGraph: {
+      title: dict.site.title,
+      description: dict.site.description,
+      url: site.url,
+      siteName: dict.site.title,
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: dict.site.title,
+      description: dict.site.description,
+    },
+  };
+}
 
 export function generateStaticParams() {
   return LOCALES.map((lang) => ({ lang }));

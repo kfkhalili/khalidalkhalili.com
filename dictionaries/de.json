@@ -1,4 +1,9 @@
 {
+  "site": {
+    "title": "Khalid Alkhalili",
+    "shortName": "Khalid",
+    "description": "Ich baue und schreibe. Interaktive Explorables, Essays und Notizen über Software, Systeme und die Menschen, die sie bauen."
+  },
   "nav": { "projects": "Projekte", "writing": "Texte", "reading": "Lesen", "chess": "Schach", "about": "Über mich" },
   "home": {
     "ctaExplore": "Zum neuesten Explorable",

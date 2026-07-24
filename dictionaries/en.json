@@ -1,4 +1,9 @@
 {
+  "site": {
+    "title": "Khalid Alkhalili",
+    "shortName": "Khalid",
+    "description": "A builder who writes. Interactive explorable explanations, essays, and notes on software, systems, and the people who make them."
+  },
   "nav": { "projects": "Projects", "writing": "Writing", "reading": "Reading", "chess": "Chess", "about": "About" },
   "home": {
     "ctaExplore": "Explore the latest explorable",

@@ -34,7 +34,7 @@ app/
   globals.css
   icon.svg
 proxy.ts                       # locale detection + redirect (Next 16 middleware convention)
-dictionaries/{en,de,ar}.json   # translated chrome strings (nav, buttons, labels)
+dictionaries/{en,de,ar}.json   # translated chrome strings (site metadata, nav, buttons, labels)
 content/
   {en,de,ar}/home.md, about.md # per-locale page copy (missing locale → falls back to en)
   writing/<slug>.md            # essays

@@ -16,7 +16,7 @@ export function SiteFooter({
       <div className="relative mx-auto flex max-w-3xl flex-col gap-4 px-5 py-12 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <div className="font-mono text-sm font-semibold text-foreground">
-            {site.shortName.toLowerCase()}
+            {dict.site.shortName.toLowerCase()}
             <span className="text-accent">.</span>
           </div>
           <p className="mt-1 text-sm text-muted">{dict.footer.tagline}</p>
@@ -58,7 +58,7 @@ export function SiteFooter({
             </a>
           </div>
           <p className="text-faint">
-            © {year} {site.name}
+            © {year} {dict.site.title}
           </p>
         </div>
       </div>

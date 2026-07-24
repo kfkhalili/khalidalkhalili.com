@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { site } from "@/lib/site";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import type { Dictionary } from "@/lib/i18n";
@@ -30,7 +29,7 @@ export function SiteHeader({ lang, dict }: { lang: string; dict: Dictionary }) {
           onClick={() => setOpen(false)}
           className="font-mono text-sm font-semibold tracking-tight text-foreground transition-opacity hover:opacity-70"
         >
-          {site.shortName.toLowerCase()}
+          {dict.site.shortName.toLowerCase()}
           <span className="text-accent">.</span>
         </Link>
 
