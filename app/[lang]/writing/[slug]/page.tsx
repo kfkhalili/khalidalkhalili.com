@@ -9,7 +9,17 @@ import {
   formatReadingTime,
 } from "@/lib/articles";
 import { EXPLORABLE_SLUGS } from "@/lib/explorables";
-import { resolveLocale, dirOf, languageBadge } from "@/lib/i18n";
+import {
+  resolveLocale,
+  dirOf,
+  languageBadge,
+  ogLocaleOf,
+  isLocale,
+  DEFAULT_LOCALE,
+} from "@/lib/i18n";
+import { articlePath, articleUrl, articleLanguages } from "@/lib/share";
+import { site } from "@/lib/site";
+import { ShareRow } from "@/components/share-row";
 
 export function generateStaticParams() {
   return [...getEssaySlugs(), ...EXPLORABLE_SLUGS].map((slug) => ({
@@ -24,9 +34,43 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { lang, slug } = await params;
   const article = getEssayContent(slug)?.article ?? getExplorable(slug, lang);
-  return article
-    ? { title: article.title, description: article.description }
-    : {};
+  if (!article) return {};
+
+  // An explorable is genuinely translated, so each locale is its own canonical
+  // and the three point at each other. An essay is one document: it renders
+  // under any locale, but that is the same prose with translated chrome, so all
+  // three URLs canonicalise to the language it was written in and claim no
+  // translations. `articlePath` is relative; metadataBase makes it absolute.
+  const translated = article.kind === "explorable";
+  const home = isLocale(article.lang) ? article.lang : DEFAULT_LOCALE;
+
+  // A shared link is only as good as its card, so every article overrides the
+  // layout's site-level Open Graph block with its own. The image comes from the
+  // sibling opengraph-image route; Next fills in the tags for it.
+  return {
+    title: article.title,
+    description: article.description,
+    alternates: {
+      canonical: articlePath(translated ? lang : home, slug),
+      ...(translated ? { languages: articleLanguages(slug) } : {}),
+    },
+    openGraph: {
+      type: "article",
+      title: article.title,
+      description: article.description,
+      url: articlePath(translated ? lang : home, slug),
+      siteName: site.name,
+      locale: ogLocaleOf(translated ? lang : home),
+      publishedTime: article.date,
+      authors: [site.author],
+      tags: article.tags,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: article.title,
+      description: article.description,
+    },
+  };
 }
 
 export default async function ArticlePage({
@@ -94,6 +138,13 @@ export default async function ArticlePage({
           </div>
         )}
       </div>
+
+      {/* Chrome, not content: reads in the page's language like the back link. */}
+      <ShareRow
+        url={articleUrl(lang, slug)}
+        title={article.title}
+        labels={dict.share}
+      />
     </article>
   );
 }
