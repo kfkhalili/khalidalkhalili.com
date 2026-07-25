@@ -120,6 +120,78 @@ describe("getEssayContent", () => {
     });
   });
 
+  /**
+   * A piece with no description introduces itself in its own voice, so the
+   * opening line has to survive markup, sentence budgets, and quotation marks
+   * that open before the excerpt ends.
+   */
+  describe("the opening line, when no description is written", () => {
+    const describes = (body: string) => {
+      writeEssay("untold.md", `---\ntitle: Untold\n---\n${body}`);
+      return getEssayContent("untold")!.article.description;
+    };
+
+    it("is empty when the piece opens on nothing", () => {
+      expect(describes("")).toBe("");
+    });
+
+    it("keeps link text and drops the markup around it", () => {
+      expect(describes("A [linked](https://example.com) *word* and `code`.")).toBe(
+        "A linked word and code.",
+      );
+    });
+
+    it("collapses the whitespace a paragraph was wrapped in", () => {
+      expect(describes("One   line\nwrapped in the source.")).toBe(
+        "One line wrapped in the source.",
+      );
+    });
+
+    it("takes only the first paragraph", () => {
+      expect(describes("The opening.\n\nA later paragraph.")).toBe("The opening.");
+    });
+
+    it("keeps whole sentences up to the budget", () => {
+      const body = "One. Two. " + "Padding sentence that runs on and on. ".repeat(6);
+      const out = describes(body);
+      expect(out.startsWith("One. Two.")).toBe(true);
+      expect(out.length).toBeLessThanOrEqual(200);
+    });
+
+    it("keeps the first sentence even when it alone exceeds the budget", () => {
+      const out = describes("x".repeat(400) + ".");
+      expect(out.endsWith("\u2026")).toBe(true);
+    });
+
+    it("drops an opening straight quote the excerpt never closes", () => {
+      expect(describes('"Stranded and never closed.')).toBe(
+        "Stranded and never closed.",
+      );
+    });
+
+    it("leaves balanced straight quotes alone", () => {
+      expect(describes('"Said and done," he wrote.')).toBe(
+        '"Said and done," he wrote.',
+      );
+    });
+
+    it("drops an opening curly quote the excerpt never closes", () => {
+      expect(describes("\u201cStranded and never closed.")).toBe(
+        "Stranded and never closed.",
+      );
+    });
+
+    it("leaves balanced curly quotes alone", () => {
+      expect(describes("\u201cSaid and done,\u201d he wrote.")).toBe(
+        "\u201cSaid and done,\u201d he wrote.",
+      );
+    });
+
+    it("leaves a piece that opens without a quotation mark alone", () => {
+      expect(describes("Plain enough.")).toBe("Plain enough.");
+    });
+  });
+
   it("prefers a written description over the opening line", () => {
     writeEssay("told.md", "---\ndescription: What it is about.\n---\nJust a body.");
     expect(getEssayContent("told")!.article.description).toBe(

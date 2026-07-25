@@ -24,8 +24,10 @@ export default defineConfig({
       provider: "v8",
       reporter: ["text", "html"],
       include: ["app/**", "components/**", "lib/**", "proxy.ts"],
-      // Everything is covered; the branch gap is two unreachable fallbacks
-      // (an empty path join, and the equal-date arm of the project sort).
+      // Everything is covered; the branch gap is four unreachable fallbacks
+      // (an empty path join, the equal-date arm of the project sort, and the
+      // two `??` defaults in the opening-line excerpt, whose left sides a
+      // split and a regex match can never actually fail to produce).
       thresholds: {
         statements: 100,
         branches: 99,
