@@ -59,6 +59,17 @@ describe("Home", () => {
     expect(rtl.container.textContent).toContain("←");
   });
 
+  it("turns the portrait towards the greeting in either direction", async () => {
+    // The photograph looks to the reader's right, so a left-to-right page has
+    // to flip it to face the greeting; a right-to-left one already does.
+    const ltr = await renderPage(Home, { lang: "en" });
+    expect(screen.getByAltText(en.site.title)).toHaveClass("-scale-x-100");
+    ltr.unmount();
+
+    await renderPage(Home, { lang: "ar" });
+    expect(screen.getByAltText(ar.site.title)).not.toHaveClass("-scale-x-100");
+  });
+
   it("features one article, and links on to the rest", async () => {
     await renderPage(Home, { lang: "en" });
     expect(screen.getByRole("heading", { name: en.home.featured })).toBeInTheDocument();
