@@ -1,4 +1,4 @@
-import { DEFAULT_LOCALE, isLocale, type Locale } from "@/lib/i18n";
+import { toLocale, type Locale } from "@/lib/i18n";
 
 /** Labels the interactive sim needs, passed from the (server) body to the client sim. */
 export type SimStrings = {
@@ -264,5 +264,5 @@ const ar: TechDebtContent = {
 export const TD_CONTENT: Record<Locale, TechDebtContent> = { en, de, ar };
 
 export function getTechDebtContent(lang: string): TechDebtContent {
-  return TD_CONTENT[isLocale(lang) ? lang : DEFAULT_LOCALE];
+  return TD_CONTENT[toLocale(lang)];
 }

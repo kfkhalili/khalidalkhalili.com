@@ -1,4 +1,4 @@
-import { DEFAULT_LOCALE, isLocale, type Locale } from "@/lib/i18n";
+import { toLocale, type Locale } from "@/lib/i18n";
 
 /** One fictional status-page sentence plus the annotation revealed on tap. */
 type StatusSentence = {
@@ -468,5 +468,5 @@ const ar: ThirdThingContent = {
 export const TT_CONTENT: Record<Locale, ThirdThingContent> = { en, de, ar };
 
 export function getThirdThingContent(lang: string): ThirdThingContent {
-  return TT_CONTENT[isLocale(lang) ? lang : DEFAULT_LOCALE];
+  return TT_CONTENT[toLocale(lang)];
 }

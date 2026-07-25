@@ -4,7 +4,7 @@ import { TechnicalDebtArticle } from "@/components/explorables/technical-debt";
 import { TD_CONTENT } from "@/components/explorables/technical-debt.content";
 import { ThirdThingArticle } from "@/components/explorables/the-third-thing";
 import { TT_CONTENT } from "@/components/explorables/the-third-thing.content";
-import { DEFAULT_LOCALE, isLocale, type Locale } from "@/lib/i18n";
+import { toLocale, type Locale } from "@/lib/i18n";
 
 /** An explorable = article metadata + the component that renders its body (in a locale). */
 export type Explorable = Article & { Body: ComponentType<{ lang: string }> };
@@ -46,7 +46,7 @@ const DEFS: ExplorableDef[] = [
 
 /** The serializable half: everything but the Body component. */
 function resolveMeta(def: ExplorableDef, lang: string): Article {
-  const loc: Locale = isLocale(lang) ? lang : DEFAULT_LOCALE;
+  const loc = toLocale(lang);
   const meta = def.content[loc];
   return {
     slug: def.slug,

@@ -4,6 +4,7 @@ import {
   DEFAULT_LOCALE,
   LOCALE_META,
   isLocale,
+  toLocale,
   dirOf,
   getDictionary,
   resolveLocale,
@@ -41,6 +42,26 @@ describe("isLocale", () => {
 
   it.each(["fr", "EN", "en-US", "", "ar-EG"])("rejects %s", (value) => {
     expect(isLocale(value)).toBe(false);
+  });
+});
+
+describe("toLocale", () => {
+  it("keeps a language the site publishes", () => {
+    for (const locale of LOCALES) expect(toLocale(locale)).toBe(locale);
+  });
+
+  it("falls back to the default for anything else", () => {
+    // A route param, a frontmatter typo, a stale stored value: all one answer.
+    expect(toLocale("fr")).toBe(DEFAULT_LOCALE);
+    expect(toLocale("")).toBe(DEFAULT_LOCALE);
+    expect(toLocale("EN")).toBe(DEFAULT_LOCALE);
+    expect(toLocale("en-US")).toBe(DEFAULT_LOCALE);
+  });
+
+  it("is the rule every locale-keyed record is read through", () => {
+    // The reason this exists: indexing LOCALE_META with it can never be
+    // undefined, whatever the caller was handed.
+    expect(LOCALE_META[toLocale("nonsense")]).toBe(LOCALE_META[DEFAULT_LOCALE]);
   });
 });
 

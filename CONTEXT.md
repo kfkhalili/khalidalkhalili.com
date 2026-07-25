@@ -74,6 +74,13 @@ interactive explorable explanations, essays, and notes.
   from the page it's shown on.
   Pages cross this one interface instead of assembling from `getDictionary` +
   `dirOf` + `LOCALE_META`.
+- **Locale coercion** (`lib/i18n.ts` → `toLocale`): the one place the site decides
+  what an unrecognised language means. Route params, frontmatter fields and stored
+  strings all arrive untrusted, and every locale-keyed record is read as
+  `RECORD[toLocale(x)]`, so the dictionaries, the explorables registry, the projects
+  registry, each sim's content module, the sitemap and the Open Graph tags cannot
+  answer differently. Where `resolveLocale` serves pages, this serves content:
+  it is the half that a page-level interface could not reach.
 - **Article render seam** (`app/[lang]/writing/[slug]`): the one place an article
   renders. Two adapters satisfy it: a **markdown adapter** (essays → HTML) and a
   **component adapter** (explorables → their `Body`, rendered in the page's locale).

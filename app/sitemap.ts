@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { getAllArticles } from "@/lib/articles";
 import { getProjects } from "@/lib/projects";
-import { LOCALES, DEFAULT_LOCALE, isLocale } from "@/lib/i18n";
+import { LOCALES, DEFAULT_LOCALE, toLocale } from "@/lib/i18n";
 import { localeUrl, localeAlternateUrls } from "@/lib/share";
 
 /**
@@ -69,7 +69,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ]),
     ...essays.map((a) => ({
       url: localeUrl(
-        isLocale(a.lang) ? a.lang : DEFAULT_LOCALE,
+        toLocale(a.lang),
         `/writing/${a.slug}`,
       ),
       ...(a.date ? { lastModified: a.date } : {}),

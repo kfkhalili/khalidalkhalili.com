@@ -1,4 +1,4 @@
-import { DEFAULT_LOCALE, isLocale, type Locale } from "@/lib/i18n";
+import { toLocale, type Locale } from "@/lib/i18n";
 
 export type ProjectStatus = "live" | "beta" | "building";
 
@@ -211,7 +211,7 @@ const DEFS: ProjectDef[] = [
 ];
 
 function resolve(def: ProjectDef, lang: string): Project {
-  const loc: Locale = isLocale(lang) ? lang : DEFAULT_LOCALE;
+  const loc = toLocale(lang);
   const c = def.copy[loc];
   return {
     slug: def.slug,

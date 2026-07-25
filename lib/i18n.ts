@@ -16,15 +16,27 @@ export const LOCALE_META: Record<
 
 /** The Open Graph locale tag for a locale, falling back to the default's. */
 export function ogLocaleOf(locale: string): string {
-  return LOCALE_META[isLocale(locale) ? locale : DEFAULT_LOCALE].ogLocale;
+  return LOCALE_META[toLocale(locale)].ogLocale;
 }
 
 export function isLocale(value: string): value is Locale {
   return (LOCALES as readonly string[]).includes(value);
 }
 
+/**
+ * A Locale from anything: a route param, a frontmatter field, a stored string.
+ * Anything the site does not publish falls back to the default Locale.
+ *
+ * The one place that fallback is decided. Every locale-keyed record on the site
+ * is read as `RECORD[toLocale(x)]`, so a page, an article and a sim cannot
+ * disagree about what an unknown language means.
+ */
+export function toLocale(value: string): Locale {
+  return isLocale(value) ? value : DEFAULT_LOCALE;
+}
+
 export function dirOf(locale: string): "ltr" | "rtl" {
-  return isLocale(locale) ? LOCALE_META[locale].dir : "ltr";
+  return LOCALE_META[toLocale(locale)].dir;
 }
 
 export type Dictionary = typeof en;
@@ -36,7 +48,7 @@ const dictionaries: Record<Locale, () => Promise<Dictionary>> = {
 };
 
 export async function getDictionary(locale: string): Promise<Dictionary> {
-  return dictionaries[isLocale(locale) ? locale : DEFAULT_LOCALE]();
+  return dictionaries[toLocale(locale)]();
 }
 
 export type ResolvedLocale = {

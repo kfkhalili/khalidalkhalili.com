@@ -13,8 +13,7 @@ import {
   dirOf,
   languageBadge,
   ogLocaleOf,
-  isLocale,
-  DEFAULT_LOCALE,
+  toLocale,
 } from "@/lib/i18n";
 import { articlePath, articleUrl, articleLanguages } from "@/lib/share";
 import { site } from "@/lib/site";
@@ -41,7 +40,7 @@ export async function generateMetadata({
   // three URLs canonicalise to the language it was written in and claim no
   // translations. `articlePath` is relative; metadataBase makes it absolute.
   const translated = article.kind === "explorable";
-  const home = isLocale(article.lang) ? article.lang : DEFAULT_LOCALE;
+  const home = toLocale(article.lang);
 
   // A shared link is only as good as its card, so every article overrides the
   // layout's site-level Open Graph block with its own. The image comes from the
