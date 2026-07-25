@@ -89,6 +89,14 @@ interactive explorable explanations, essays, and notes.
 - **Goodreads parse** (`parseShelf` in `lib/goodreads.ts`): the pure RSS → `Book[]`
   transform, exposed as the test surface. `lib/goodreads.test.ts` feeds it fixtures
   with no network.
+- **Chess parse** (`parseStats` and `parseGame` in `lib/chess.ts`): the same seam
+  for chess.com, which answers with JSON rather than RSS. `parseStats` reads a
+  profile into ratings; `parseGame` decides whether a payload is a game worth
+  showing, which side was played, how it ended, and replays the PGN into the
+  positions the board steps through. Both are pure, so the rules the page depends
+  on are asserted directly, and the fetchers above them are left holding only the
+  transport: one request for the stats, two for the newest archived game, and the
+  degradation when either fails.
 - **Share link** (`lib/share.ts`): the one module that knows where a page lives
   and how that address is handed to someone else. The article route's canonical
   tag, its `hreflang` alternates, its `og:url`, the reader-facing copy button,

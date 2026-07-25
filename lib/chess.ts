@@ -17,7 +17,7 @@ type FormatPayload = {
   record?: { win?: number; loss?: number; draw?: number };
 };
 
-type StatsPayload = {
+export type StatsPayload = {
   chess_rapid?: FormatPayload;
   chess_blitz?: FormatPayload;
   chess_bullet?: FormatPayload;
@@ -29,7 +29,7 @@ type ArchivesPayload = { archives?: string[] };
 
 type PlayerPayload = { username?: string; rating?: number; result?: string };
 
-type GamePayload = {
+export type GamePayload = {
   url?: string;
   pgn?: string;
   time_class?: string;
@@ -60,7 +60,14 @@ type FormatStat = {
   draw: number;
 };
 
-export type ChessStats = {
+/** Everything chess.com's stats payload says, before transport state is added. */
+export type StatsReading = {
+  formats: FormatStat[];
+  tactics: number | null;
+  puzzleRush: number | null;
+};
+
+export type ChessStats = StatsReading & {
   /**
    * Whether chess.com answered. Not whether there is anything to draw: a live
    * account with no rated games answers 200 with no formats at all. Ask
@@ -68,9 +75,6 @@ export type ChessStats = {
    * suppress its own fallback and render a bare heading.
    */
   ok: boolean;
-  formats: FormatStat[];
-  tactics: number | null;
-  puzzleRush: number | null;
 };
 
 /** Whether the ratings section has anything to draw. */
@@ -96,24 +100,29 @@ function toFormat(
   };
 }
 
+/** Pure stats payload → StatsReading transform. The test surface; no network. */
+export function parseStats(payload: StatsPayload): StatsReading {
+  const formats = [
+    toFormat("rapid", "Rapid", payload.chess_rapid),
+    toFormat("blitz", "Blitz", payload.chess_blitz),
+    toFormat("bullet", "Bullet", payload.chess_bullet),
+  ].filter((f): f is FormatStat => f !== null);
+  return {
+    formats,
+    tactics: payload.tactics?.highest?.rating ?? null,
+    puzzleRush: payload.puzzle_rush?.best?.score ?? null,
+  };
+}
+
+/** Reads the public profile stats. Never throws; degrades to a link. */
 export async function getChessStats(): Promise<ChessStats> {
   try {
-    const s = await api<StatsPayload>(
+    const payload = await api<StatsPayload>(
       `https://api.chess.com/pub/player/${USER}/stats`,
     );
-    const formats = [
-      toFormat("rapid", "Rapid", s.chess_rapid),
-      toFormat("blitz", "Blitz", s.chess_blitz),
-      toFormat("bullet", "Bullet", s.chess_bullet),
-    ].filter((f): f is FormatStat => f !== null);
-    return {
-      ok: true,
-      formats,
-      tactics: s.tactics?.highest?.rating ?? null,
-      puzzleRush: s.puzzle_rush?.best?.score ?? null,
-    };
+    return { ...parseStats(payload), ok: true };
   } catch {
-    return { ok: false, formats: [], tactics: null, puzzleRush: null };
+    return { formats: [], tactics: null, puzzleRush: null, ok: false };
   }
 }
 
@@ -139,6 +148,60 @@ export function isReplayable(game: ChessGame | null): game is ChessGame {
   return game !== null && game.fens.length > 1;
 }
 
+/**
+ * A PGN replayed into the positions the board steps through, server-side, which
+ * is what keeps chess.js off the client. A PGN chess.js cannot read yields no
+ * positions rather than throwing, so an unreadable game is reported as a game
+ * with nothing to replay.
+ */
+function replay(pgn: string): { fens: string[]; sans: string[] } {
+  try {
+    const parsed = new Chess();
+    parsed.loadPgn(pgn);
+    const sans = parsed.history();
+    const board = new Chess();
+    const fens = [board.fen()];
+    for (const san of sans) {
+      board.move(san);
+      fens.push(board.fen());
+    }
+    return { fens, sans };
+  } catch {
+    return { fens: [], sans: [] };
+  }
+}
+
+/**
+ * Pure game payload → ChessGame transform. The test surface; no network.
+ *
+ * Everything the card renders has to be there. A game missing a player or a
+ * rating is reported as no game at all, rather than rendered with holes.
+ */
+export function parseGame(g: GamePayload | undefined): ChessGame | null {
+  const white = g?.white;
+  const black = g?.black;
+  if (!g?.pgn || !g.url || !g.time_class) return null;
+  if (!white?.username || typeof white.rating !== "number") return null;
+  if (!black?.username || typeof black.rating !== "number") return null;
+
+  const youAre = white.username.toLowerCase() === USER ? "white" : "black";
+  const youResult = youAre === "white" ? white.result : black.result;
+  const oppResult = youAre === "white" ? black.result : white.result;
+  const outcome =
+    youResult === "win" ? "won" : oppResult === "win" ? "lost" : "drew";
+
+  return {
+    url: g.url,
+    timeClass: g.time_class,
+    white: { user: white.username, rating: white.rating },
+    black: { user: black.username, rating: black.rating },
+    youAre,
+    outcome,
+    ...replay(g.pgn),
+  };
+}
+
+/** Reads the most recent archived game. Never throws; degrades to no game. */
 export async function getLatestGame(): Promise<ChessGame | null> {
   try {
     const arch = await api<ArchivesPayload>(
@@ -148,49 +211,7 @@ export async function getLatestGame(): Promise<ChessGame | null> {
     if (!archiveUrl) return null;
 
     const month = await api<MonthPayload>(archiveUrl);
-    const g = month.games?.at(-1);
-    // Everything the card renders has to be there. A game missing a player or a
-    // rating is reported as no game at all, rather than rendered with holes.
-    const white = g?.white;
-    const black = g?.black;
-    if (!g?.pgn || !g.url || !g.time_class) return null;
-    if (!white?.username || typeof white.rating !== "number") return null;
-    if (!black?.username || typeof black.rating !== "number") return null;
-
-    const youAre = white.username.toLowerCase() === USER ? "white" : "black";
-    const youResult = youAre === "white" ? white.result : black.result;
-    const oppResult = youAre === "white" ? black.result : white.result;
-    const outcome =
-      youResult === "win" ? "won" : oppResult === "win" ? "lost" : "drew";
-
-    // Replay the PGN into a list of positions (server-side; keeps chess.js off the client).
-    let fens: string[] = [];
-    let sans: string[] = [];
-    try {
-      const parsed = new Chess();
-      parsed.loadPgn(g.pgn);
-      sans = parsed.history();
-      const replay = new Chess();
-      fens = [replay.fen()];
-      for (const san of sans) {
-        replay.move(san);
-        fens.push(replay.fen());
-      }
-    } catch {
-      fens = [];
-      sans = [];
-    }
-
-    return {
-      url: g.url,
-      timeClass: g.time_class,
-      white: { user: white.username, rating: white.rating },
-      black: { user: black.username, rating: black.rating },
-      youAre,
-      outcome,
-      fens,
-      sans,
-    };
+    return parseGame(month.games?.at(-1));
   } catch {
     return null;
   }

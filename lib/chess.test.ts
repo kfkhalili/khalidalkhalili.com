@@ -2,11 +2,13 @@ import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import {
   getChessStats,
   getLatestGame,
+  parseGame,
+  parseStats,
   hasRatings,
   isReplayable,
   CHESS_PROFILE_URL,
 } from "./chess";
-import type { ChessGame, ChessStats } from "./chess";
+import type { ChessGame, ChessStats, GamePayload, StatsPayload } from "./chess";
 
 const USER = "ibnalkhalili";
 const ARCHIVE = `https://api.chess.com/pub/player/${USER}/games/archives/2026/07`;
@@ -20,16 +22,28 @@ const PGN = `[Event "Live Chess"]
 
 1. e4 e5 2. Nf3 Nc6 1-0`;
 
+/** Typed against the payload the transform actually accepts, so the fixture
+ *  cannot drift away from the shape chess.com is read as. Overrides stay loose:
+ *  several cases below deliberately supply payloads that are not valid. */
+const GAME: GamePayload = {
+  url: "https://www.chess.com/game/live/1",
+  time_class: "rapid",
+  pgn: PGN,
+  white: { username: "ibnalkhalili", rating: 1200, result: "win" },
+  black: { username: "opponent", rating: 1180, result: "resigned" },
+};
+
 function game(overrides: Record<string, unknown> = {}) {
-  return {
-    url: "https://www.chess.com/game/live/1",
-    time_class: "rapid",
-    pgn: PGN,
-    white: { username: "ibnalkhalili", rating: 1200, result: "win" },
-    black: { username: "opponent", rating: 1180, result: "resigned" },
-    ...overrides,
-  };
+  return { ...GAME, ...overrides };
 }
+
+const RATED_RAPID: StatsPayload = {
+  chess_rapid: {
+    last: { rating: 1234 },
+    best: { rating: 1300 },
+    record: { win: 10, loss: 5, draw: 2 },
+  },
+};
 
 /** Route each request URL to a canned JSON body, or to a status for failures. */
 function mockApi(routes: Record<string, unknown | { status: number }>) {
@@ -62,41 +76,14 @@ describe("CHESS_PROFILE_URL", () => {
 describe("getChessStats", () => {
   const statsUrl = `https://api.chess.com/pub/player/${USER}/stats`;
 
-  it("maps each rated format, best rating, and record", async () => {
-    mockApi({
-      [statsUrl]: {
-        chess_rapid: {
-          last: { rating: 1234 },
-          best: { rating: 1300 },
-          record: { win: 10, loss: 5, draw: 2 },
-        },
-        chess_blitz: { last: { rating: 999 }, record: { win: 1, loss: 1, draw: 0 } },
-        tactics: { highest: { rating: 2100 } },
-        puzzle_rush: { best: { score: 33 } },
-      },
-    });
-
+  // The transform itself is asserted against parseStats, with no network.
+  // What is left here is the wiring: that a live answer reaches it, and that a
+  // dead one degrades instead of throwing.
+  it("hands a live answer to the transform and marks it ok", async () => {
+    mockApi({ [statsUrl]: RATED_RAPID });
     const stats = await getChessStats();
     expect(stats.ok).toBe(true);
-    expect(stats.formats).toEqual([
-      { key: "rapid", label: "Rapid", rating: 1234, best: 1300, win: 10, loss: 5, draw: 2 },
-      { key: "blitz", label: "Blitz", rating: 999, best: null, win: 1, loss: 1, draw: 0 },
-    ]);
-    expect(stats.tactics).toBe(2100);
-    expect(stats.puzzleRush).toBe(33);
-  });
-
-  it("drops formats that have never been played", async () => {
-    mockApi({ [statsUrl]: { chess_bullet: { last: { rating: 800 } } } });
-    const stats = await getChessStats();
-    expect(stats.formats.map((f) => f.key)).toEqual(["bullet"]);
-    expect(stats.formats[0]).toMatchObject({ label: "Bullet", win: 0, loss: 0, draw: 0 });
-  });
-
-  it("reports no tactics or puzzle rush when the profile has none", async () => {
-    mockApi({ [statsUrl]: {} });
-    const stats = await getChessStats();
-    expect(stats).toEqual({ ok: true, formats: [], tactics: null, puzzleRush: null });
+    expect(stats).toMatchObject(parseStats(RATED_RAPID));
   });
 
   it("degrades to not-ok when chess.com errors", async () => {
@@ -148,51 +135,9 @@ describe("getLatestGame", () => {
     expect(latest!.fens[4]).not.toBe(latest!.fens[0]);
   });
 
-  it("reads the result from the black side when that's the side played", async () => {
-    mockApi({
-      [archivesUrl]: { archives: [ARCHIVE] },
-      [ARCHIVE]: {
-        games: [
-          game({
-            white: { username: "Opponent", rating: 1300, result: "win" },
-            black: { username: "IbnAlKhalili", rating: 1250, result: "checkmated" },
-          }),
-        ],
-      },
-    });
-
-    const latest = await getLatestGame();
-    expect(latest).toMatchObject({ youAre: "black", outcome: "lost" });
-  });
-
-  it("calls a game with no winner a draw", async () => {
-    mockApi({
-      [archivesUrl]: { archives: [ARCHIVE] },
-      [ARCHIVE]: {
-        games: [
-          game({
-            white: { username: "ibnalkhalili", rating: 1200, result: "agreed" },
-            black: { username: "opponent", rating: 1180, result: "agreed" },
-          }),
-        ],
-      },
-    });
-
-    expect((await getLatestGame())!.outcome).toBe("drew");
-  });
-
-  it("keeps the game but drops the replay when the PGN won't parse", async () => {
-    mockApi({
-      [archivesUrl]: { archives: [ARCHIVE] },
-      [ARCHIVE]: { games: [game({ pgn: "1. Zz9 total nonsense" })] },
-    });
-
-    const latest = await getLatestGame();
-    expect(latest!.url).toBe("https://www.chess.com/game/live/1");
-    expect(latest!.fens).toEqual([]);
-    expect(latest!.sans).toEqual([]);
-  });
-
+  // Everything about the shape of a game is asserted against parseGame, with no
+  // network. What is left here is the two-hop walk to it: newest archive, newest
+  // game, and the ways that walk can come back empty.
   it("is null when there are no archives", async () => {
     mockApi({ [archivesUrl]: { archives: [] } });
     expect(await getLatestGame()).toBeNull();
@@ -208,6 +153,117 @@ describe("getLatestGame", () => {
     expect(await getLatestGame()).toBeNull();
   });
 
+  it("is null when chess.com errors", async () => {
+    mockApi({ [archivesUrl]: { status: 500 } });
+    expect(await getLatestGame()).toBeNull();
+  });
+});
+
+/* ----------------------------------------------------------- transform ---- */
+
+describe("parseStats", () => {
+  it("maps each rated format, best rating, and record", () => {
+    const reading = parseStats({
+      ...RATED_RAPID,
+      chess_blitz: { last: { rating: 999 } },
+      tactics: { highest: { rating: 2100 } },
+      puzzle_rush: { best: { score: 33 } },
+    });
+    expect(reading.formats).toEqual([
+      { key: "rapid", label: "Rapid", rating: 1234, best: 1300, win: 10, loss: 5, draw: 2 },
+      { key: "blitz", label: "Blitz", rating: 999, best: null, win: 0, loss: 0, draw: 0 },
+    ]);
+    expect(reading.tactics).toBe(2100);
+    expect(reading.puzzleRush).toBe(33);
+  });
+
+  it("drops formats that have never been played", () => {
+    expect(parseStats({}).formats).toEqual([]);
+    expect(parseStats({ chess_bullet: {} }).formats).toEqual([]);
+    expect(parseStats({ chess_bullet: { last: {} } }).formats).toEqual([]);
+  });
+
+  it("reports no tactics or puzzle rush when the profile has none", () => {
+    const reading = parseStats({ chess_rapid: { last: { rating: 1200 } } });
+    expect(reading.tactics).toBeNull();
+    expect(reading.puzzleRush).toBeNull();
+  });
+
+  it("keeps the formats in the order the page draws them", () => {
+    const rated = { last: { rating: 1000 } };
+    const reading = parseStats({
+      chess_bullet: rated,
+      chess_blitz: rated,
+      chess_rapid: rated,
+    });
+    expect(reading.formats.map((f) => f.key)).toEqual(["rapid", "blitz", "bullet"]);
+  });
+});
+
+describe("parseGame", () => {
+  it("replays the PGN into a position per ply, plus the start", () => {
+    const parsed = parseGame(game())!;
+    expect(parsed.sans).toEqual(["e4", "e5", "Nf3", "Nc6"]);
+    expect(parsed.fens).toHaveLength(5);
+    expect(parsed.fens[0]).toContain("rnbqkbnr/pppppppp");
+  });
+
+  it("carries the players, the time class, and the url through", () => {
+    const parsed = parseGame(game())!;
+    expect(parsed.url).toBe("https://www.chess.com/game/live/1");
+    expect(parsed.timeClass).toBe("rapid");
+    expect(parsed.white).toEqual({ user: "ibnalkhalili", rating: 1200 });
+    expect(parsed.black).toEqual({ user: "opponent", rating: 1180 });
+  });
+
+  it("knows which side I played, whatever case chess.com returns", () => {
+    expect(parseGame(game())!.youAre).toBe("white");
+    expect(
+      parseGame(
+        game({
+          white: { username: "Opponent", rating: 1300, result: "resigned" },
+          black: { username: "IbnAlKhalili", rating: 1250, result: "win" },
+        }),
+      )!.youAre,
+    ).toBe("black");
+  });
+
+  it("reads the outcome from the side I played", () => {
+    expect(parseGame(game())!.outcome).toBe("won");
+    expect(
+      parseGame(
+        game({
+          white: { username: "opponent", rating: 1300, result: "win" },
+          black: { username: USER, rating: 1250, result: "resigned" },
+        }),
+      )!.outcome,
+    ).toBe("lost");
+  });
+
+  it("calls a game with no winner a draw", () => {
+    expect(
+      parseGame(
+        game({
+          white: { username: USER, rating: 1200, result: "agreed" },
+          black: { username: "opponent", rating: 1180, result: "agreed" },
+        }),
+      )!.outcome,
+    ).toBe("drew");
+  });
+
+  it("keeps the game but drops the replay when the PGN will not parse", () => {
+    const parsed = parseGame(game({ pgn: "not a pgn at all" }))!;
+    expect(parsed.url).toBe("https://www.chess.com/game/live/1");
+    expect(parsed.fens).toEqual([]);
+    expect(parsed.sans).toEqual([]);
+    // Which is exactly the state isReplayable exists to refuse.
+    expect(isReplayable(parsed)).toBe(false);
+  });
+
+  it("is null when there is no game at all", () => {
+    expect(parseGame(undefined)).toBeNull();
+  });
+
   it.each([
     ["a missing white player", { white: undefined }],
     ["a missing black player", { black: undefined }],
@@ -215,25 +271,9 @@ describe("getLatestGame", () => {
     ["a rating that is not a number", { black: { username: "o", rating: null, result: "resigned" } }],
     ["no url", { url: undefined }],
     ["no time class", { time_class: undefined }],
-  ])("is null for a game with %s, rather than rendering it with holes", async (_label, over) => {
-    mockApi({
-      [archivesUrl]: { archives: [ARCHIVE] },
-      [ARCHIVE]: { games: [game(over)] },
-    });
-    expect(await getLatestGame()).toBeNull();
-  });
-
-  it("is null when the newest game carries no PGN", async () => {
-    mockApi({
-      [archivesUrl]: { archives: [ARCHIVE] },
-      [ARCHIVE]: { games: [game({ pgn: undefined })] },
-    });
-    expect(await getLatestGame()).toBeNull();
-  });
-
-  it("is null when chess.com errors", async () => {
-    mockApi({ [archivesUrl]: { status: 500 } });
-    expect(await getLatestGame()).toBeNull();
+    ["no pgn", { pgn: undefined }],
+  ])("is null for a game with %s, rather than rendering it with holes", (_label, over) => {
+    expect(parseGame(game(over))).toBeNull();
   });
 });
 
