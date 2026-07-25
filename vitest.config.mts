@@ -11,7 +11,15 @@ export default defineConfig({
     environment: "jsdom",
     setupFiles: ["./test/setup.ts"],
     include: ["**/*.test.ts", "**/*.test.tsx"],
-    exclude: ["node_modules/**", ".next/**"],
+    // Only this tree's tests. The default exclude covers node_modules but not
+    // the git worktrees the agent harness checks out under .claude/, whose
+    // tests would otherwise run here and resolve `@` against the main tree.
+    exclude: [
+      "**/node_modules/**",
+      "**/.claude/**",
+      "**/.next/**",
+      "**/coverage/**",
+    ],
     coverage: {
       provider: "v8",
       reporter: ["text", "html"],
