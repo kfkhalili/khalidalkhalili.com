@@ -3,6 +3,7 @@ title: "Forest of Memories"
 date: 2013-07-02
 lang: en
 collection: prose
+hidden: true
 tags: []
 source: "https://mindfulmantra.blogspot.com/2013/07/forest-of-memories.html"
 writtenIn: "Abu Dhabi - United Arab Emirates"

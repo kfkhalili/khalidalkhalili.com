@@ -3,6 +3,7 @@ title: "Recognition"
 date: 2012-10-18
 lang: en
 collection: prose
+hidden: true
 tags: []
 source: "https://mindfulmantra.blogspot.com/2012/10/recognition.html"
 writtenIn: "Dubai - United Arab Emirates"

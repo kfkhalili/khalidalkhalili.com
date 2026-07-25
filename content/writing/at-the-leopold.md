@@ -3,6 +3,7 @@ title: "At The Leopold"
 date: 2013-04-12
 lang: en
 collection: prose
+hidden: true
 tags: []
 source: "https://mindfulmantra.blogspot.com/2013/04/at-leopolds.html"
 writtenIn: "Mumbai, Maharashtra, India"

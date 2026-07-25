@@ -3,6 +3,7 @@ title: "Phoenix"
 date: 2012-09-07
 lang: en
 collection: prose
+hidden: true
 tags: []
 source: "https://mindfulmantra.blogspot.com/2012/09/phoenix-dies.html"
 ---

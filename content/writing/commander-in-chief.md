@@ -3,6 +3,7 @@ title: "Commander-in-chief"
 date: 2013-01-10
 lang: en
 collection: prose
+hidden: true
 tags: []
 source: "https://mindfulmantra.blogspot.com/2013/01/commander-in-chief.html"
 writtenIn: "Abu Dhabi - United Arab Emirates"

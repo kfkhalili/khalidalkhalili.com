@@ -3,6 +3,7 @@ title: "Of Clay and Dust"
 date: 2012-11-27
 lang: en
 collection: prose
+hidden: true
 tags: []
 source: "https://mindfulmantra.blogspot.com/2012/11/of-clay-and-dust.html"
 writtenIn: "Abu Dhabi - United Arab Emirates"

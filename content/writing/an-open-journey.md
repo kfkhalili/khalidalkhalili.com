@@ -3,6 +3,7 @@ title: "An Open Journey"
 date: 2012-12-22
 lang: en
 collection: prose
+hidden: true
 tags: []
 source: "https://mindfulmantra.blogspot.com/2012/12/an-open-journey.html"
 writtenIn: "Abu Dhabi - United Arab Emirates"

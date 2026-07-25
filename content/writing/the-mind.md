@@ -3,6 +3,7 @@ title: "The Mind"
 date: 2012-08-27
 lang: en
 collection: prose
+hidden: true
 tags: []
 source: "https://mindfulmantra.blogspot.com/2012/08/the-mind.html"
 writtenIn: "Muscat, Oman"

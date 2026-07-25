@@ -3,6 +3,7 @@ title: "Deal or No Deal"
 date: 2013-04-21
 lang: en
 collection: prose
+hidden: true
 tags: []
 source: "https://mindfulmantra.blogspot.com/2013/04/deal-or-no-deal.html"
 writtenIn: "Abu Dhabi - United Arab Emirates"

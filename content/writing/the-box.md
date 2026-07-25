@@ -3,6 +3,7 @@ title: "The Box"
 date: 2013-04-28
 lang: en
 collection: prose
+hidden: true
 tags: []
 source: "https://mindfulmantra.blogspot.com/2013/04/the-box.html"
 writtenIn: "Abu Dhabi - United Arab Emirates"

@@ -29,6 +29,13 @@ export type Article = {
   kind: "essay" | "explorable";
   collection: Collection;
   readingTime: number; // minutes
+  /**
+   * Kept in the repo but off the site: absent from the index, the home page,
+   * the sitemap, and the share card, and its URL is not built at all, so it
+   * 404s rather than staying quietly reachable. Filtered at the registries
+   * below, so a hidden piece never reaches a page to be filtered out again.
+   */
+  hidden?: boolean;
 };
 
 const ISO_DAY = /^\d{4}-\d{2}-\d{2}$/;
@@ -122,6 +129,7 @@ function parseEssay(file: string): { article: Article; body: string } {
       kind: "essay",
       collection: toCollection(data.collection),
       readingTime: Math.max(1, Math.round(words / 200)),
+      hidden: data.hidden === true,
     },
     body,
   };
@@ -171,28 +179,38 @@ export function mergeWriting(
   );
 }
 
+/** Every essay the site shows: parsed from disk, hidden ones dropped. */
+function visibleEssays(): Article[] {
+  return essayFiles()
+    .map((f) => parseEssay(f).article)
+    .filter((a) => !a.hidden);
+}
+
 /**
  * All writing (file-based essays + registered explorables), localized. Metadata
  * only, so the result is safe to hand to a Client Component.
  */
 export function getAllArticles(lang: string): Article[] {
-  return mergeWriting(
-    essayFiles().map((f) => parseEssay(f).article),
-    getExplorableArticles(lang),
-  );
+  return mergeWriting(visibleEssays(), getExplorableArticles(lang));
 }
 
+/** Slugs to build pages for. A hidden essay gets none, so its URL 404s. */
 export function getEssaySlugs(): string[] {
-  return essayFiles().map((f) => f.replace(/\.md$/, ""));
+  return visibleEssays().map((a) => a.slug);
 }
 
-/** An essay's metadata plus its body rendered to HTML: one interface for the page. */
+/**
+ * An essay's metadata plus its body rendered to HTML: one interface for the
+ * page. A hidden essay reads as absent, which is what makes its route 404 and
+ * keeps it out of the metadata and the share card.
+ */
 export function getEssayContent(
   slug: string,
 ): { article: Article; html: string } | undefined {
   const file = `${slug}.md`;
   if (!fs.existsSync(path.join(WRITING_DIR, file))) return undefined;
   const { article, body } = parseEssay(file);
+  if (article.hidden) return undefined;
   return { article, html: renderMarkdown(body) };
 }
 

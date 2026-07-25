@@ -18,6 +18,8 @@ type ExplorableDef = {
   slug: string;
   date: string;
   featured?: boolean;
+  /** Kept in the registry but off the site. See `hidden` on Article. */
+  hidden?: boolean;
   readingTime: number;
   Body: ComponentType<{ lang: string }>;
   content: Record<Locale, LocalizedMeta>;
@@ -64,9 +66,17 @@ function resolve(def: ExplorableDef, lang: string): Explorable {
   return { ...resolveMeta(def, lang), Body: def.Body };
 }
 
+/**
+ * The registry as the site sees it. A hidden entry is dropped here, once, so
+ * every reader below inherits it and none has to remember the rule.
+ */
+function visibleDefs(): ExplorableDef[] {
+  return DEFS.filter((d) => !d.hidden);
+}
+
 /** All explorables localized to `lang`, each carrying its Body. */
 export function getExplorables(lang: string): Explorable[] {
-  return DEFS.map((def) => resolve(def, lang));
+  return visibleDefs().map((def) => resolve(def, lang));
 }
 
 /**
@@ -75,14 +85,14 @@ export function getExplorables(lang: string): Explorable[] {
  * so anything assembling the writing index reads from here.
  */
 export function getExplorableArticles(lang: string): Article[] {
-  return DEFS.map((def) => resolveMeta(def, lang));
+  return visibleDefs().map((def) => resolveMeta(def, lang));
 }
 
-/** One explorable (localized to `lang`) by slug, or undefined. */
+/** One explorable (localized to `lang`) by slug, or undefined if absent or hidden. */
 export function findExplorable(slug: string, lang: string): Explorable | undefined {
-  const def = DEFS.find((d) => d.slug === slug);
+  const def = visibleDefs().find((d) => d.slug === slug);
   return def ? resolve(def, lang) : undefined;
 }
 
 /** Slugs for static param generation (locale-independent). */
-export const EXPLORABLE_SLUGS = DEFS.map((d) => d.slug);
+export const EXPLORABLE_SLUGS = DEFS.filter((d) => !d.hidden).map((d) => d.slug);

@@ -3,6 +3,7 @@ title: "Thoughts Wander"
 date: 2012-12-16
 lang: en
 collection: prose
+hidden: true
 tags: []
 source: "https://mindfulmantra.blogspot.com/2012/12/thoughts-wander.html"
 writtenIn: "Dubai - United Arab Emirates"

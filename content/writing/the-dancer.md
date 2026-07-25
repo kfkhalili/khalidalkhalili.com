@@ -3,6 +3,7 @@ title: "The Dancer"
 date: 2013-03-20
 lang: en
 collection: prose
+hidden: true
 tags: []
 source: "https://mindfulmantra.blogspot.com/2013/03/the-dancer.html"
 writtenIn: "Abu Dhabi - United Arab Emirates"

@@ -18,7 +18,7 @@
   },
   "writing": {
     "title": "Writing",
-    "subtitle": "Interactive explorables and essays on software, systems, and the people who build them, alongside short prose written between 2012 and 2013.",
+    "subtitle": "Interactive explorables and essays on software, systems, and the people who build them. More to come.",
     "filters": { "label": "Filter by collection", "all": "All", "writing": "Essays", "prose": "Prose" }
   },
   "reading": {

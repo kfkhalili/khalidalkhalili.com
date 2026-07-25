@@ -95,6 +95,7 @@ date: "2026-07-05" # must be an ISO day; anything else is treated as undated
 tags: ["Essay"]
 lang: en          # en | de | ar   (ar renders right-to-left)
 collection: writing  # writing (default) | prose
+hidden: true      # optional; keeps the piece in the repo but off the site
 ---
 
 Body in plain markdown…
@@ -112,6 +113,12 @@ badge for non-English posts, at `/<locale>/writing/<slug>`.
 `writing` for current essays and explorables, `prose` for the short literary
 pieces from 2012-13. The chips only appear once more than one collection has
 something in it.
+
+`hidden: true` takes a piece off the site without deleting it. It disappears
+from the writing index, the home page, and the sitemap, and no page is built for
+it, so its URL 404s rather than staying quietly reachable. The file stays where
+it is; remove the line to publish. Explorables take the same flag on their
+registry entry in [`lib/explorables.ts`](lib/explorables.ts).
 
 `description` is optional. Left out, the card and the meta description fall back
 to the piece's opening (whole sentences from the first paragraph, up to roughly

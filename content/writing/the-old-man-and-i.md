@@ -3,6 +3,7 @@ title: "The Old Man and I"
 date: 2013-01-02
 lang: en
 collection: prose
+hidden: true
 tags: []
 source: "https://mindfulmantra.blogspot.com/2013/01/the-old-man-and-i.html"
 writtenIn: "Abu Dhabi - United Arab Emirates"

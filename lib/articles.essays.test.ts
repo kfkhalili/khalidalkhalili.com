@@ -195,6 +195,46 @@ describe("getAllArticles", () => {
   });
 });
 
+/**
+ * A hidden piece stays in the repo and leaves the site. Each surface is checked
+ * on its own: one that forgot the rule would be the one that leaks it.
+ */
+describe("hidden", () => {
+  const HIDDEN = "---\ntitle: Secret\ndate: 2099-01-01\nhidden: true\n---\nBody.";
+  const SHOWN = "---\ntitle: Shown\ndate: 2098-01-01\n---\nBody.";
+
+  it("keeps a hidden essay out of the writing index", () => {
+    writeEssay("secret.md", HIDDEN);
+    writeEssay("shown.md", SHOWN);
+    const slugs = getAllArticles("en").map((a) => a.slug);
+    expect(slugs).toContain("shown");
+    expect(slugs).not.toContain("secret");
+  });
+
+  it("builds no page for it, so its URL 404s", () => {
+    writeEssay("secret.md", HIDDEN);
+    expect(getEssaySlugs()).not.toContain("secret");
+  });
+
+  // The article route, its metadata, and the share card all read this one
+  // function, so absence here is what makes the piece unreachable.
+  it("reads as absent to the article route", () => {
+    writeEssay("secret.md", HIDDEN);
+    expect(getEssayContent("secret")).toBeUndefined();
+  });
+
+  it("shows a piece that does not ask to be hidden", () => {
+    writeEssay("shown.md", SHOWN);
+    expect(getEssayContent("shown")).toBeDefined();
+    expect(getEssayContent("shown")!.article.hidden).toBe(false);
+  });
+
+  it("treats anything other than true as visible", () => {
+    writeEssay("maybe.md", "---\ntitle: M\nhidden: yes please\n---\nBody.");
+    expect(getEssayContent("maybe")).toBeDefined();
+  });
+});
+
 describe("getExplorable", () => {
   it("resolves a registered explorable in the requested locale", () => {
     expect(getExplorable("technical-debt", "de")).toEqual(

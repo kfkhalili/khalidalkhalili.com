@@ -3,6 +3,7 @@ title: "He is sleeping"
 date: 2012-07-20
 lang: en
 collection: prose
+hidden: true
 tags: []
 source: "https://mindfulmantra.blogspot.com/2012/07/he-is-sleeping.html"
 writtenIn: "Mawaleh, Oman"

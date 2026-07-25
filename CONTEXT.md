@@ -18,6 +18,11 @@ interactive explorable explanations, essays, and notes.
   current work; `prose` is the short literary pieces written 2012-13. Where
   `kind` says how an Article renders, `collection` says where it came from,
   which is what the reader filters by on the index.
+- **Hidden**: an Article kept in the repo but off the site, set by `hidden: true`
+  in an essay's frontmatter or on an explorable's registry entry. Hidden is not
+  unlisted: the piece leaves the index, the home page and the sitemap, and no
+  page is built for it, so its URL 404s. Both registries drop hidden entries at
+  the source, so no page has to remember the rule.
 - **Locale**: a supported language (`en`, `de`, `ar`). Arabic is right-to-left.
 - **Page copy**: the chrome-adjacent prose (home hero, about) authored per locale
   in `content/<locale>/*.md`, falling back to the default locale.

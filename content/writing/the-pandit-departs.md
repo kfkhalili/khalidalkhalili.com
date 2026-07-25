@@ -3,6 +3,7 @@ title: "The Pandit Departs"
 date: 2012-12-13
 lang: en
 collection: prose
+hidden: true
 tags: []
 source: "https://mindfulmantra.blogspot.com/2012/12/the-pandit-departs.html"
 writtenIn: "Abu Dhabi - United Arab Emirates"

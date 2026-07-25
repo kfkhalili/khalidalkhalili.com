@@ -3,6 +3,7 @@ title: "Velvet Contemplations"
 date: 2013-05-11
 lang: en
 collection: prose
+hidden: true
 tags: []
 source: "https://mindfulmantra.blogspot.com/2013/05/velvet-contemplations.html"
 writtenIn: "Abu Dhabi - United Arab Emirates"

@@ -3,6 +3,7 @@ title: "The Luxury of an Empty Mind"
 date: 2013-02-14
 lang: en
 collection: prose
+hidden: true
 tags: []
 source: "https://mindfulmantra.blogspot.com/2013/02/the-luxury-of-empty-mind.html"
 writtenIn: "Abu Dhabi - United Arab Emirates"
