@@ -6,7 +6,7 @@ import {
   getEssayContent,
   getExplorable,
 } from "@/lib/articles";
-import { formatDate, formatReadingTime } from "@/lib/format";
+import { articleDate, articleReadingTime } from "@/lib/format";
 import { EXPLORABLE_SLUGS } from "@/lib/explorables";
 import {
   resolveLocale,
@@ -117,11 +117,9 @@ export default async function ArticlePage({
             {article.title}
           </h1>
           <div className="mt-4 flex items-center gap-2 font-mono text-sm text-faint">
-            <time dateTime={article.date}>
-              {formatDate(article.date, article.lang)}
-            </time>
+            <time dateTime={article.date}>{articleDate(article)}</time>
             <span aria-hidden>·</span>
-            <span>{formatReadingTime(article.readingTime, article.lang)}</span>
+            <span>{articleReadingTime(article)}</span>
           </div>
         </header>
 

@@ -35,7 +35,7 @@ vi.mock("node:fs", async (importActual) => {
 
 const { getAllArticles, getEssaySlugs, getEssayContent, getExplorable } =
   await import("./articles");
-const { formatDate, formatReadingTime } = await import("./format");
+const { articleDate, articleReadingTime } = await import("./format");
 const { getExplorables, getExplorableArticles } = await import("./explorables");
 
 function writeEssay(name: string, contents: string) {
@@ -319,48 +319,48 @@ describe("getExplorable", () => {
   });
 });
 
-describe("formatDate", () => {
+describe("articleDate", () => {
   it("is empty for a missing date", () => {
-    expect(formatDate("", "en")).toBe("");
+    expect(articleDate({ date: "", lang: "en" })).toBe("");
   });
 
   it("writes the date the way each language does", () => {
-    expect(formatDate("2026-02-09", "en")).toBe("February 9, 2026");
-    expect(formatDate("2026-02-09", "de")).toBe("9. Februar 2026");
-    expect(formatDate("2026-02-09", "ar")).toBe("9 فبراير 2026");
+    expect(articleDate({ date: "2026-02-09", lang: "en" })).toBe("February 9, 2026");
+    expect(articleDate({ date: "2026-02-09", lang: "de" })).toBe("9. Februar 2026");
+    expect(articleDate({ date: "2026-02-09", lang: "ar" })).toBe("9 فبراير 2026");
   });
 
   it("falls back to US English for an unknown language", () => {
-    expect(formatDate("2026-02-09", "fr")).toBe(formatDate("2026-02-09", "en"));
+    expect(articleDate({ date: "2026-02-09", lang: "fr" })).toBe(articleDate({ date: "2026-02-09", lang: "en" }));
   });
 
   it("reads the date as local midnight, so the day never slips", () => {
-    expect(formatDate("2026-01-01", "en")).toBe("January 1, 2026");
-    expect(formatDate("2026-12-31", "en")).toBe("December 31, 2026");
+    expect(articleDate({ date: "2026-01-01", lang: "en" })).toBe("January 1, 2026");
+    expect(articleDate({ date: "2026-12-31", lang: "en" })).toBe("December 31, 2026");
   });
 });
 
-describe("formatReadingTime", () => {
+describe("articleReadingTime", () => {
   it("uses an invariant unit in English and German", () => {
-    expect(formatReadingTime(6, "en")).toBe("6 min read");
-    expect(formatReadingTime(1, "en")).toBe("1 min read");
-    expect(formatReadingTime(6, "de")).toBe("6 Min. Lesezeit");
+    expect(articleReadingTime({ readingTime: 6, lang: "en" })).toBe("6 min read");
+    expect(articleReadingTime({ readingTime: 1, lang: "en" })).toBe("1 min read");
+    expect(articleReadingTime({ readingTime: 6, lang: "de" })).toBe("6 Min. Lesezeit");
   });
 
   it("falls back to English for an unknown language", () => {
-    expect(formatReadingTime(6, "fr")).toBe("6 min read");
+    expect(articleReadingTime({ readingTime: 6, lang: "fr" })).toBe("6 min read");
   });
 
   it("agrees the Arabic counted noun with its number", () => {
-    expect(formatReadingTime(1, "ar")).toBe("دقيقة قراءة");
-    expect(formatReadingTime(2, "ar")).toBe("دقيقتان قراءة");
-    expect(formatReadingTime(6, "ar")).toBe("6 دقائق قراءة");
-    expect(formatReadingTime(11, "ar")).toBe("11 دقيقة قراءة");
-    expect(formatReadingTime(100, "ar")).toBe("100 دقيقة قراءة");
+    expect(articleReadingTime({ readingTime: 1, lang: "ar" })).toBe("دقيقة قراءة");
+    expect(articleReadingTime({ readingTime: 2, lang: "ar" })).toBe("دقيقتان قراءة");
+    expect(articleReadingTime({ readingTime: 6, lang: "ar" })).toBe("6 دقائق قراءة");
+    expect(articleReadingTime({ readingTime: 11, lang: "ar" })).toBe("11 دقيقة قراءة");
+    expect(articleReadingTime({ readingTime: 100, lang: "ar" })).toBe("100 دقيقة قراءة");
   });
 
   it("drops the number entirely for the singular and dual", () => {
-    expect(formatReadingTime(1, "ar")).not.toMatch(/\d/);
-    expect(formatReadingTime(2, "ar")).not.toMatch(/\d/);
+    expect(articleReadingTime({ readingTime: 1, lang: "ar" })).not.toMatch(/\d/);
+    expect(articleReadingTime({ readingTime: 2, lang: "ar" })).not.toMatch(/\d/);
   });
 });

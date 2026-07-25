@@ -2,7 +2,6 @@ import { describe, it, expect, beforeEach, vi } from "vitest";
 import type { ReactElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { getExplorable } from "@/lib/articles";
-import { formatDate, formatReadingTime } from "@/lib/format";
 import { site } from "@/lib/site";
 
 /**
@@ -89,8 +88,11 @@ describe("Image", () => {
     const { html } = await card("en", "technical-debt");
 
     expect(html).toContain(article.title);
-    expect(html).toContain(formatDate(article.date, "en"));
-    expect(html).toContain(formatReadingTime(article.readingTime, "en"));
+    // Spelled out rather than rebuilt from the formatter, which would make the
+    // implementation its own oracle and pass whatever locale it happened to use.
+    expect(article.date).toBe("2026-02-09");
+    expect(html).toContain("February 9, 2026");
+    expect(html).toContain("6 min read");
     expect(html).toContain(site.url.replace("https://", ""));
   });
 

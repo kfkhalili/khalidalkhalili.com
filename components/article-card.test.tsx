@@ -42,10 +42,21 @@ describe("ArticleCard", () => {
     expect(time).toHaveTextContent("February 9, 2026");
   });
 
-  it("writes the date and reading time in the page's language", () => {
+  it("writes the byline in the article's language, not the page's", () => {
+    // An English piece listed on the German index still dates itself in English:
+    // the date belongs to the writing, and the badge below says the language
+    // differs. Reading the page's locale here is what once had one essay dated
+    // three different ways across the index, its own page and its share card.
     const { container } = render(<ArticleCard lang="de" article={article} />);
-    expect(container.querySelector("time")).toHaveTextContent("9. Februar 2026");
-    expect(screen.getByText("6 Min. Lesezeit")).toBeInTheDocument();
+    expect(container.querySelector("time")).toHaveTextContent("February 9, 2026");
+    expect(screen.getByText("6 min read")).toBeInTheDocument();
+  });
+
+  it("follows the article into Arabic, wherever it is listed", () => {
+    const arabic = { ...article, lang: "ar" };
+    const { container } = render(<ArticleCard lang="en" article={arabic} />);
+    expect(container.querySelector("time")).toHaveTextContent("9 فبراير 2026");
+    expect(screen.getByText("6 دقائق قراءة")).toBeInTheDocument();
   });
 
   it("flags an article written in another language", () => {

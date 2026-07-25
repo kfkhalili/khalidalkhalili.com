@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { getEssayContent, getExplorable } from "@/lib/articles";
-import { formatDate, formatReadingTime } from "@/lib/format";
+import { articleDate, articleReadingTime } from "@/lib/format";
 import { dirOf } from "@/lib/i18n";
 import { site } from "@/lib/site";
 
@@ -307,10 +307,7 @@ export default async function Image({
               style={{ fontSize: 23 }}
               text={
                 article
-                  ? `${formatDate(article.date, lang)} · ${formatReadingTime(
-                      article.readingTime,
-                      lang,
-                    )}`
+                  ? `${articleDate(article)} · ${articleReadingTime(article)}`
                   : ""
               }
             />

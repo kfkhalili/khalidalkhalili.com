@@ -36,6 +36,12 @@ interactive explorable explanations, essays, and notes.
   string is what a reader copies, what `og:url` claims, what the canonical tag
   points at, and what the sitemap lists, so an article shared from the Arabic
   page opens in Arabic.
+- **Byline**: an Article's date and reading time, always written in the language
+  the piece itself was written in, wherever the piece is shown. An Arabic essay
+  listed on the English index dates itself in Arabic, because the date belongs to
+  the writing rather than to the page around it; the language badge is what tells
+  the reader they differ. `lib/format.ts` takes the Article rather than a Locale,
+  so the page's language is not reachable from the byline at all.
 - **Alternate set**: one page's address in every locale, keyed for `hreflang`.
   Reciprocal by construction (each locale lists every locale, itself included)
   plus `x-default` on the locale the proxy falls back to. Claimed only where the

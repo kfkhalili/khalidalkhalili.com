@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Article } from "@/lib/articles";
-import { formatDate, formatReadingTime } from "@/lib/format";
+import { articleDate, articleReadingTime } from "@/lib/format";
 import { languageBadge } from "@/lib/i18n";
 
 export function ArticleCard({
@@ -39,9 +39,9 @@ export function ArticleCard({
         {article.description}
       </p>
       <div className="mt-3 flex items-center gap-2 font-mono text-xs text-faint">
-        <time dateTime={article.date}>{formatDate(article.date, lang)}</time>
+        <time dateTime={article.date}>{articleDate(article)}</time>
         <span aria-hidden>·</span>
-        <span>{formatReadingTime(article.readingTime, lang)}</span>
+        <span>{articleReadingTime(article)}</span>
       </div>
     </Link>
   );
