@@ -23,6 +23,12 @@ interactive explorable explanations, essays, and notes.
   unlisted: the piece leaves the index, the home page and the sitemap, and no
   page is built for it, so its URL 404s. Both registries drop hidden entries at
   the source, so no page has to remember the rule.
+- **Sim**: the interactive widget an Explorable is built around, and the thing the
+  piece argues through rather than about. A **running sim** keeps a clock and
+  steps a model over time (the technical-debt and watermelon sims); a **discrete
+  sim** answers whatever the reader has entered so far and holds still until
+  they change it (the contract diagnostic). Every sim splits the same way: a
+  **Sim model** that is pure and has no Locale, and a view that renders it.
 - **Locale**: a supported language (`en`, `de`, `ar`). Arabic is right-to-left.
 - **Page copy**: the chrome-adjacent prose (home hero, about) authored per locale
   in `content/<locale>/*.md`, falling back to the default locale.
@@ -41,6 +47,23 @@ interactive explorable explanations, essays, and notes.
 
 ## Deepened modules
 
+- **Sim model** (`*.model.ts` beside each sim): the pure model a Sim draws,
+  holding the state, the step, and the thresholds, and knowing nothing about
+  React, CSS, or Locale. It answers in domain terms: a step returns the next
+  state, a log line comes back as a key the view looks up in its own strings, a
+  reading comes back as a tone rather than a colour. That is what makes the
+  claims each piece rests on assertable directly, so the calibration the prose
+  promises (that 30% really is a steady state, that the Watermelon preset really
+  does settle green outside and red inside) is a test rather than a comment. The
+  state a sim opens on is settled on first use rather than at import, so a test
+  that only reads the surrounding prose does not pay for it.
+- **Sim clock** (`components/use-sim-clock.ts`): the one clock every running Sim
+  keeps. It steps on an interval, but only while the sim is both on screen and in
+  a visible tab, so a sim left in a background tab stops rather than running
+  forever, and an Explorable carrying two sims pays for neither while unread.
+  Living here rather than in each sim means a new running sim gets the rule by
+  calling this at all. What the sim draws, and how, is deliberately not behind
+  this interface: sims are content and vary by piece.
 - **Content document** (`lib/content.ts`): the one module that turns a markdown
   file on disk into `{ meta, body, html }`. `readMarkdown` is the shared
   read-plus-frontmatter primitive; `readContent` adds locale fallback + render.

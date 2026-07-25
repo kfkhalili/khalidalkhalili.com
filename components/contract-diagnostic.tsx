@@ -2,37 +2,28 @@
 
 import { useId, useState } from "react";
 import type { DiagnosticStrings } from "@/components/explorables/the-third-thing.content";
+import {
+  QUESTION_COUNT,
+  VERDICT_TONE,
+  verdictOf,
+  type Answer,
+  type Tone,
+} from "@/components/contract-diagnostic.model";
 
-type Answer = 0 | 1 | null;
-
-/**
- * Verdict from [owns, operates, pays, sees], index 0 = first option.
- * "pays" separates the third thing from a plain hosted product: vendor-owned
- * and vendor-operated is only the disaster when it runs on the customer's bill.
- * For "who can see the work" the options are [we can, we cannot],
- * so sees === 1 means the work is invisible.
- */
-function getVerdict(
-  answers: Answer[],
-  verdicts: DiagnosticStrings["verdicts"],
-): { text: string; color: string } | null {
-  const [owns, operates, pays, sees] = answers;
-  if (answers.some((a) => a === null)) return null;
-  if (owns === 1 && operates === 1)
-    return pays === 1
-      ? { text: verdicts.hosted, color: "var(--sim-good)" }
-      : { text: verdicts.thirdThing, color: "var(--sim-bad)" };
-  if (owns === 1 && operates === 0)
-    return { text: verdicts.product, color: "var(--sim-good)" };
-  if (sees === 1) return { text: verdicts.blind, color: "var(--sim-warn)" };
-  return { text: verdicts.service, color: "var(--sim-good)" };
-}
+const TONE_COLOR: Record<Tone, string> = {
+  good: "var(--sim-good)",
+  warn: "var(--sim-warn)",
+  bad: "var(--sim-bad)",
+};
 
 export function ContractDiagnostic({ strings }: { strings: DiagnosticStrings }) {
-  const [answers, setAnswers] = useState<Answer[]>([null, null, null, null]);
+  const [answers, setAnswers] = useState<Answer[]>(() =>
+    Array<Answer>(QUESTION_COUNT).fill(null),
+  );
   const id = useId();
 
-  const verdict = getVerdict(answers, strings.verdicts);
+  const verdict = verdictOf(answers);
+  const verdictColor = verdict ? TONE_COLOR[VERDICT_TONE[verdict]] : undefined;
   const answered = answers.filter((a) => a !== null).length;
   const remaining = answers.length - answered;
 
@@ -91,17 +82,19 @@ export function ContractDiagnostic({ strings }: { strings: DiagnosticStrings }) 
         {verdict ? (
           // Remounting via key replays the pulse when the verdict changes.
           <div
-            key={verdict.text}
+            key={verdict}
             className="border-s-2 ps-3"
-            style={{ borderColor: verdict.color }}
+            style={{ borderColor: verdictColor }}
           >
             <span
               className="sim-pulse font-mono text-xs uppercase tracking-wide"
-              style={{ color: verdict.color }}
+              style={{ color: verdictColor }}
             >
               {strings.verdictLabel}
             </span>
-            <p className="mt-1 text-sm text-foreground">{verdict.text}</p>
+            <p className="mt-1 text-sm text-foreground">
+              {strings.verdicts[verdict]}
+            </p>
           </div>
         ) : (
           <p key={remaining} className="sim-pulse font-mono text-xs text-faint">
