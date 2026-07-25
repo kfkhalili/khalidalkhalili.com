@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useEffectEvent, useRef, useState } from "react";
 import type { SimStrings } from "@/components/explorables/technical-debt.content";
 
 /* ---------------------------------------------------------------------------
@@ -146,8 +146,12 @@ export function TechDebtSim({ strings }: { strings: SimStrings }) {
   const [tabVisible, setTabVisible] = useState(true);
 
   const containerRef = useRef<HTMLDivElement>(null);
-  const rateRef = useRef(refactorRate);
-  rateRef.current = refactorRate; // interval always reads the latest rate
+
+  // The tick reads the latest rate without the rate becoming a dependency, so
+  // dragging the slider never restarts the clock mid-simulation.
+  const tick = useEffectEvent(() =>
+    setState((s) => nextState(s, refactorRate)),
+  );
 
   // Pause the loop when scrolled off-screen.
   useEffect(() => {
@@ -171,10 +175,7 @@ export function TechDebtSim({ strings }: { strings: SimStrings }) {
   const running = onScreen && tabVisible;
   useEffect(() => {
     if (!running) return;
-    const id = setInterval(
-      () => setState((s) => nextState(s, rateRef.current)),
-      TICK_MS,
-    );
+    const id = setInterval(tick, TICK_MS);
     return () => clearInterval(id);
   }, [running]);
 

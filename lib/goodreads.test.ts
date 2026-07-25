@@ -55,4 +55,30 @@ describe("parseShelf", () => {
   it("returns [] for an empty feed", () => {
     expect(parseShelf("<rss><channel></channel></rss>")).toEqual([]);
   });
+
+  // next/image throws on a host next.config.ts doesn't list, which on this
+  // render-per-request page is a 500 for the whole shelf, not one broken cover.
+  it("keeps covers from any Goodreads asset subdomain", () => {
+    const item = (cover: string) =>
+      `<rss><channel><item><title>T</title><author_name>A</author_name><book_large_image_url>${cover}</book_large_image_url><user_rating>0</user_rating><link>L</link></item></channel></rss>`;
+
+    for (const host of ["i.gr-assets.com", "s.gr-assets.com", "gr-assets.com"]) {
+      const url = `https://${host}/x/c.jpg`;
+      expect(parseShelf(item(url))[0]?.cover).toBe(url);
+    }
+  });
+
+  it("drops a cover this site is not configured to render", () => {
+    const item = (cover: string) =>
+      `<rss><channel><item><title>T</title><author_name>A</author_name><book_large_image_url>${cover}</book_large_image_url><user_rating>0</user_rating><link>L</link></item></channel></rss>`;
+
+    for (const bad of [
+      "https://images-na.ssl-images-amazon.com/x/c.jpg",
+      "https://evil.example.com/x/c.jpg",
+      "https://gr-assets.com.evil.example/x/c.jpg", // suffix must not be enough
+      "not-a-url",
+    ]) {
+      expect(parseShelf(item(bad))).toEqual([]);
+    }
+  });
 });

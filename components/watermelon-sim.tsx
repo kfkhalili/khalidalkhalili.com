@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useEffectEvent, useRef, useState } from "react";
 import type { WatermelonStrings } from "@/components/explorables/the-third-thing.content";
 
 /* ---------------------------------------------------------------------------
@@ -161,8 +161,10 @@ export function WatermelonSim({ strings }: { strings: WatermelonStrings }) {
   const [tabVisible, setTabVisible] = useState(true);
 
   const containerRef = useRef<HTMLDivElement>(null);
-  const pressureRef = useRef(pressure);
-  pressureRef.current = pressure; // interval always reads the latest pressure
+
+  // The tick reads the latest pressure without the pressure becoming a
+  // dependency, so dragging the slider never restarts the clock mid-simulation.
+  const tick = useEffectEvent(() => setState((s) => nextState(s, pressure)));
 
   // Pause the loop when scrolled off-screen.
   useEffect(() => {
@@ -186,10 +188,7 @@ export function WatermelonSim({ strings }: { strings: WatermelonStrings }) {
   const running = onScreen && tabVisible;
   useEffect(() => {
     if (!running) return;
-    const id = setInterval(
-      () => setState((s) => nextState(s, pressureRef.current)),
-      TICK_MS,
-    );
+    const id = setInterval(tick, TICK_MS);
     return () => clearInterval(id);
   }, [running]);
 

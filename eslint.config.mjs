@@ -12,6 +12,11 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Not source: git worktrees the agent harness checks out here. They are
+    // whole copies of the repo at other commits, so linting them reports this
+    // project's files two and three times over, at whatever state that branch
+    // left them in. No rule is relaxed by this; the scope is.
+    ".claude/**",
   ]),
 ]);
 
