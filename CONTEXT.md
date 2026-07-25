@@ -16,6 +16,18 @@ interactive explorable explanations, essays, and notes.
 - **Locale**: a supported language (`en`, `de`, `ar`). Arabic is right-to-left.
 - **Page copy**: the chrome-adjacent prose (home hero, about) authored per locale
   in `content/<locale>/*.md`, falling back to the default locale.
+- **Share link**: a page's absolute, locale-qualified URL. For an article the same
+  string is what a reader copies, what `og:url` claims, what the canonical tag
+  points at, and what the sitemap lists, so an article shared from the Arabic
+  page opens in Arabic.
+- **Alternate set**: one page's address in every locale, keyed for `hreflang`.
+  Reciprocal by construction (each locale lists every locale, itself included)
+  plus `x-default` on the locale the proxy falls back to. Claimed only where the
+  locales are genuine translations: the chrome pages and the explorables. An
+  Essay is one document in one language, so its three URLs canonicalise to the
+  language it was written in and claim no alternates.
+- **Share card**: the 1200×630 image a shared link unfurls into, drawn per
+  article per locale from the article's own metadata.
 
 ## Deepened modules
 
@@ -37,3 +49,28 @@ interactive explorable explanations, essays, and notes.
 - **Goodreads parse** (`parseShelf` in `lib/goodreads.ts`): the pure RSS → `Book[]`
   transform, exposed as the test surface. `lib/goodreads.test.ts` feeds it fixtures
   with no network.
+- **Share link** (`lib/share.ts`): the one module that knows where a page lives
+  and how that address is handed to someone else. The article route's canonical
+  tag, its `hreflang` alternates, its `og:url`, the reader-facing copy button,
+  and every entry in the sitemap read from it, so they cannot drift apart.
+  `…Path` is relative, for metadata that resolves against `metadataBase`; `…Url`
+  is absolute, for the copy button and the sitemap, which inherits no base.
+  Pure and tested (`lib/share.test.ts`).
+- **Page self-description** (`lib/page-metadata.ts`): the one place a page says
+  which address it lives at. Next replaces an inherited Open Graph block rather
+  than merging into it, so a page that names any of it must name all of it; this
+  is that block, built from the page's own locale and path. The layout therefore
+  claims no `url` of its own, which would otherwise have every page report the
+  site root.
+- **Site inventory** (`app/sitemap.ts`): the one statement of which pages the
+  site offers for indexing, in which locales, and when each was published. It
+  reads the same registries the pages render from, so a new article or locale
+  appears in it without anyone remembering to. Where the repo holds no date it
+  claims none, rather than stamping the build time. Pages whose body is a live
+  third-party API (`reading`, `chess`) are linked by the site and crawlable, but
+  deliberately not nominated here.
+- **Share card** (`app/[lang]/writing/[slug]/opengraph-image`): the article's
+  metadata rendered as an image, prerendered per locale. It carries the site's
+  own constraints: satori can't see `next/font`, so the faces are vendored in
+  `assets/fonts/`; satori has no bidi engine, so the Arabic card's lines are
+  broken and reversed in the route before they are handed over.
