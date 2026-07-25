@@ -49,7 +49,11 @@ export async function generateMetadata({
     openGraph: {
       title: dict.site.title,
       description: dict.site.description,
-      url: site.url,
+      // No `url` here. Every page that doesn't set its own Open Graph block
+      // inherits this one wholesale, so a URL here would have each of them
+      // claim to live at the bare origin: an address the sitemap omits and the
+      // proxy redirects away from by Accept-Language. Absent, a consumer uses
+      // the URL it actually fetched, which is the truthful one.
       siteName: dict.site.title,
       type: "website",
     },

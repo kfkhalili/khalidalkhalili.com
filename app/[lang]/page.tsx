@@ -1,8 +1,28 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { ArticleCard } from "@/components/article-card";
 import { getAllArticles } from "@/lib/articles";
 import { readContent, renderInline } from "@/lib/content";
 import { resolveLocale } from "@/lib/i18n";
+import { pageMetadata } from "@/lib/page-metadata";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ lang: string }>;
+}): Promise<Metadata> {
+  const { lang } = await params;
+  const { dict } = await resolveLocale(lang);
+  return pageMetadata({
+    lang,
+    sub: "",
+    title: dict.site.title,
+    description: dict.site.description,
+    dict,
+    // The site's own name, not a page within it: no "· Khalid" suffix.
+    absoluteTitle: true,
+  });
+}
 
 export default async function Home({
   params,

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { resolveLocale } from "@/lib/i18n";
+import { pageMetadata } from "@/lib/page-metadata";
 import { getProjects } from "@/lib/projects";
 import { ProjectCard } from "@/components/project-card";
 
@@ -10,7 +11,13 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { lang } = await params;
   const { dict } = await resolveLocale(lang);
-  return { title: dict.projects.title, description: dict.projects.subtitle };
+  return pageMetadata({
+    lang,
+    sub: "/projects",
+    title: dict.projects.title,
+    description: dict.projects.subtitle,
+    dict,
+  });
 }
 
 export default async function ProjectsPage({
