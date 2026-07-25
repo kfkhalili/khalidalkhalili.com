@@ -60,6 +60,7 @@ app/
   robots.ts                    # → /robots.txt
   sitemap.ts                   # → /sitemap.xml (every indexable page; not reading/chess)
 assets/fonts/                  # TTFs for the share card (satori can't use next/font)
+archive/mindful-mantra/        # images from the retired blog; kept, not served (see its README)
 components/explorables/        # each explorable's body + its per-locale copy
 proxy.ts                       # locale detection + redirect (Next 16 middleware convention)
 dictionaries/{en,de,ar}.json   # translated chrome strings (site metadata, nav, buttons, labels)
