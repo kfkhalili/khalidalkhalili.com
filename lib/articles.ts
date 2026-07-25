@@ -16,7 +16,7 @@ const WRITING_DIR = path.join(process.cwd(), "content/writing");
  * between on the writing index.
  */
 export const COLLECTIONS = ["writing", "prose"] as const;
-export type Collection = (typeof COLLECTIONS)[number];
+type Collection = (typeof COLLECTIONS)[number];
 
 export type Article = {
   slug: string;

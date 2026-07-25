@@ -1,7 +1,7 @@
 import { DEFAULT_LOCALE, isLocale, type Locale } from "@/lib/i18n";
 
 /** One fictional status-page sentence plus the annotation revealed on tap. */
-export type StatusSentence = {
+type StatusSentence = {
   /** How the sentence reads while the page is yellow. */
   calm: string;
   /**
@@ -48,7 +48,7 @@ export type WatermelonStrings = {
 };
 
 /** Labels for the four-question contract diagnostic. */
-export type DiagnosticQuestion = { q: string; options: [string, string] };
+type DiagnosticQuestion = { q: string; options: [string, string] };
 export type DiagnosticStrings = {
   heading: string;
   prompt: string;

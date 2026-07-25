@@ -50,7 +50,7 @@ async function api<T>(url: string): Promise<T> {
 
 /* ---------------------------------------------------------------- stats ---- */
 
-export type FormatStat = {
+type FormatStat = {
   key: string;
   label: string;
   rating: number;
