@@ -61,11 +61,22 @@ type FormatStat = {
 };
 
 export type ChessStats = {
+  /**
+   * Whether chess.com answered. Not whether there is anything to draw: a live
+   * account with no rated games answers 200 with no formats at all. Ask
+   * `hasRatings` for that; reading this instead is what once let the page
+   * suppress its own fallback and render a bare heading.
+   */
   ok: boolean;
   formats: FormatStat[];
   tactics: number | null;
   puzzleRush: number | null;
 };
+
+/** Whether the ratings section has anything to draw. */
+export function hasRatings(stats: ChessStats): boolean {
+  return stats.formats.length > 0;
+}
 
 function toFormat(
   key: string,
@@ -118,6 +129,15 @@ export type ChessGame = {
   fens: string[]; // positions from start to final
   sans: string[]; // moves in SAN
 };
+
+/**
+ * Whether a game can be replayed. The board steps between positions, so a game
+ * whose PGN yielded fewer than two has nothing to show even though the game
+ * itself is real.
+ */
+export function isReplayable(game: ChessGame | null): game is ChessGame {
+  return game !== null && game.fens.length > 1;
+}
 
 export async function getLatestGame(): Promise<ChessGame | null> {
   try {

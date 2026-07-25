@@ -10,10 +10,13 @@ const { getChessStats, getLatestGame } = vi.hoisted(() => ({
   getLatestGame: vi.fn(),
 }));
 
-vi.mock("@/lib/chess", () => ({
+// Only the two network calls are stubbed. `hasRatings` and `isReplayable` stay
+// real, so what this page chooses to draw is checked against the rules the
+// module actually applies rather than against a second copy of them here.
+vi.mock("@/lib/chess", async (importActual) => ({
+  ...(await importActual<typeof import("@/lib/chess")>()),
   getChessStats,
   getLatestGame,
-  CHESS_PROFILE_URL: "https://www.chess.com/member/ibnalkhalili",
 }));
 
 vi.mock("react-chessboard", () => ({
@@ -193,6 +196,65 @@ describe("ChessPage", () => {
     getLatestGame.mockResolvedValue(game({ fens: [], sans: [] }));
     await renderPage();
     expect(screen.queryByRole("heading", { name: en.chess.lastGame })).not.toBeInTheDocument();
+  });
+
+  /**
+   * A bare heading is the one thing this page must never render: a title, a
+   * subtitle, and nothing under them. Every combination that hides both
+   * sections has to reach the fallback link, however it came to be empty.
+   *
+   * The header already links to the profile under the same name, so the
+   * fallback is the second such link rather than the only one.
+   */
+  describe("when there is nothing to show", () => {
+    const emptyProfile = stats({ formats: [], tactics: null, puzzleRush: null });
+    const unreplayable = game({ fens: [], sans: [] });
+
+    const fallbackShown = () =>
+      screen.queryAllByRole("link", { name: new RegExp(en.chess.unavailable) })
+        .length > 1;
+
+    it("offers the profile when chess.com could not be reached", async () => {
+      getChessStats.mockResolvedValue(noStats);
+      getLatestGame.mockResolvedValue(null);
+      await renderPage();
+      expect(fallbackShown()).toBe(true);
+    });
+
+    it("offers the profile when it is reachable but empty", async () => {
+      getChessStats.mockResolvedValue(emptyProfile);
+      getLatestGame.mockResolvedValue(null);
+      await renderPage();
+      expect(fallbackShown()).toBe(true);
+    });
+
+    it("offers the profile when the only game could not be replayed", async () => {
+      getChessStats.mockResolvedValue(emptyProfile);
+      getLatestGame.mockResolvedValue(unreplayable);
+      await renderPage();
+      expect(fallbackShown()).toBe(true);
+    });
+
+    it("offers the profile when the fetch failed and the game is unreplayable", async () => {
+      getChessStats.mockResolvedValue(noStats);
+      getLatestGame.mockResolvedValue(unreplayable);
+      await renderPage();
+      expect(fallbackShown()).toBe(true);
+    });
+
+    it("stays out of the way when the ratings rendered", async () => {
+      getChessStats.mockResolvedValue(stats());
+      getLatestGame.mockResolvedValue(null);
+      await renderPage();
+      expect(fallbackShown()).toBe(false);
+    });
+
+    it("stays out of the way when the game rendered", async () => {
+      getChessStats.mockResolvedValue(emptyProfile);
+      getLatestGame.mockResolvedValue(game());
+      await renderPage();
+      expect(fallbackShown()).toBe(false);
+    });
   });
 
   it("takes its metadata from the dictionary, and names its own address", async () => {

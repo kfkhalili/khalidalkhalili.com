@@ -1,5 +1,12 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { getChessStats, getLatestGame, CHESS_PROFILE_URL } from "./chess";
+import {
+  getChessStats,
+  getLatestGame,
+  hasRatings,
+  isReplayable,
+  CHESS_PROFILE_URL,
+} from "./chess";
+import type { ChessGame, ChessStats } from "./chess";
 
 const USER = "ibnalkhalili";
 const ARCHIVE = `https://api.chess.com/pub/player/${USER}/games/archives/2026/07`;
@@ -227,5 +234,73 @@ describe("getLatestGame", () => {
   it("is null when chess.com errors", async () => {
     mockApi({ [archivesUrl]: { status: 500 } });
     expect(await getLatestGame()).toBeNull();
+  });
+});
+
+/* ------------------------------------------------------- what to draw ---- */
+
+const asStats = (o: Partial<ChessStats> = {}): ChessStats => ({
+  ok: true,
+  formats: [],
+  tactics: null,
+  puzzleRush: null,
+  ...o,
+});
+
+const rapid = {
+  key: "rapid",
+  label: "Rapid",
+  rating: 1200,
+  best: null,
+  win: 1,
+  loss: 0,
+  draw: 0,
+};
+
+describe("hasRatings", () => {
+  it("is true once a format has a rating", () => {
+    expect(hasRatings(asStats({ formats: [rapid] }))).toBe(true);
+  });
+
+  it("is false for a live account with nothing rated", () => {
+    // The case `ok` cannot answer: chess.com replied, there is just nothing yet.
+    expect(hasRatings(asStats({ ok: true }))).toBe(false);
+  });
+
+  it("is false when the fetch failed", () => {
+    expect(hasRatings(asStats({ ok: false }))).toBe(false);
+  });
+
+  it("ignores puzzle scores, which the ratings section does not draw alone", () => {
+    expect(hasRatings(asStats({ tactics: 2100, puzzleRush: 33 }))).toBe(false);
+  });
+});
+
+describe("isReplayable", () => {
+  const asGame = (fens: string[]): ChessGame => ({
+    url: "https://www.chess.com/game/live/1",
+    timeClass: "rapid",
+    white: { user: USER, rating: 1200 },
+    black: { user: "opponent", rating: 1180 },
+    youAre: "white",
+    outcome: "won",
+    fens,
+    sans: [],
+  });
+
+  it("is true for a game the board can step through", () => {
+    expect(isReplayable(asGame(["start", "after-1"]))).toBe(true);
+  });
+
+  it("is false when there is no game", () => {
+    expect(isReplayable(null)).toBe(false);
+  });
+
+  it("is false when the PGN yielded nothing", () => {
+    expect(isReplayable(asGame([]))).toBe(false);
+  });
+
+  it("is false for a lone position, which would render a static board", () => {
+    expect(isReplayable(asGame(["start"]))).toBe(false);
   });
 });

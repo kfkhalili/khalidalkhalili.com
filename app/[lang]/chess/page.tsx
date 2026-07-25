@@ -1,7 +1,13 @@
 import type { Metadata } from "next";
 import { resolveLocale } from "@/lib/i18n";
 import { pageMetadata } from "@/lib/page-metadata";
-import { getChessStats, getLatestGame, CHESS_PROFILE_URL } from "@/lib/chess";
+import {
+  getChessStats,
+  getLatestGame,
+  hasRatings,
+  isReplayable,
+  CHESS_PROFILE_URL,
+} from "@/lib/chess";
 import { ChessBoard } from "@/components/chess-board";
 
 // On demand: pull live ratings + the latest game each page load.
@@ -39,6 +45,11 @@ export default async function ChessPage({
   const { lang } = await params;
   const { dict } = await resolveLocale(lang);
   const [stats, game] = await Promise.all([getChessStats(), getLatestGame()]);
+
+  // Asked once, so the fallback below is exactly the case where neither section
+  // drew anything, rather than a second guess at the same question.
+  const showRatings = hasRatings(stats);
+  const showGame = isReplayable(game);
 
   const you = "ibnalkhalili";
   const player = (name: string, rating: number) => (
@@ -79,7 +90,7 @@ export default async function ChessPage({
         </a>
       </header>
 
-      {stats.ok && stats.formats.length > 0 && (
+      {showRatings && (
         <section className="mt-12">
           <h2 className="font-mono text-sm uppercase tracking-wider text-faint">
             {dict.chess.ratings}
@@ -129,7 +140,7 @@ export default async function ChessPage({
         </section>
       )}
 
-      {game && game.fens.length > 1 && (
+      {showGame && (
         <section className="mt-14">
           <h2 className="font-mono text-sm uppercase tracking-wider text-faint">
             {dict.chess.lastGame}
@@ -168,9 +179,10 @@ export default async function ChessPage({
         </section>
       )}
 
-      {/* Chess.com is down or rate-limiting: say so and hand over the link,
-          the way the reading page does, rather than render a bare heading. */}
-      {!stats.ok && !game && (
+      {/* Nothing above drew anything, whether because chess.com is down, the
+          profile is empty, or the one game could not be replayed. Hand over the
+          link the way the reading page does, rather than leave a bare heading. */}
+      {!showRatings && !showGame && (
         <div className="mt-12 border-t border-border pt-6">
           <a
             href={CHESS_PROFILE_URL}
