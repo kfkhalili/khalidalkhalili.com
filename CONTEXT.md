@@ -13,6 +13,11 @@ interactive explorable explanations, essays, and notes.
 - **Essay**: a prose piece authored as a markdown file in `content/writing/`,
   rendered on the dynamic `writing/[slug]` route.
 - **Article**: either an Explorable or an Essay; the writing index merges both.
+- **Collection**: which body of work an Article belongs to, set by the
+  `collection` frontmatter field and defaulting to `writing`. `writing` is the
+  current work; `prose` is the short literary pieces written 2012-13. Where
+  `kind` says how an Article renders, `collection` says where it came from,
+  which is what the reader filters by on the index.
 - **Locale**: a supported language (`en`, `de`, `ar`). Arabic is right-to-left.
 - **Page copy**: the chrome-adjacent prose (home hero, about) authored per locale
   in `content/<locale>/*.md`, falling back to the default locale.

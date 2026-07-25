@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { formatDate, formatReadingTime, type Article } from "@/lib/articles";
+import type { Article } from "@/lib/articles";
+import { formatDate, formatReadingTime } from "@/lib/format";
 import { languageBadge } from "@/lib/i18n";
 
 export function ArticleCard({

@@ -5,9 +5,8 @@ import {
   getEssaySlugs,
   getEssayContent,
   getExplorable,
-  formatDate,
-  formatReadingTime,
 } from "@/lib/articles";
+import { formatDate, formatReadingTime } from "@/lib/format";
 import { EXPLORABLE_SLUGS } from "@/lib/explorables";
 import { resolveLocale, dirOf, languageBadge } from "@/lib/i18n";
 

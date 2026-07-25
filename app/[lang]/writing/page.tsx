@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { ArticleCard } from "@/components/article-card";
-import { getAllArticles } from "@/lib/articles";
+import { WritingList, type Chip } from "@/components/writing-list";
+import { COLLECTIONS, getAllArticles } from "@/lib/articles";
 import { resolveLocale } from "@/lib/i18n";
 
 export async function generateMetadata({
@@ -22,6 +22,18 @@ export default async function WritingPage({
   const { dict } = await resolveLocale(lang);
   const articles = getAllArticles(lang);
 
+  // Built here so the client component never imports the article libraries,
+  // which read from disk. An empty collection gets no chip, so every choice
+  // the reader is offered leads somewhere.
+  const chips: Chip[] = [
+    { key: "all", label: dict.writing.filters.all, count: articles.length },
+    ...COLLECTIONS.map((c) => ({
+      key: c,
+      label: dict.writing.filters[c],
+      count: articles.filter((a) => a.collection === c).length,
+    })).filter((chip) => chip.count > 0),
+  ];
+
   return (
     <div className="mx-auto max-w-3xl px-5 py-16 sm:py-20">
       <header>
@@ -31,11 +43,12 @@ export default async function WritingPage({
         <p className="mt-3 max-w-xl text-muted">{dict.writing.subtitle}</p>
       </header>
 
-      <div className="mt-10 grid gap-4">
-        {articles.map((article) => (
-          <ArticleCard key={article.slug} lang={lang} article={article} />
-        ))}
-      </div>
+      <WritingList
+        lang={lang}
+        articles={articles}
+        chips={chips}
+        filterLabel={dict.writing.filters.label}
+      />
     </div>
   );
 }

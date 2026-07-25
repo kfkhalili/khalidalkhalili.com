@@ -18,7 +18,8 @@
   },
   "writing": {
     "title": "Texte",
-    "subtitle": "Interaktive Explorables und Essays über Software, Systeme und die Menschen, die sie bauen. Mehr folgt."
+    "subtitle": "Interaktive Explorables und Essays über Software, Systeme und die Menschen, die sie bauen, dazu kurze Prosa aus den Jahren 2012 und 2013.",
+    "filters": { "label": "Nach Sammlung filtern", "all": "Alle", "writing": "Essays", "prose": "Prosa" }
   },
   "reading": {
     "title": "Lesen",

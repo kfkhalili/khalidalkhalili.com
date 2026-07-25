@@ -37,12 +37,13 @@ proxy.ts                       # locale detection + redirect (Next 16 middleware
 dictionaries/{en,de,ar}.json   # translated chrome strings (site metadata, nav, buttons, labels)
 content/
   {en,de,ar}/home.md, about.md # per-locale page copy (missing locale → falls back to en)
-  writing/<slug>.md            # essays
+  writing/<slug>.md            # essays and prose
 lib/
   i18n.ts                      # locales, direction, dictionaries
   content.ts                   # markdown reader/renderer
   articles.ts                  # essays (files) + explorables (registry), merged
   explorables.ts               # registry for interactive code-page explorables
+  format.ts                    # date + reading-time strings (safe on the client)
 ```
 
 ## Write an essay
@@ -52,10 +53,11 @@ Drop a markdown file in `content/writing/<slug>.md`:
 ```markdown
 ---
 title: My essay
-description: One-line summary for the card + meta.
+description: One-line summary for the card + meta.   # optional
 date: "2026-07-05"
 tags: ["Essay"]
 lang: en          # en | de | ar   (ar renders right-to-left)
+collection: writing  # writing (default) | prose
 ---
 
 Body in plain markdown…
@@ -63,6 +65,17 @@ Body in plain markdown…
 
 It appears in the writing index automatically (newest first), with a language
 badge for non-English posts, at `/<locale>/writing/<slug>`.
+
+`collection` decides which filter chip on the index the piece sits behind:
+`writing` for current essays and explorables, `prose` for the short literary
+pieces from 2012-13. The chips only appear once more than one collection has
+something in it.
+
+`description` is optional. Left out, the card and the meta description fall back
+to the piece's opening (whole sentences from the first paragraph, up to roughly
+160 characters). That suits short prose, which is often too short to summarize
+without giving away its turn. Write one when the first paragraph isn't the real
+opening, such as a dateline or a note to the reader.
 
 ## Translate
 

@@ -42,7 +42,8 @@ const DEFS: ExplorableDef[] = [
   },
 ];
 
-function resolve(def: ExplorableDef, lang: string): Explorable {
+/** The serializable half: everything but the Body component. */
+function resolveMeta(def: ExplorableDef, lang: string): Article {
   const loc: Locale = isLocale(lang) ? lang : DEFAULT_LOCALE;
   const meta = def.content[loc];
   return {
@@ -54,14 +55,22 @@ function resolve(def: ExplorableDef, lang: string): Explorable {
     lang: loc,
     featured: def.featured,
     kind: "explorable",
+    collection: "writing",
     readingTime: def.readingTime,
-    Body: def.Body,
   };
 }
 
-/** All explorables as Articles localized to `lang`. */
-export function getExplorables(lang: string): Explorable[] {
-  return DEFS.map((def) => resolve(def, lang));
+function resolve(def: ExplorableDef, lang: string): Explorable {
+  return { ...resolveMeta(def, lang), Body: def.Body };
+}
+
+/**
+ * All explorables as plain Articles localized to `lang`: metadata only, so the
+ * result can be handed to a Client Component. Use findExplorable when you need
+ * the Body to render.
+ */
+export function getExplorableArticles(lang: string): Article[] {
+  return DEFS.map((def) => resolveMeta(def, lang));
 }
 
 /** One explorable (localized to `lang`) by slug, or undefined. */
