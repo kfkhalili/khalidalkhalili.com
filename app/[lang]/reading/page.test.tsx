@@ -1,0 +1,123 @@
+import { describe, it, expect, beforeEach, vi } from "vitest";
+import { render, screen } from "@testing-library/react";
+import ReadingPage, { generateMetadata } from "./page";
+import type { Bookshelf, Book } from "@/lib/goodreads";
+import { site } from "@/lib/site";
+import en from "@/dictionaries/en.json";
+import ar from "@/dictionaries/ar.json";
+
+const getBookshelf = vi.hoisted(() => vi.fn());
+
+vi.mock("@/lib/goodreads", () => ({ getBookshelf }));
+
+const book = (title: string, rating = 0): Book => ({
+  title,
+  author: `${title}'s author`,
+  cover: `https://covers.test/${title}.jpg`,
+  rating,
+  link: `https://www.goodreads.com/book/show/${title}`,
+});
+
+function shelf(overrides: Partial<Bookshelf> = {}): Bookshelf {
+  return { currentlyReading: [], read: [], ok: true, ...overrides };
+}
+
+const renderPage = async (lang = "en") =>
+  render(await ReadingPage({ params: Promise.resolve({ lang }) }));
+
+beforeEach(() => {
+  getBookshelf.mockReset();
+  getBookshelf.mockResolvedValue(shelf());
+});
+
+describe("ReadingPage", () => {
+  it("heads the page in the reader's language", async () => {
+    await renderPage("ar");
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(ar.reading.title);
+    expect(screen.getByText(ar.reading.subtitle)).toBeInTheDocument();
+  });
+
+  it("shows what's being read right now, cover and all", async () => {
+    getBookshelf.mockResolvedValue(shelf({ currentlyReading: [book("Dune")] }));
+    await renderPage();
+
+    expect(screen.getByRole("heading", { name: en.reading.currentlyReading })).toBeInTheDocument();
+    expect(screen.getByText("Dune")).toBeInTheDocument();
+    expect(screen.getByText("Dune's author")).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: "Dune" })).toHaveAttribute(
+      "src",
+      "https://covers.test/Dune.jpg",
+    );
+  });
+
+  it("shows the shelf of finished books", async () => {
+    getBookshelf.mockResolvedValue(shelf({ read: [book("A", 4), book("B")] }));
+    await renderPage();
+
+    expect(screen.getByRole("heading", { name: en.reading.recentlyRead })).toBeInTheDocument();
+    expect(screen.getAllByRole("img")).toHaveLength(2);
+  });
+
+  it("renders a rating out of five, labelled for screen readers", async () => {
+    getBookshelf.mockResolvedValue(shelf({ read: [book("A", 4)] }));
+    const { container } = await renderPage();
+
+    const stars = screen.getByLabelText("4/5");
+    expect(stars.textContent).toBe("★".repeat(5));
+    expect(container.querySelector(".text-border")!.textContent).toBe("★");
+  });
+
+  it("leaves an unrated book unstarred", async () => {
+    getBookshelf.mockResolvedValue(shelf({ read: [book("A")] }));
+    await renderPage();
+    expect(screen.queryByLabelText(/\/5$/)).not.toBeInTheDocument();
+  });
+
+  it("links every book out to Goodreads safely", async () => {
+    getBookshelf.mockResolvedValue(shelf({ currentlyReading: [book("Now")], read: [book("Then")] }));
+    await renderPage();
+
+    for (const title of ["Now", "Then"]) {
+      const link = screen.getByRole("link", { name: new RegExp(title) });
+      expect(link).toHaveAttribute("href", `https://www.goodreads.com/book/show/${title}`);
+      expect(link).toHaveAttribute("rel", "noopener noreferrer");
+    }
+  });
+
+  it("loads covers lazily", async () => {
+    getBookshelf.mockResolvedValue(shelf({ currentlyReading: [book("Now")], read: [book("Then")] }));
+    await renderPage();
+    for (const img of screen.getAllByRole("img")) {
+      expect(img).toHaveAttribute("loading", "lazy");
+    }
+  });
+
+  it("hides an empty section rather than showing an empty heading", async () => {
+    await renderPage();
+    expect(screen.queryByRole("heading", { name: en.reading.currentlyReading })).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: en.reading.recentlyRead })).not.toBeInTheDocument();
+  });
+
+  it("always offers the full shelf on Goodreads", async () => {
+    await renderPage();
+    const link = screen.getByRole("link", { name: new RegExp(en.reading.viewOnGoodreads) });
+    expect(link).toHaveAttribute("href", site.goodreads);
+  });
+
+  it("degrades to a plain link when Goodreads can't be reached", async () => {
+    getBookshelf.mockResolvedValue(shelf({ ok: false }));
+    await renderPage();
+    expect(screen.getByRole("link", { name: new RegExp(en.reading.unavailable) })).toHaveAttribute(
+      "href",
+      site.goodreads,
+    );
+    expect(screen.queryByRole("img")).not.toBeInTheDocument();
+  });
+
+  it("takes its metadata from the dictionary", async () => {
+    expect(await generateMetadata({ params: Promise.resolve({ lang: "en" }) })).toEqual({
+      title: en.reading.title,
+      description: en.reading.subtitle,
+    });
+  });
+});

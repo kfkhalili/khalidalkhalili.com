@@ -19,6 +19,22 @@ npm install
 npm run dev      # http://localhost:3000  (redirects to /en)
 ```
 
+## Test
+
+[Vitest](https://vitest.dev) + [Testing Library](https://testing-library.com), in
+jsdom. Every page, component, and library module is covered: statements, lines,
+and functions at 100%, branches at 99% (the two misses are unreachable
+fallbacks). The thresholds are enforced, so a gap fails the run.
+
+```bash
+npm test             # run the suite
+npm run test:coverage
+```
+
+Tests sit next to what they test (`lib/i18n.test.ts`, `components/site-header.test.tsx`).
+Nothing touches the network: Goodreads and Chess.com are driven through a stubbed
+`fetch`, and the essay tests back `content/writing` with an in-memory filesystem.
+
 ## Structure
 
 ```
