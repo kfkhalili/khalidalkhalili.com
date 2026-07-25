@@ -16,8 +16,8 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [20.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+        # The version Vercel builds this site with, so CI runs what production runs.
+        node-version: [24.x]
 
     steps:
     - uses: actions/checkout@v7
