@@ -96,8 +96,40 @@ describe("generateMetadata", () => {
       const article = getExplorable("the-third-thing", lang)!;
       expect(
         await generateMetadata({ params: Promise.resolve({ lang, slug: "the-third-thing" }) }),
-      ).toEqual({ title: article.title, description: article.description });
+      ).toMatchObject({ title: article.title, description: article.description });
     }
+  });
+
+  it("makes each locale of an explorable its own canonical, pointing at the others", async () => {
+    // An explorable is genuinely translated, so all three URLs are real pages.
+    const metadata = await generateMetadata({
+      params: Promise.resolve({ lang: "de", slug: "the-third-thing" }),
+    });
+    expect(metadata.alternates).toEqual({
+      canonical: "/de/writing/the-third-thing",
+      languages: {
+        en: "/en/writing/the-third-thing",
+        de: "/de/writing/the-third-thing",
+        ar: "/ar/writing/the-third-thing",
+        "x-default": "/en/writing/the-third-thing",
+      },
+    });
+  });
+
+  it("describes the article, not the site, for the share card", async () => {
+    const article = getExplorable("technical-debt", "en")!;
+    const metadata = await generateMetadata({
+      params: Promise.resolve({ lang: "en", slug: "technical-debt" }),
+    });
+    expect(metadata.openGraph).toMatchObject({
+      type: "article",
+      title: article.title,
+      url: "/en/writing/technical-debt",
+      locale: "en_US",
+      publishedTime: article.date,
+      tags: article.tags,
+    });
+    expect(metadata.twitter).toMatchObject({ card: "summary_large_image" });
   });
 
   it("is empty for an unknown slug, so the layout's defaults stand", async () => {

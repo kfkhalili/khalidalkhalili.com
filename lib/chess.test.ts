@@ -201,6 +201,21 @@ describe("getLatestGame", () => {
     expect(await getLatestGame()).toBeNull();
   });
 
+  it.each([
+    ["a missing white player", { white: undefined }],
+    ["a missing black player", { black: undefined }],
+    ["an unnamed player", { black: { username: "", rating: 1180, result: "resigned" } }],
+    ["a rating that is not a number", { black: { username: "o", rating: null, result: "resigned" } }],
+    ["no url", { url: undefined }],
+    ["no time class", { time_class: undefined }],
+  ])("is null for a game with %s, rather than rendering it with holes", async (_label, over) => {
+    mockApi({
+      [archivesUrl]: { archives: [ARCHIVE] },
+      [ARCHIVE]: { games: [game(over)] },
+    });
+    expect(await getLatestGame()).toBeNull();
+  });
+
   it("is null when the newest game carries no PGN", async () => {
     mockApi({
       [archivesUrl]: { archives: [ARCHIVE] },

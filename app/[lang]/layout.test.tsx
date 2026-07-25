@@ -56,9 +56,11 @@ describe("generateMetadata", () => {
     expect(metadata.openGraph).toMatchObject({
       title: en.site.title,
       description: en.site.description,
-      url: site.url,
       type: "website",
     });
+    // Deliberately no `url`: pages that set no Open Graph block of their own
+    // inherit this one wholesale, and would all claim the bare origin.
+    expect(metadata.openGraph).not.toHaveProperty("url");
     expect(metadata.twitter).toMatchObject({
       card: "summary_large_image",
       title: en.site.title,

@@ -4,7 +4,42 @@ const USER = "ibnalkhalili";
 const UA = "khalidalkhalili.com personal site (contact kfkhalili)";
 export const CHESS_PROFILE_URL = `https://www.chess.com/member/${USER}`;
 
-async function api(url: string): Promise<Record<string, unknown>> {
+/**
+ * The slices of chess.com's payloads this module reads. Every field is optional
+ * because it is someone else's JSON: the readers below decide what a missing one
+ * means, rather than trusting the shape.
+ */
+type RatingSnapshot = { rating?: number };
+
+type FormatPayload = {
+  last?: RatingSnapshot;
+  best?: RatingSnapshot;
+  record?: { win?: number; loss?: number; draw?: number };
+};
+
+type StatsPayload = {
+  chess_rapid?: FormatPayload;
+  chess_blitz?: FormatPayload;
+  chess_bullet?: FormatPayload;
+  tactics?: { highest?: RatingSnapshot };
+  puzzle_rush?: { best?: { score?: number } };
+};
+
+type ArchivesPayload = { archives?: string[] };
+
+type PlayerPayload = { username?: string; rating?: number; result?: string };
+
+type GamePayload = {
+  url?: string;
+  pgn?: string;
+  time_class?: string;
+  white?: PlayerPayload;
+  black?: PlayerPayload;
+};
+
+type MonthPayload = { games?: GamePayload[] };
+
+async function api<T>(url: string): Promise<T> {
   const res = await fetch(url, {
     headers: { "user-agent": UA },
     cache: "no-store", // on-demand: live data each page load
@@ -32,13 +67,17 @@ export type ChessStats = {
   puzzleRush: number | null;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function toFormat(key: string, label: string, s: any): FormatStat | null {
-  if (!s?.last?.rating) return null;
+function toFormat(
+  key: string,
+  label: string,
+  s: FormatPayload | undefined,
+): FormatStat | null {
+  const rating = s?.last?.rating;
+  if (!rating) return null;
   return {
     key,
     label,
-    rating: s.last.rating,
+    rating,
     best: s.best?.rating ?? null,
     win: s.record?.win ?? 0,
     loss: s.record?.loss ?? 0,
@@ -48,10 +87,9 @@ function toFormat(key: string, label: string, s: any): FormatStat | null {
 
 export async function getChessStats(): Promise<ChessStats> {
   try {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const s = (await api(
+    const s = await api<StatsPayload>(
       `https://api.chess.com/pub/player/${USER}/stats`,
-    )) as any;
+    );
     const formats = [
       toFormat("rapid", "Rapid", s.chess_rapid),
       toFormat("blitz", "Blitz", s.chess_blitz),
@@ -83,24 +121,25 @@ export type ChessGame = {
 
 export async function getLatestGame(): Promise<ChessGame | null> {
   try {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const arch = (await api(
+    const arch = await api<ArchivesPayload>(
       `https://api.chess.com/pub/player/${USER}/games/archives`,
-    )) as any;
-    const archiveUrl: string | undefined =
-      arch.archives?.[arch.archives.length - 1];
+    );
+    const archiveUrl = arch.archives?.at(-1);
     if (!archiveUrl) return null;
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const month = (await api(archiveUrl)) as any;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const g = month.games?.[month.games.length - 1] as any;
-    if (!g?.pgn) return null;
+    const month = await api<MonthPayload>(archiveUrl);
+    const g = month.games?.at(-1);
+    // Everything the card renders has to be there. A game missing a player or a
+    // rating is reported as no game at all, rather than rendered with holes.
+    const white = g?.white;
+    const black = g?.black;
+    if (!g?.pgn || !g.url || !g.time_class) return null;
+    if (!white?.username || typeof white.rating !== "number") return null;
+    if (!black?.username || typeof black.rating !== "number") return null;
 
-    const youAre =
-      String(g.white.username).toLowerCase() === USER ? "white" : "black";
-    const youResult = youAre === "white" ? g.white.result : g.black.result;
-    const oppResult = youAre === "white" ? g.black.result : g.white.result;
+    const youAre = white.username.toLowerCase() === USER ? "white" : "black";
+    const youResult = youAre === "white" ? white.result : black.result;
+    const oppResult = youAre === "white" ? black.result : white.result;
     const outcome =
       youResult === "win" ? "won" : oppResult === "win" ? "lost" : "drew";
 
@@ -125,8 +164,8 @@ export async function getLatestGame(): Promise<ChessGame | null> {
     return {
       url: g.url,
       timeClass: g.time_class,
-      white: { user: g.white.username, rating: g.white.rating },
-      black: { user: g.black.username, rating: g.black.rating },
+      white: { user: white.username, rating: white.rating },
+      black: { user: black.username, rating: black.rating },
       youAre,
       outcome,
       fens,

@@ -195,10 +195,13 @@ describe("ChessPage", () => {
     expect(screen.queryByRole("heading", { name: en.chess.lastGame })).not.toBeInTheDocument();
   });
 
-  it("takes its metadata from the dictionary", async () => {
-    expect(await generateMetadata({ params: Promise.resolve({ lang: "de" }) })).toEqual({
-      title: (await import("@/dictionaries/de.json")).default.chess.title,
-      description: (await import("@/dictionaries/de.json")).default.chess.subtitle,
+  it("takes its metadata from the dictionary, and names its own address", async () => {
+    const de = (await import("@/dictionaries/de.json")).default;
+    const metadata = await generateMetadata({ params: Promise.resolve({ lang: "de" }) });
+    expect(metadata).toMatchObject({
+      title: de.chess.title,
+      description: de.chess.subtitle,
     });
+    expect(metadata.alternates?.canonical).toBe("/de/chess");
   });
 });

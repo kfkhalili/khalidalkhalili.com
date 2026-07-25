@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { readContent } from "@/lib/content";
+import { resolveLocale } from "@/lib/i18n";
+import { pageMetadata } from "@/lib/page-metadata";
 
 export async function generateMetadata({
   params,
@@ -7,8 +9,15 @@ export async function generateMetadata({
   params: Promise<{ lang: string }>;
 }): Promise<Metadata> {
   const { lang } = await params;
+  const { dict } = await resolveLocale(lang);
   const { meta } = readContent(lang, "about");
-  return { title: meta.title, description: meta.description };
+  return pageMetadata({
+    lang,
+    sub: "/about",
+    title: meta.title,
+    description: meta.description,
+    dict,
+  });
 }
 
 export default async function AboutPage({

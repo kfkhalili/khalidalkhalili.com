@@ -28,6 +28,9 @@ const FIXTURE = `<?xml version="1.0"?>
   </item>
 </channel></rss>`;
 
+/** A renderable cover, i.e. one on a host next.config.ts allows. */
+const cover = (name: string) => `https://i.gr-assets.com/x/${name}.jpg`;
+
 describe("parseShelf", () => {
   const books = parseShelf(FIXTURE);
 
@@ -56,51 +59,78 @@ describe("parseShelf", () => {
     expect(parseShelf("<rss><channel></channel></rss>")).toEqual([]);
   });
 
-  it("falls back through the cover sizes Goodreads offers", () => {
+  // next/image throws on a host next.config.ts doesn't list, which on this
+  // render-per-request page is a 500 for the whole shelf, not one broken cover.
+  it("keeps covers from any Goodreads asset subdomain", () => {
     const item = (cover: string) =>
-      `<item><title>T</title>${cover}<user_rating>1</user_rating></item>`;
+      `<rss><channel><item><title>T</title><author_name>A</author_name><book_large_image_url>${cover}</book_large_image_url><user_rating>0</user_rating><link>L</link></item></channel></rss>`;
+
+    for (const host of ["i.gr-assets.com", "s.gr-assets.com", "gr-assets.com"]) {
+      const url = `https://${host}/x/c.jpg`;
+      expect(parseShelf(item(url))[0]?.cover).toBe(url);
+    }
+  });
+
+  it("drops a cover this site is not configured to render", () => {
+    const item = (cover: string) =>
+      `<rss><channel><item><title>T</title><author_name>A</author_name><book_large_image_url>${cover}</book_large_image_url><user_rating>0</user_rating><link>L</link></item></channel></rss>`;
+
+    for (const bad of [
+      "https://images-na.ssl-images-amazon.com/x/c.jpg",
+      "https://evil.example.com/x/c.jpg",
+      "https://gr-assets.com.evil.example/x/c.jpg", // suffix must not be enough
+      "not-a-url",
+    ]) {
+      expect(parseShelf(item(bad))).toEqual([]);
+    }
+  });
+
+  it("falls back through the cover sizes Goodreads offers", () => {
+    const item = (tags: string) =>
+      `<item><title>T</title>${tags}<user_rating>1</user_rating></item>`;
     expect(
-      parseShelf(item("<book_medium_image_url>m.jpg</book_medium_image_url>"))[0].cover,
-    ).toBe("m.jpg");
+      parseShelf(item(`<book_medium_image_url>${cover("m")}</book_medium_image_url>`))[0].cover,
+    ).toBe(cover("m"));
     expect(
-      parseShelf(item("<book_image_url>s.jpg</book_image_url>"))[0].cover,
-    ).toBe("s.jpg");
+      parseShelf(item(`<book_image_url>${cover("s")}</book_image_url>`))[0].cover,
+    ).toBe(cover("s"));
     expect(
       parseShelf(
         item(
-          "<book_large_image_url>l.jpg</book_large_image_url><book_medium_image_url>m.jpg</book_medium_image_url>",
+          `<book_large_image_url>${cover("l")}</book_large_image_url>` +
+            `<book_medium_image_url>${cover("m")}</book_medium_image_url>`,
         ),
       )[0].cover,
-    ).toBe("l.jpg");
+    ).toBe(cover("l"));
   });
 
   it("decodes the rest of the entities Goodreads escapes", () => {
     const books = parseShelf(
       "<item><title>&lt;Tag&gt; &quot;Quoted&quot; &#39;s &apos;s</title>" +
-        "<book_image_url>c.jpg</book_image_url></item>",
+        `<book_image_url>${cover("c")}</book_image_url></item>`,
     );
     expect(books[0].title).toBe(`<Tag> "Quoted" 's 's`);
   });
 
   it("treats an absent or unparsable rating as unrated", () => {
     const books = parseShelf(
-      "<item><title>T</title><book_image_url>c.jpg</book_image_url>" +
+      `<item><title>T</title><book_image_url>${cover("c")}</book_image_url>` +
         "<user_rating>none</user_rating></item>" +
-        "<item><title>U</title><book_image_url>c.jpg</book_image_url></item>",
+        `<item><title>U</title><book_image_url>${cover("c")}</book_image_url></item>`,
     );
     expect(books.map((b) => b.rating)).toEqual([0, 0]);
   });
 
   it("drops items with a cover but no title", () => {
     expect(
-      parseShelf("<item><book_image_url>c.jpg</book_image_url></item>"),
+      parseShelf(`<item><book_image_url>${cover("c")}</book_image_url></item>`),
     ).toEqual([]);
   });
 });
 
 describe("getBookshelf", () => {
   const shelfXml = (title: string) =>
-    `<item><title>${title}</title><book_image_url>c.jpg</book_image_url>` +
+    `<item><title>${title}</title><book_image_url>${cover(title)}</book_image_url>` +
     `<link>https://www.goodreads.com/book/show/${title}</link></item>`;
 
   function mockShelves(current: string, read: string) {

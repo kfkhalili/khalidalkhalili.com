@@ -33,6 +33,22 @@ function field(item: string, name: string): string {
   return match ? decode(match[1]) : "";
 }
 
+/**
+ * The image hosts `next.config.ts` allows `next/image` to load. It refuses any
+ * other host by throwing, which on a page rendered per request means a 500. So
+ * a cover this site could not render is treated as no cover at all, and the
+ * book drops out the same way a cover-less one always has.
+ */
+const COVER_HOST = /^([a-z0-9-]+\.)*gr-assets\.com$/;
+
+function renderableCover(url: string): string {
+  try {
+    return COVER_HOST.test(new URL(url).hostname) ? url : "";
+  } catch {
+    return ""; // not a URL at all
+  }
+}
+
 /** Pure RSS → Book[] transform. Exposed as the test surface; no network. */
 export function parseShelf(xml: string): Book[] {
   return xml
@@ -43,10 +59,11 @@ export function parseShelf(xml: string): Book[] {
       return {
         title: field(item, "title"),
         author: field(item, "author_name"),
-        cover:
+        cover: renderableCover(
           field(item, "book_large_image_url") ||
-          field(item, "book_medium_image_url") ||
-          field(item, "book_image_url"),
+            field(item, "book_medium_image_url") ||
+            field(item, "book_image_url"),
+        ),
         rating: Number.parseInt(field(item, "user_rating") || "0", 10) || 0,
         link: field(item, "link"),
       };

@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { resolveLocale } from "@/lib/i18n";
+import { pageMetadata } from "@/lib/page-metadata";
 import { getBookshelf, type Book } from "@/lib/goodreads";
 import { site } from "@/lib/site";
 
@@ -13,7 +15,15 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { lang } = await params;
   const { dict } = await resolveLocale(lang);
-  return { title: dict.reading.title, description: dict.reading.subtitle };
+  // Not in the sitemap, but still crawled from the site nav, so it still has to
+  // say which URL it is and which locales it exists in.
+  return pageMetadata({
+    lang,
+    sub: "/reading",
+    title: dict.reading.title,
+    description: dict.reading.subtitle,
+    dict,
+  });
 }
 
 function Cover({ book }: { book: Book }) {
@@ -24,13 +34,13 @@ function Cover({ book }: { book: Book }) {
       rel="noopener noreferrer"
       className="group block"
     >
-      <div className="overflow-hidden rounded-md border border-border bg-card-2 shadow-sm">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+      <div className="relative aspect-[2/3] overflow-hidden rounded-md border border-border bg-card-2 shadow-sm">
+        <Image
           src={book.cover}
           alt={book.title}
-          loading="lazy"
-          className="aspect-[2/3] w-full object-cover transition-transform duration-300 group-hover:scale-105"
+          fill
+          sizes="(min-width: 768px) 120px, 33vw"
+          className="object-cover transition-transform duration-300 group-hover:scale-105"
         />
       </div>
       <p className="mt-2 line-clamp-2 text-xs font-medium leading-snug text-foreground">
@@ -58,13 +68,16 @@ function CurrentBook({ book }: { book: Book }) {
       rel="noopener noreferrer"
       className="group flex max-w-sm gap-4"
     >
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={book.cover}
-        alt={book.title}
-        loading="lazy"
-        className="h-28 w-auto rounded-md border border-border shadow-sm"
-      />
+      {/* Same 2:3 crop the shelf covers use, so the two agree. */}
+      <div className="relative h-28 w-[4.667rem] shrink-0 overflow-hidden rounded-md border border-border shadow-sm">
+        <Image
+          src={book.cover}
+          alt={book.title}
+          fill
+          sizes="75px"
+          className="object-cover"
+        />
+      </div>
       <div className="min-w-0 self-center">
         <p className="font-medium leading-snug text-foreground transition-colors group-hover:text-accent-strong">
           {book.title}

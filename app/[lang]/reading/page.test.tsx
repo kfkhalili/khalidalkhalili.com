@@ -44,9 +44,10 @@ describe("ReadingPage", () => {
     expect(screen.getByRole("heading", { name: en.reading.currentlyReading })).toBeInTheDocument();
     expect(screen.getByText("Dune")).toBeInTheDocument();
     expect(screen.getByText("Dune's author")).toBeInTheDocument();
-    expect(screen.getByRole("img", { name: "Dune" })).toHaveAttribute(
-      "src",
-      "https://covers.test/Dune.jpg",
+    // next/image rewrites the src through the optimizer, so assert the origin
+    // it was pointed at rather than the literal attribute.
+    expect(screen.getByRole("img", { name: "Dune" }).getAttribute("src")).toContain(
+      encodeURIComponent(book("Dune").cover),
     );
   });
 
@@ -114,10 +115,12 @@ describe("ReadingPage", () => {
     expect(screen.queryByRole("img")).not.toBeInTheDocument();
   });
 
-  it("takes its metadata from the dictionary", async () => {
-    expect(await generateMetadata({ params: Promise.resolve({ lang: "en" }) })).toEqual({
+  it("takes its metadata from the dictionary, and names its own address", async () => {
+    const metadata = await generateMetadata({ params: Promise.resolve({ lang: "en" }) });
+    expect(metadata).toMatchObject({
       title: en.reading.title,
       description: en.reading.subtitle,
     });
+    expect(metadata.alternates?.canonical).toBe("/en/reading");
   });
 });

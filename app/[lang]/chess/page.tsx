@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { resolveLocale } from "@/lib/i18n";
+import { pageMetadata } from "@/lib/page-metadata";
 import { getChessStats, getLatestGame, CHESS_PROFILE_URL } from "@/lib/chess";
 import { ChessBoard } from "@/components/chess-board";
 
@@ -13,7 +14,15 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { lang } = await params;
   const { dict } = await resolveLocale(lang);
-  return { title: dict.chess.title, description: dict.chess.subtitle };
+  // Not in the sitemap, but still crawled from the site nav, so it still has to
+  // say which URL it is and which locales it exists in.
+  return pageMetadata({
+    lang,
+    sub: "/chess",
+    title: dict.chess.title,
+    description: dict.chess.subtitle,
+    dict,
+  });
 }
 
 const OUTCOME_CLASS: Record<string, string> = {
@@ -157,6 +166,21 @@ export default async function ChessPage({
             </a>
           </div>
         </section>
+      )}
+
+      {/* Chess.com is down or rate-limiting: say so and hand over the link,
+          the way the reading page does, rather than render a bare heading. */}
+      {!stats.ok && !game && (
+        <div className="mt-12 border-t border-border pt-6">
+          <a
+            href={CHESS_PROFILE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm text-accent transition-colors hover:text-accent-strong"
+          >
+            {dict.chess.unavailable} ↗
+          </a>
+        </div>
       )}
     </div>
   );

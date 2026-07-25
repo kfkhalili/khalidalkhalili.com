@@ -97,6 +97,15 @@ describe("ArticlePage, essay branch", () => {
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Essay wins");
   });
 
+  it("files an essay in an unknown language under the default locale", async () => {
+    files[path.join(WRITING_DIR, "foreign.md")] =
+      "---\ntitle: Foreign\nlang: fr\ndate: 2026-01-01\n---\nbody";
+    const metadata = await generateMetadata({
+      params: Promise.resolve({ lang: "en", slug: "foreign" }),
+    });
+    expect(metadata.alternates?.canonical).toBe("/en/writing/foreign");
+  });
+
   it("builds a page for every essay as well as every explorable", () => {
     expect(generateStaticParams()).toEqual(
       [{ slug: "excel-sheets" }, ...EXPLORABLE_SLUGS.map((slug) => ({ slug }))],
@@ -104,13 +113,25 @@ describe("ArticlePage, essay branch", () => {
   });
 
   it("titles the page from the essay's own frontmatter", async () => {
-    expect(
-      await generateMetadata({
-        params: Promise.resolve({ lang: "de", slug: "excel-sheets" }),
-      }),
-    ).toEqual({
+    const metadata = await generateMetadata({
+      params: Promise.resolve({ lang: "de", slug: "excel-sheets" }),
+    });
+    expect(metadata).toMatchObject({
       title: "Excel Sheets",
       description: "On the sheets that grow where systems fail.",
+    });
+  });
+
+  it("canonicalises every locale of an essay to the language it was written in", async () => {
+    // An essay is one document. It renders under any locale, but that is the
+    // same prose with translated chrome, so it claims no translations.
+    const metadata = await generateMetadata({
+      params: Promise.resolve({ lang: "ar", slug: "excel-sheets" }),
+    });
+    expect(metadata.alternates).toEqual({ canonical: "/en/writing/excel-sheets" });
+    expect(metadata.openGraph).toMatchObject({
+      url: "/en/writing/excel-sheets",
+      locale: "en_US",
     });
   });
 });

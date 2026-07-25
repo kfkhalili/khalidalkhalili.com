@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
-import Home from "./page";
+import Home, { generateMetadata as homeMetadata } from "./page";
 import AboutPage, { generateMetadata as aboutMetadata } from "./about/page";
 import ProjectsPage, { generateMetadata as projectsMetadata } from "./projects/page";
 import WritingPage, { generateMetadata as writingMetadata } from "./writing/page";
@@ -73,6 +73,20 @@ describe("Home", () => {
     await renderPage(Home, { lang: "ar" });
     expect(screen.getByRole("heading", { name: ar.home.featured })).toBeInTheDocument();
   });
+
+  it("titles itself with the site's own name, unsuffixed", async () => {
+    // "Khalid Alkhalili", not "Khalid Alkhalili · Khalid": the home page is the
+    // site, not a page within it, so it opts out of the layout's template.
+    const metadata = await homeMetadata({ params: Promise.resolve({ lang: "en" }) });
+    expect(metadata.title).toEqual({ absolute: en.site.title });
+    expect(metadata.description).toBe(en.site.description);
+  });
+
+  it("names the locale root as its canonical, with no trailing slash", async () => {
+    const metadata = await homeMetadata({ params: Promise.resolve({ lang: "ar" }) });
+    expect(metadata.alternates?.canonical).toBe("/ar");
+    expect(metadata.openGraph).toMatchObject({ url: "/ar", locale: "ar_AR" });
+  });
 });
 
 describe("AboutPage", () => {
@@ -86,11 +100,25 @@ describe("AboutPage", () => {
   it("titles the page from the content's own frontmatter", async () => {
     for (const lang of LOCALES) {
       const { meta } = readContent(lang, "about");
-      expect(await aboutMetadata({ params: Promise.resolve({ lang }) })).toEqual({
+      const metadata = await aboutMetadata({ params: Promise.resolve({ lang }) });
+      expect(metadata).toMatchObject({
         title: meta.title,
         description: meta.description,
       });
     }
+  });
+
+  it("names its own address, and every locale's, for search engines", async () => {
+    const metadata = await aboutMetadata({ params: Promise.resolve({ lang: "de" }) });
+    expect(metadata.alternates).toEqual({
+      canonical: "/de/about",
+      languages: {
+        en: "/en/about",
+        de: "/de/about",
+        ar: "/ar/about",
+        "x-default": "/en/about",
+      },
+    });
   });
 });
 
@@ -111,9 +139,19 @@ describe("ProjectsPage", () => {
   });
 
   it("takes its metadata from the dictionary", async () => {
-    expect(await projectsMetadata({ params: Promise.resolve({ lang: "de" }) })).toEqual({
-      title: (await import("@/dictionaries/de.json")).default.projects.title,
-      description: (await import("@/dictionaries/de.json")).default.projects.subtitle,
+    const de = (await import("@/dictionaries/de.json")).default;
+    const metadata = await projectsMetadata({ params: Promise.resolve({ lang: "de" }) });
+    expect(metadata).toMatchObject({
+      title: de.projects.title,
+      description: de.projects.subtitle,
+    });
+    expect(metadata.alternates?.canonical).toBe("/de/projects");
+    expect(metadata.openGraph).toMatchObject({
+      type: "website",
+      title: de.projects.title,
+      url: "/de/projects",
+      siteName: de.site.title,
+      locale: "de_DE",
     });
   });
 });
@@ -144,16 +182,21 @@ describe("WritingPage", () => {
   });
 
   it("takes its metadata from the dictionary", async () => {
-    expect(await writingMetadata({ params: Promise.resolve({ lang: "en" }) })).toEqual({
+    const metadata = await writingMetadata({ params: Promise.resolve({ lang: "en" }) });
+    expect(metadata).toMatchObject({
       title: en.writing.title,
       description: en.writing.subtitle,
     });
+    expect(metadata.alternates?.canonical).toBe("/en/writing");
   });
 
   it("falls back to the default locale's copy for an unknown language", async () => {
-    expect(await writingMetadata({ params: Promise.resolve({ lang: "fr" }) })).toEqual({
+    const metadata = await writingMetadata({ params: Promise.resolve({ lang: "fr" }) });
+    expect(metadata).toMatchObject({
       title: en.writing.title,
       description: en.writing.subtitle,
     });
+    // The copy falls back, but the address is still the one that was asked for.
+    expect(metadata.alternates?.canonical).toBe("/fr/writing");
   });
 });
