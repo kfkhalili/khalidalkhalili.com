@@ -44,6 +44,15 @@
     "unavailable": "ملفي الشخصي على Chess.com"
   },
   "article": { "back": "الكتابات" },
+  "share": {
+    "label": "مشاركة",
+    "native": "مشاركة",
+    "copy": "نسخ الرابط",
+    "copied": "نُسخ الرابط",
+    "linkedin": "المشاركة على لينكدإن",
+    "x": "المشاركة على إكس",
+    "whatsapp": "المشاركة عبر واتساب"
+  },
   "footer": { "tagline": "وُجد ليُستكشَف." },
   "theme": { "toggle": "تبديل المظهر" },
   "language": { "label": "اللغة" }

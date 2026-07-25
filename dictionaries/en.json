@@ -44,6 +44,15 @@
     "unavailable": "My Chess.com profile"
   },
   "article": { "back": "Writing" },
+  "share": {
+    "label": "Share",
+    "native": "Share",
+    "copy": "Copy link",
+    "copied": "Link copied",
+    "linkedin": "Share on LinkedIn",
+    "x": "Share on X",
+    "whatsapp": "Share on WhatsApp"
+  },
   "footer": { "tagline": "Made to be explored." },
   "theme": { "toggle": "Toggle theme" },
   "language": { "label": "Language" }

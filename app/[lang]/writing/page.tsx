@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { WritingList, type Chip } from "@/components/writing-list";
 import { COLLECTIONS, getAllArticles } from "@/lib/articles";
 import { resolveLocale } from "@/lib/i18n";
+import { pageMetadata } from "@/lib/page-metadata";
 
 export async function generateMetadata({
   params,
@@ -10,7 +11,13 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { lang } = await params;
   const { dict } = await resolveLocale(lang);
-  return { title: dict.writing.title, description: dict.writing.subtitle };
+  return pageMetadata({
+    lang,
+    sub: "/writing",
+    title: dict.writing.title,
+    description: dict.writing.subtitle,
+    dict,
+  });
 }
 
 export default async function WritingPage({

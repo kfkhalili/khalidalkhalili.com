@@ -64,10 +64,15 @@ function resolve(def: ExplorableDef, lang: string): Explorable {
   return { ...resolveMeta(def, lang), Body: def.Body };
 }
 
+/** All explorables localized to `lang`, each carrying its Body. */
+export function getExplorables(lang: string): Explorable[] {
+  return DEFS.map((def) => resolve(def, lang));
+}
+
 /**
- * All explorables as plain Articles localized to `lang`: metadata only, so the
- * result can be handed to a Client Component. Use findExplorable when you need
- * the Body to render.
+ * The same list as plain Articles: metadata only, so it can be handed to a
+ * Client Component. A Body is a React component and cannot cross that boundary,
+ * so anything assembling the writing index reads from here.
  */
 export function getExplorableArticles(lang: string): Article[] {
   return DEFS.map((def) => resolveMeta(def, lang));
