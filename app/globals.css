@@ -209,6 +209,21 @@ body {
   animation: sim-pulse 0.55s ease-out;
 }
 
+/* Status-page sentences being rewritten by an escalation: a short fade so the
+   reader sees the words change and looks again. Deliberately gentler than
+   sim-pulse, which scales; whole sentences must not jump. */
+@keyframes status-rewrite {
+  from {
+    opacity: 0.25;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.status-rewrite {
+  animation: status-rewrite 0.4s ease-out;
+}
+
 /* Range input for the sim: accent thumb on a slim track, both themes. */
 .sim-range {
   -webkit-appearance: none;
@@ -249,6 +264,9 @@ body {
     scroll-behavior: auto;
   }
   .sim-pulse {
+    animation: none;
+  }
+  .status-rewrite {
     animation: none;
   }
 }

@@ -1,15 +1,30 @@
 import { DEFAULT_LOCALE, isLocale, type Locale } from "@/lib/i18n";
 
 /** One fictional status-page sentence plus the annotation revealed on tap. */
-export type StatusSentence = [string, string];
+export type StatusSentence = {
+  /** How the sentence reads while the page is yellow. */
+  calm: string;
+  /**
+   * The same claim after the reader escalates: louder, more urgent, carrying
+   * exactly as much information. Omitted for the one honest sentence, which
+   * urgency has nothing to inflate; that absence is the point.
+   */
+  loud?: string;
+  /** The annotation, identical in both states. Also the point. */
+  note: string;
+};
 
 /** Labels for the zero-bit status page, passed from the (server) body to the client widget. */
 export type StatusPageStrings = {
   heading: string;
   badge: string;
+  badgeRed: string;
+  escalate: string;
+  deescalate: string;
   hint: string;
   sentences: StatusSentence[];
   footer: string;
+  aftermath: string; // shown while the page is red: louder wording, same information
 };
 
 /** Labels for the watermelon reporting sim. */
@@ -103,7 +118,7 @@ const en: ThirdThingContent = {
   ],
   dialectIntro: `And over everything settles a way of talking. "As soon as possible." "Where it makes sense." "With highest priority." "We will have to investigate." Listen to these sentences the way an engineer listens: none of them can ever be wrong. Which sounds like a compliment until you sit with it. A sentence that cannot be wrong carries no information; it rules nothing out. Stack enough of them and a status report becomes compatible with every possible reality, which is exactly what everyone needs it to be. The philosopher <a href="${FRANKFURT}" target="_blank" rel="noopener noreferrer">Harry Frankfurt</a> defined <a href="${ON_BULLSHIT}" target="_blank" rel="noopener noreferrer">bullshit</a> as speech that is indifferent to truth. He wrote a whole monograph about it. He could have read one project status page and saved himself the trouble.`,
   dialect: [
-    `The dialect has verb tenses, which took me a while to notice. Work lives in the future: "we will look into it next week" becomes "we looked into it, and we will tackle it next month." Looking-into-it is a deliverable that produces another looking-into-it; the horizon rolls, the unit inflates, a week becomes a month. Escalation has its own genre: the escalation that delivers nothing but the fact that it happened, an escalation with a date but no consequences. And when a status badge finally turns from yellow to red, read the page underneath: the sentences are the same. The color changes, the dialect does not. Red is just yellow with a threat of violence.`,
+    `The dialect has verb tenses, which took me a while to notice. Work lives in the future: "we will look into it next week" becomes "we looked into it, and we will tackle it next month." Looking-into-it is a deliverable that produces another looking-into-it; the horizon rolls, the unit inflates, a week becomes a month. Escalation has its own genre: the escalation that delivers nothing but the fact that it happened, an escalation with a date but no consequences. And when a status badge finally turns from yellow to red, read the page underneath: the sentences say the same thing. The color changes, the dialect does not. Red is just yellow with a threat of violence.`,
     `What makes the dialect nearly impossible to fight is that it is neither the whole document nor any single person. Real status pages carry honest, well-calibrated sentences right next to the hedged ones, so you cannot object to the page, only to bits and pieces, and objecting to bits and pieces sounds like pedantry. And the dialect is a chorus, not a soloist. "It depends." "We have to investigate." "I cannot tell you." When enough mouths say these things, the dialect stops being someone's personality and becomes the room's native language, the thing newcomers absorb as onboarding.`,
     `Seniority completes the trick, and not because the veteran is bluffing. When someone with decades in the system says "it depends", it usually does depend. They have watched confident answers collapse before. The problem is that the room cannot tell earned caution from evasion and both come out as the same words. So every empty hedge in the chorus gets to borrow the veteran's credibility, and vagueness, said from high enough up, gets heard as wisdom.`,
   ],
@@ -128,34 +143,44 @@ const en: ThirdThingContent = {
   statusPage: {
     heading: `Project Aurora, weekly status`,
     badge: `YELLOW`,
+    badgeRed: `RED`,
+    escalate: `Escalate`,
+    deescalate: `Deescalate`,
     hint: `Tap a sentence to see what it rules out.`,
     sentences: [
-      [
-        `The overall goal remains to stabilize the release as soon as possible.`,
-        `A commitment with no date, no owner, and no definition of stable. Rules out nothing. Information: zero.`,
-      ],
-      [
-        `The team is working on the open defects with highest priority.`,
-        `Every team, everywhere, is working on something with highest priority. Rules out nothing. Information: zero.`,
-      ],
-      [
-        `The supplier has confirmed that the issue was escalated internally.`,
-        `The deliverable is the confirmation itself. No date, no impact, no owner. Rules out nothing. Information: zero.`,
-      ],
-      [
-        `Quick wins will be prioritized where it makes sense.`,
-        `Nobody has ever prioritized quick wins where it makes no sense. Rules out nothing. Information: zero.`,
-      ],
-      [
-        `Tuesday's migration run is done: 12 of 14 services are migrated, the last two follow next sprint.`,
-        `A date, a count, and a commitment that can fail. This sentence could be wrong, so it tells you something. The only information on the page.`,
-      ],
-      [
-        `A further alignment is planned to clarify the next steps.`,
-        `A meeting that leads to another meeting. Rules out nothing. Information: zero.`,
-      ],
+      {
+        calm: `The overall goal remains to stabilize the release as soon as possible.`,
+        loud: `The overall goal remains to stabilize the release, and this must happen without any further delay.`,
+        note: `A commitment with no date, no owner, and no definition of stable. Rules out nothing. Information: zero.`,
+      },
+      {
+        calm: `The team is working on the open defects with highest priority.`,
+        loud: `The team is working on the open defects with highest priority and full focus, right now!`,
+        note: `Every team, everywhere, is working on something with highest priority. Rules out nothing. Information: zero.`,
+      },
+      {
+        calm: `The supplier has confirmed that the issue was escalated internally.`,
+        loud: `The supplier has confirmed that the issue was escalated internally and is being treated there with the utmost urgency.`,
+        note: `The deliverable is the confirmation itself. No date, no impact, no owner. Rules out nothing. Information: zero.`,
+      },
+      {
+        calm: `Quick wins will be prioritized where it makes sense.`,
+        loud: `Quick wins will be prioritized with immediate effect wherever it makes sense.`,
+        note: `Nobody has ever prioritized quick wins where it makes no sense. Rules out nothing. Information: zero.`,
+      },
+      {
+        // The honest sentence. No loud variant: urgency has nothing to inflate.
+        calm: `Tuesday's migration run is done: 12 of 14 services are migrated, the last two follow next sprint.`,
+        note: `A date, a count, and a commitment that can fail. This sentence could be wrong, so it tells you something. The only information on the page.`,
+      },
+      {
+        calm: `A further alignment is planned to clarify the next steps.`,
+        loud: `A further alignment is planned at short notice to clarify the next steps.`,
+        note: `A meeting that leads to another meeting. Rules out nothing. Information: zero.`,
+      },
     ],
     footer: `Information content of this page: one sentence out of six. The badge summarizes the other five.`,
+    aftermath: `Red now, and louder. Five sentences gained urgency, the sixth had nothing to inflate, and not one of them claims anything new. Information content: unchanged.`,
   },
   sim: {
     pressure: `Blame pressure`,
@@ -215,7 +240,7 @@ const de: ThirdThingContent = {
   ],
   dialectIntro: `Und über allem legt sich eine Art zu reden. „So bald wie möglich.“ „Wo es sinnvoll ist.“ „Mit höchster Priorität.“ „Das müssen wir erst untersuchen.“ Hör diesen Sätzen zu, wie ein Ingenieur zuhört: Keiner von ihnen kann jemals falsch sein. Was wie ein Kompliment klingt, bis du kurz darüber nachdenkst. Ein Satz, der nicht falsch sein kann, trägt keine Information; er schließt nichts aus. Staple genug davon aufeinander, und ein Statusbericht wird mit jeder möglichen Realität vereinbar, und genau das brauchen alle von ihm. Der Philosoph <a href="${FRANKFURT}" target="_blank" rel="noopener noreferrer">Harry Frankfurt</a> definierte <a href="${ON_BULLSHIT}" target="_blank" rel="noopener noreferrer">Bullshit</a> als Rede, der die Wahrheit gleichgültig ist. Er hat eine ganze Monografie darüber geschrieben. Er hätte auch einfach eine Projekt-Statusseite lesen und sich die Mühe sparen können.`,
   dialect: [
-    `Der Dialekt hat Zeitformen, was mir erst nach einer Weile aufgefallen ist. Arbeit lebt im Futur: Aus „Wir schauen uns das nächste Woche an“ wird „Wir haben es uns angeschaut, und wir gehen es nächsten Monat an“. Das Sich-Anschauen ist ein Liefergegenstand, der ein weiteres Sich-Anschauen hervorbringt; der Horizont rollt weiter, die Einheit bläht sich auf, aus der Woche wird ein Monat. Die Eskalation hat ihr eigenes Genre: die Eskalation, die nichts liefert außer der Tatsache, dass sie stattgefunden hat, eine Eskalation mit Datum, aber ohne Folgen. Und wenn ein Status-Badge endlich von Gelb auf Rot springt, lies die Seite darunter: Die Sätze sind dieselben. Die Farbe wechselt, der Dialekt nicht. Rot ist nur Gelb mit Gewaltandrohung.`,
+    `Der Dialekt hat Zeitformen, was mir erst nach einer Weile aufgefallen ist. Arbeit lebt im Futur: Aus „Wir schauen uns das nächste Woche an“ wird „Wir haben es uns angeschaut, und wir gehen es nächsten Monat an“. Das Sich-Anschauen ist ein Liefergegenstand, der ein weiteres Sich-Anschauen hervorbringt; der Horizont rollt weiter, die Einheit bläht sich auf, aus der Woche wird ein Monat. Die Eskalation hat ihr eigenes Genre: die Eskalation, die nichts liefert außer der Tatsache, dass sie stattgefunden hat, eine Eskalation mit Datum, aber ohne Folgen. Und wenn ein Status-Badge endlich von Gelb auf Rot springt, lies die Seite darunter: Die Sätze sagen dasselbe. Die Farbe wechselt, der Dialekt nicht. Rot ist nur Gelb mit Gewaltandrohung.`,
     `Was den Dialekt fast unmöglich zu bekämpfen macht: Er ist weder das ganze Dokument noch eine einzelne Person. Echte Statusseiten tragen ehrliche, gut kalibrierte Sätze direkt neben den ausweichenden, also kannst du nicht der Seite widersprechen, nur einzelnen Stellen, und einzelnen Stellen zu widersprechen klingt nach Pedanterie. Und der Dialekt ist ein Chor, kein Solist. „Kommt darauf an.“ „Das müssen wir untersuchen.“ „Das kann ich dir nicht sagen.“ Wenn genug Münder diese Dinge sagen, hört der Dialekt auf, jemandes Persönlichkeit zu sein, und wird zur Muttersprache des Raums, zu dem, was Neue als Onboarding aufsaugen.`,
     `Seniorität vollendet den Trick, und zwar nicht, weil der Veteran blufft. Wenn jemand mit Jahrzehnten im System „kommt darauf an“ sagt, kommt es meistens wirklich darauf an. Er hat schon selbstbewusste Antworten zusammenbrechen sehen. Das Problem ist, dass der Raum verdiente Vorsicht nicht von Ausweichen unterscheiden kann, und beides kommt als dieselben drei Wörter heraus. Also darf sich jede leere Floskel im Chor die Glaubwürdigkeit des Veteranen leihen, und Vagheit, von weit genug oben gesprochen, wird als Weisheit gehört.`,
   ],
@@ -240,34 +265,44 @@ const de: ThirdThingContent = {
   statusPage: {
     heading: `Projekt Aurora, Wochenstatus`,
     badge: `GELB`,
+    badgeRed: `ROT`,
+    escalate: `Eskalieren`,
+    deescalate: `Deeskalieren`,
     hint: `Tippe auf einen Satz, um zu sehen, was er ausschließt.`,
     sentences: [
-      [
-        `Übergeordnetes Ziel bleibt, das Release so bald wie möglich zu stabilisieren.`,
-        `Eine Festlegung ohne Datum, ohne Verantwortlichen und ohne Definition von stabil. Schließt nichts aus. Information: null.`,
-      ],
-      [
-        `Das Team arbeitet mit höchster Priorität an den offenen Defekten.`,
-        `Jedes Team, überall, arbeitet mit höchster Priorität an irgendetwas. Schließt nichts aus. Information: null.`,
-      ],
-      [
-        `Der Lieferant hat bestätigt, dass das Thema intern eskaliert wurde.`,
-        `Der Liefergegenstand ist die Bestätigung selbst. Kein Datum, keine Auswirkung, kein Verantwortlicher. Schließt nichts aus. Information: null.`,
-      ],
-      [
-        `Quick Wins werden priorisiert, wo es sinnvoll ist.`,
-        `Niemand hat je Quick Wins priorisiert, wo es sinnlos ist. Schließt nichts aus. Information: null.`,
-      ],
-      [
-        `Der Migrationslauf am Dienstag ist durch: 12 von 14 Services sind fertig, die letzten zwei folgen im nächsten Sprint.`,
-        `Ein Datum, eine Zahl und eine Zusage, die scheitern kann. Dieser Satz könnte falsch sein, also sagt er dir etwas. Die einzige Information auf der Seite.`,
-      ],
-      [
-        `Ein weiteres Alignment ist geplant, um die nächsten Schritte zu klären.`,
-        `Ein Meeting, das zum nächsten Meeting führt. Schließt nichts aus. Information: null.`,
-      ],
+      {
+        calm: `Übergeordnetes Ziel bleibt, das Release so bald wie möglich zu stabilisieren.`,
+        loud: `Übergeordnetes Ziel bleibt, das Release zu stabilisieren, und dies muss ohne weitere Verzögerung geschehen.`,
+        note: `Eine Festlegung ohne Datum, ohne Verantwortlichen und ohne Definition von stabil. Schließt nichts aus. Information: null.`,
+      },
+      {
+        calm: `Das Team arbeitet mit höchster Priorität an den offenen Defekten.`,
+        loud: `Das Team arbeitet mit höchster Priorität und voller Konzentration an den offenen Defekten!`,
+        note: `Jedes Team, überall, arbeitet mit höchster Priorität an irgendetwas. Schließt nichts aus. Information: null.`,
+      },
+      {
+        calm: `Der Lieferant hat bestätigt, dass das Thema intern eskaliert wurde.`,
+        loud: `Der Lieferant hat bestätigt, dass das Thema intern eskaliert wurde und dort mit höchster Dringlichkeit behandelt wird.`,
+        note: `Der Liefergegenstand ist die Bestätigung selbst. Kein Datum, keine Auswirkung, kein Verantwortlicher. Schließt nichts aus. Information: null.`,
+      },
+      {
+        calm: `Quick Wins werden priorisiert, wo es sinnvoll ist.`,
+        loud: `Quick Wins werden mit sofortiger Wirkung priorisiert, wo es sinnvoll ist.`,
+        note: `Niemand hat je Quick Wins priorisiert, wo es sinnlos ist. Schließt nichts aus. Information: null.`,
+      },
+      {
+        // Der ehrliche Satz. Keine laute Variante: Dringlichkeit findet hier nichts.
+        calm: `Der Migrationslauf am Dienstag ist durch: 12 von 14 Services sind fertig, die letzten zwei folgen im nächsten Sprint.`,
+        note: `Ein Datum, eine Zahl und eine Zusage, die scheitern kann. Dieser Satz könnte falsch sein, also sagt er dir etwas. Die einzige Information auf der Seite.`,
+      },
+      {
+        calm: `Ein weiteres Alignment ist geplant, um die nächsten Schritte zu klären.`,
+        loud: `Ein weiteres Alignment ist kurzfristig angesetzt, um die nächsten Schritte zu klären.`,
+        note: `Ein Meeting, das zum nächsten Meeting führt. Schließt nichts aus. Information: null.`,
+      },
     ],
     footer: `Informationsgehalt dieser Seite: ein Satz von sechs. Das Badge fasst die anderen fünf zusammen.`,
+    aftermath: `Jetzt rot, und lauter. Fünf Sätze haben Dringlichkeit dazugewonnen, der sechste hatte nichts, was sich aufblähen ließe, und keiner behauptet etwas Neues. Informationsgehalt: unverändert.`,
   },
   sim: {
     pressure: `Schulddruck`,
@@ -327,7 +362,7 @@ const ar: ThirdThingContent = {
   ],
   dialectIntro: `وفوق كل شيءٍ تستقرّ طريقةٌ في الكلام. «في أقرب وقتٍ ممكن». «حيثما كان ذلك منطقيًا». «بأعلى أولوية». «سنحتاج إلى دراسة الأمر». أصغِ إلى هذه الجمل كما يصغي المهندس: لا يمكن لأيٍّ منها أن تكون خاطئةً أبدًا. وهذا يبدو مديحًا حتى تفكر قليلًا. فالجملة التي لا يمكن أن تكون خاطئة لا تحمل معلومة؛ إنها لا تستبعد شيئًا. إن أُكثر منها يصبح تقريرُ الحالة متوافقًا مع كل واقعٍ ممكن، وهذا ما يحتاجه المستمعون. عرّف الفيلسوف <a href="${FRANKFURT}" target="_blank" rel="noopener noreferrer">هاري فرانكفورت</a> <a href="${ON_BULLSHIT}" target="_blank" rel="noopener noreferrer">الهراء</a> بأنه كلامٌ لا يبالي بالحقيقة. وقد كتب في ذلك كتابًا كاملًا. وكان يكفيه أن يقرأ صفحةَ حالة مشروعٍ واحدة ليوفّر على نفسه العناء.`,
   dialect: [
-    `في هذه اللهجة العمل دائمًا في المستقبل، وقد أخذ مني وقتًا حتى انتبهت إلى ذلك. «سننظر في الأمر الأسبوع المقبل» تصير «نظرنا في الأمر، وسنعالجه الشهر المقبل». النظر في الأمر يُنتج نظرًا آخر في الأمر؛ الأفق يتدحرج، ووحدة زمن الانتظار تتضخّم، فيصير الأسبوع شهرًا. وللتصعيد بابه الخاص: تصعيدٌ لا يسلّم شيئًا سوى أنه حدث، تصعيدٌ بتاريخ، ولكن بدون عواقب. وحين تتحوّل شارة الحالة أخيرًا من الأصفر إلى الأحمر، اقرأ الصفحة تحتها: الجمل هي نفسها. يتغيّر اللون ولا تتغيّر اللهجة. فالأحمر ليس إلا أصفر مع تهديدٍ بالعنف.`,
+    `في هذه اللهجة العمل دائمًا في المستقبل، وقد أخذ مني وقتًا حتى انتبهت إلى ذلك. «سننظر في الأمر الأسبوع المقبل» تصير «نظرنا في الأمر، وسنعالجه الشهر المقبل». النظر في الأمر يُنتج نظرًا آخر في الأمر؛ الأفق يتدحرج، ووحدة زمن الانتظار تتضخّم، فيصير الأسبوع شهرًا. وللتصعيد بابه الخاص: تصعيدٌ لا يسلّم شيئًا سوى أنه حدث، تصعيدٌ بتاريخ، ولكن بدون عواقب. وحين تتحوّل شارة الحالة أخيرًا من الأصفر إلى الأحمر، اقرأ ما تحت العنوان: الجمل تقول الشيء نفسه. يتغيّر اللون ولا تتغيّر اللهجة. فالأحمر ليس إلا أصفر مع تهديدٍ بالعنف.`,
     `ما يجعل محاربة هذه اللهجة شبه مستحيلة أنها ليست صفحةَ التوثيق نفسها ولا شخصًا واحدًا بعينه. وفي صفحات مليئة بالمبهمات جملٌ صادقة دقيقة، فلا تستطيع الاعتراض على الصفحة، بل على تفاصيل صغيرة منها، والاعتراض على التفاصيل الصغيرة يبدو تنطّعًا. ثم إن اللهجة للجماعة لا لصوتٍ منفرد. «الأمر يعتمد». «علينا أن ندرس الأمر». «لا أستطيع أن أجيبك». حين يقولها ما يكفي من الأفواه، تكفّ اللهجة عن كونها طبعَ شخصٍ وتصبح لغةَ الغرفة الأم، الشيء الذي يتشرّبه الجدد في أيامهم الأولى.`,
     `ويُكمل المخضرمون الحيلة، ليس لأن المخضرم يخادع. فحين يقول من أمضى عقودًا في النظام «الأمر يعتمد»، فالأمر غالبًا يعتمد فعلًا. لقد رأى إجاباتٍ واثقة تنهار من قبل. المشكلة أن الغرفة لا تميّز الحذر المكتسَب من المراوغة، وكلاهما يخرج بالكلمات نفسها. فيستعير كلُّ مبهم من المجموعة مصداقيةَ المخضرم، ويُرى الغموض، إذا قيل من مقامٍ عالٍ، كنوعٍ من الحكمة.`,
   ],
@@ -352,34 +387,44 @@ const ar: ThirdThingContent = {
   statusPage: {
     heading: `مشروع الفجر، تقرير الحالة الأسبوعي`,
     badge: `أصفر`,
+    badgeRed: `أحمر`,
+    escalate: `صعِّد`,
+    deescalate: `أوقف التصعيد`,
     hint: `انقر على جملةٍ لترى ما تستبعده.`,
     sentences: [
-      [
-        `يبقى الهدف العام هو تحقيق استقرار الإصدار في أقرب وقتٍ ممكن.`,
-        `التزام بلا موعد، ولا مسؤول، ولا تعريفٍ للاستقرار. لا يُستبعَد شيء. المعلومة: صفر.`,
-      ],
-      [
-        `يعمل الفريق على العيوب المفتوحة بأعلى أولوية.`,
-        `كل فريقٍ في كل مكانٍ يعمل على شيءٍ ما بأعلى أولوية. لا يُستبعَد شيء. المعلومة: صفر.`,
-      ],
-      [
-        `أكّد المورّد أن المشكلة صُعِّدت داخليًا.`,
-        `الإنجاز هو التأكيد نفسه. لا موعد، ولا أثر، ولا مسؤول. لا يُستبعَد شيء. المعلومة: صفر.`,
-      ],
-      [
-        `ستُمنح المكاسب السريعة الأولوية حيثما كان ذلك منطقيًا.`,
-        `لم يمنح أحدٌ قط المكاسبَ السريعة الأولوية حين لم يكن ذلك منطقيًا. لا يُستبعَد شيء. المعلومة: صفر.`,
-      ],
-      [
-        `جرى الانتقال يوم الثلاثاء: أُنجزت 12 من أصل 14 خدمة، والخدمتان الأخيرتان تلحقان في المدة القادمة.`,
-        `موعدٌ وعددٌ والتزامٌ يمكن أن يفشل. هذه الجملة يمكن أن تكون خاطئة، ولذلك فهي تخبرك شيئًا. إنها المعلومة الوحيدة في الصفحة.`,
-      ],
-      [
-        `من المخطط عقد اجتماع مواءمةٍ إضافي لتوضيح الخطوات التالية.`,
-        `اجتماعٌ يؤدي إلى اجتماع. لا يُستبعَد شيء. المعلومة: صفر.`,
-      ],
+      {
+        calm: `يبقى الهدف العام هو تحقيق استقرار الإصدار في أقرب وقتٍ ممكن.`,
+        loud: `يبقى الهدف العام هو تحقيق استقرار الإصدار في أقرب وقتٍ ممكن، ولا شيء يتقدّم عليه إطلاقًا.`,
+        note: `التزام بلا موعد، ولا مسؤول، ولا تعريفٍ للاستقرار. لا يُستبعَد شيء. المعلومة: صفر.`,
+      },
+      {
+        calm: `يعمل الفريق على العيوب المفتوحة بأعلى أولوية.`,
+        loud: `يعمل الفريق على العيوب المفتوحة بأعلى أولوية ودون أيّ تأخير!`,
+        note: `كل فريقٍ في كل مكانٍ يعمل على شيءٍ ما بأعلى أولوية. لا يُستبعَد شيء. المعلومة: صفر.`,
+      },
+      {
+        calm: `أكّد المورّد أن المشكلة صُعِّدت داخليًا.`,
+        loud: `أكّد المورّد أن المشكلة صُعِّدت داخليًا، وأنها تُتابَع الآن على وجه الاستعجال.`,
+        note: `الإنجاز هو التأكيد نفسه. لا موعد، ولا أثر، ولا مسؤول. لا يُستبعَد شيء. المعلومة: صفر.`,
+      },
+      {
+        calm: `ستُمنح المكاسب السريعة الأولوية حيثما كان ذلك منطقيًا.`,
+        loud: `ستُمنح المكاسب السريعة الأولوية القصوى فورًا حيثما كان ذلك منطقيًا.`,
+        note: `لم يمنح أحدٌ قط المكاسبَ السريعة الأولوية حين لم يكن ذلك منطقيًا. لا يُستبعَد شيء. المعلومة: صفر.`,
+      },
+      {
+        // الجملة الصريحة. لا صيغة عالية لها: الإلحاح لا يجد فيها ما ينفخه.
+        calm: `جرى الانتقال يوم الثلاثاء: أُنجزت 12 من أصل 14 خدمة، والخدمتان الأخيرتان تلحقان في الدورة القادمة.`,
+        note: `موعدٌ وعددٌ والتزامٌ يمكن أن يفشل. هذه الجملة يمكن أن تكون خاطئة، ولذلك فهي تخبرك شيئًا. إنها المعلومة الوحيدة في الصفحة.`,
+      },
+      {
+        calm: `من المخطط عقد اجتماع مواءمةٍ إضافي لتوضيح الخطوات التالية.`,
+        loud: `من المخطط عقد اجتماع مواءمةٍ إضافي وعاجل لتوضيح الخطوات التالية.`,
+        note: `اجتماعٌ يؤدي إلى اجتماع. لا يُستبعَد شيء. المعلومة: صفر.`,
+      },
     ],
     footer: `المحتوى المعلوماتي لهذه الصفحة: جملةٌ واحدة من ستّ. أما الشارة فتلخّص الجمل الخمس الأخرى.`,
+    aftermath: `ارتفع الضغط ولم ترتفع المعلومة. تضخّمت الصياغة لا مضمونها: خمسُ جملٍ ما زالت لا تستبعد شيئًا، وواحدةٌ وحدها ما زالت تقول شيئًا.`,
   },
   sim: {
     pressure: `ضغط اللوم`,
