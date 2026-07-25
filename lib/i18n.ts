@@ -6,12 +6,18 @@ export const DEFAULT_LOCALE: Locale = "en";
 
 export const LOCALE_META: Record<
   Locale,
-  { label: string; dir: "ltr" | "rtl"; dateLocale: string }
+  { label: string; dir: "ltr" | "rtl"; dateLocale: string; ogLocale: string }
 > = {
-  en: { label: "English", dir: "ltr", dateLocale: "en-US" },
-  de: { label: "Deutsch", dir: "ltr", dateLocale: "de-DE" },
-  ar: { label: "العربية", dir: "rtl", dateLocale: "ar" },
+  // ogLocale is Open Graph's underscored `language_TERRITORY`, not BCP 47.
+  en: { label: "English", dir: "ltr", dateLocale: "en-US", ogLocale: "en_US" },
+  de: { label: "Deutsch", dir: "ltr", dateLocale: "de-DE", ogLocale: "de_DE" },
+  ar: { label: "العربية", dir: "rtl", dateLocale: "ar", ogLocale: "ar_AR" },
 };
+
+/** The Open Graph locale tag for a locale, falling back to the default's. */
+export function ogLocaleOf(locale: string): string {
+  return LOCALE_META[isLocale(locale) ? locale : DEFAULT_LOCALE].ogLocale;
+}
 
 export function isLocale(value: string): value is Locale {
   return (LOCALES as readonly string[]).includes(value);

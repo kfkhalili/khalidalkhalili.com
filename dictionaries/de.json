@@ -43,6 +43,15 @@
     "unavailable": "Mein Chess.com-Profil"
   },
   "article": { "back": "Texte" },
+  "share": {
+    "label": "Teilen",
+    "native": "Teilen",
+    "copy": "Link kopieren",
+    "copied": "Link kopiert",
+    "linkedin": "Auf LinkedIn teilen",
+    "x": "Auf X teilen",
+    "whatsapp": "Über WhatsApp teilen"
+  },
   "footer": { "tagline": "Zum Entdecken gemacht." },
   "theme": { "toggle": "Design umschalten" },
   "language": { "label": "Sprache" }
