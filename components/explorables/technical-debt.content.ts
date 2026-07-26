@@ -123,7 +123,7 @@ const de: TechDebtContent = {
   title: `Die Bremswirkung technischer Schulden sichtbar gemacht`,
   description: `Ein interaktives Modell technischer Schulden als Bremskoeffizient, der auf die Geschwindigkeit eines Teams wirkt: das Spannungsfeld zwischen schnellem Ausliefern und Investition in gutes Design.`,
   tags: [`Explorable`, `Softwaredesign`],
-  intro: `Technische Schulden werden oft als Metapher behandelt, doch sie verhalten sich eher wie ein Naturgesetz: Sie wirken wie ein Bremskoeffizient auf die Geschwindigkeit deines Teams.`,
+  intro: `Technische Schulden werden oft als Metapher behandelt, doch sie verhalten sich eher wie ein Naturgesetz: Sie sind ein Bremskoeffizient, der auf die Geschwindigkeit deines Teams wirkt.`,
   ousterhout: `In <em><a href="${BOOK}" target="_blank" rel="noopener noreferrer">A Philosophy of Software Design</a></em> definiert John Ousterhout Komplexität als „alles an der Struktur eines Softwaresystems, das es schwer verständlich und schwer änderbar macht“. Dieses interaktive Modell macht diese Reibung sichtbar. Es beleuchtet das Spannungsfeld zwischen <strong>taktischer Programmierung</strong> (jetzt schnell ausliefern) und <strong>strategischer Programmierung</strong> (in Design für die Zukunft investieren).`,
   accumulate: `Komplexität sammelt sich an, ob es uns gefällt oder nicht. Das Einzige, worauf wir Einfluss haben, ist, wie viel Zeit wir uns nehmen, um mit ihr umzugehen. Mehr Zeit für Bugfixes und Refactoring bedeutet weniger Zeit, um Features auszuliefern. Du brauchst also eine Strategie.`,
   archetypesHeading: `Vier Archetypen`,
@@ -152,7 +152,7 @@ const de: TechDebtContent = {
       `Eine Moral von 85–90 % ist die realistische Obergrenze. Die Lücke zwischen 85 und 100 steht für <strong>professionelle Disziplin</strong>: die notwendige Reibung durch Tests, Dokumentation und Code-Reviews. „Rundum glücklich“ heißt meist, die harten Teile auszulassen.`,
     ],
     [
-      `Schulden verzinsen sich`,
+      `Schulden kosten Zinsen`,
       `Technische Schulden liegen nicht einfach herum; sie verzinsen sich. Mit wachsender Komplexität steigt die „Steuer“ auf jede neue Codezeile. Wartest du zu lange, wird der <strong>Break-Even-Punkt</strong> fürs Refactoring unerreichbar hoch.`,
     ],
     [
