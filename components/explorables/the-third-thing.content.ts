@@ -312,7 +312,7 @@ const de: ThirdThingContent = {
     pressureAria: `Schulddruck in Prozent`,
     presets: [`Ohne Schuldzuweisung`, `Alltagsbetrieb`, `Wassermelone`, `Hexenjagd`],
     bars: [`Tatsächlicher Zustand`, `Berichteter Zustand`],
-    badgeLabel: `Statusampel`,
+    badgeLabel: `Statusanzeige`,
     badges: { green: `IM PLAN`, yellow: `GEFÄHRDET`, red: `KRITISCH` },
     sprint: `Sprint`,
     running: `● läuft`,
