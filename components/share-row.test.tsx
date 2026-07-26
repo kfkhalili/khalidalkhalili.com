@@ -123,6 +123,14 @@ describe("ShareRow, on a device with a share sheet", () => {
     expect(screen.queryByRole("button", { name: labels.copy })).not.toBeInTheDocument();
   });
 
+  it("says the word once: the button is the label", () => {
+    // The row's heading and the button carry the same word in every locale, so
+    // rendering both reads "Share Share" on the phones that get the sheet.
+    renderRow();
+    expect(labels.label).toBe(labels.native);
+    expect(screen.getAllByText(labels.label)).toHaveLength(1);
+  });
+
   it("hands the article to the sheet", async () => {
     renderRow();
     await user().click(screen.getByRole("button", { name: labels.native }));
