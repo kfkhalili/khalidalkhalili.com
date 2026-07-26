@@ -24,7 +24,9 @@ export function ZeroBitStatus({ strings }: { strings: StatusPageStrings }) {
         <span className="font-semibold text-foreground">{strings.heading}</span>
         <span className="flex items-center gap-2">
           <span
-            className="inline-flex items-center justify-center rounded-full px-2.5 pt-1 pb-1 font-mono text-xs font-semibold leading-none transition-colors duration-300 rtl:pt-1.5 rtl:pb-0.5"
+            // Arabic needs its font's own line box: leading-none clips the
+            // marks and descenders that sit outside the em square.
+            className="inline-flex items-center justify-center rounded-full px-2.5 pt-1 pb-1 font-mono text-xs font-semibold leading-none transition-colors duration-300 rtl:pt-0.5 rtl:pb-0.5 rtl:leading-[normal]"
             style={{
               backgroundColor: escalated ? "var(--sim-bad)" : "var(--sim-warn)",
               color: escalated ? "#ffffff" : "#1b1b19",
