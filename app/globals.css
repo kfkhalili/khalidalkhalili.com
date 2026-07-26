@@ -206,8 +206,13 @@ body {
    top of its own box: tight leading clips it, and even padding looks lopsided
    because the overshoot is all at the top. How far it rides high depends on the
    word (marks and tall letters push it further), so there is no offset that
-   centres every string. Latin keeps the compact box; RTL gets the font's own
-   line box, more room, and slightly more of that room above the text.
+   centres every string. Latin keeps the compact box; RTL gets a taller line
+   box, more room, and slightly more of that room above the text.
+
+   That RTL line box is pinned to a length rather than left at `normal`, which
+   resolves from whichever face leads the stack: Inter's normal is 1px shorter
+   than Geist Mono's, so otherwise a control's height would depend on which sim
+   it happened to sit in.
 
    Reordering the stack to put the Arabic face first would fix the metrics, but
    this subset also carries Latin (U+0-FF), so it would capture the numerals and
@@ -229,7 +234,7 @@ body {
 [dir="rtl"] .sim-badge,
 [dir="rtl"] .sim-control {
   padding-block: 7px 5px;
-  line-height: normal;
+  line-height: 1rem;
 }
 
 /* ---------------------------------------------------------------------------
