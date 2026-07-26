@@ -24,6 +24,11 @@ const TONE_BG: Record<Tone, string> = {
   bad: "var(--sim-bad)",
 };
 
+// One ink for all three fills; white falls under AA on the green and the red.
+// A literal rather than a token: the fills do not flip with the theme, so the
+// text on them must not either.
+const TONE_FG = "#1b1b19";
+
 function Bar({
   label,
   value,
@@ -42,7 +47,7 @@ function Bar({
           style={{
             height: `${Math.max(MIN_BAR_PCT, value)}%`,
             backgroundColor: TONE_BG[tone],
-            color: tone === "warn" ? "#1b1b19" : "#ffffff",
+            color: TONE_FG,
           }}
         >
           {/* Remounting via key replays the pulse animation on each change. */}

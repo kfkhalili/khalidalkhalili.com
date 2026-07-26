@@ -23,6 +23,12 @@ const TONE_BG: Record<Tone, string> = {
   bad: "var(--sim-bad)",
 };
 
+// One ink for all three fills. White reads at 2.5:1 on the green and 3.8:1 on
+// the red, both under AA; this ink clears it on all three (6.8, 4.6, 8.0). It
+// is a literal rather than a token because the fills do not flip with the
+// theme, so the text on them must not either.
+const TONE_FG = "#1b1b19";
+
 function Bar({
   label,
   value,
@@ -41,7 +47,7 @@ function Bar({
           style={{
             height: `${Math.max(MIN_BAR_PCT, value)}%`,
             backgroundColor: TONE_BG[tone],
-            color: tone === "warn" ? "#1b1b19" : "#ffffff",
+            color: TONE_FG,
           }}
         >
           {/* Remounting via key replays the pulse animation on each change. */}
@@ -137,7 +143,7 @@ export function WatermelonSim({ strings }: { strings: WatermelonStrings }) {
           className="sim-badge font-semibold transition-colors duration-300"
           style={{
             backgroundColor: TONE_BG[badgeTone],
-            color: badgeTone === "warn" ? "#1b1b19" : "#ffffff",
+            color: TONE_FG,
           }}
         >
           {badgeText}
