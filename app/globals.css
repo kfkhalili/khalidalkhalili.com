@@ -17,10 +17,17 @@
   --accent-strong: #0b7f5f;
   --accent-fg: #ffffff;
 
-  /* Simulation status colors (shared across themes for consistent meaning). */
-  --sim-good: #10b981;
-  --sim-warn: #f59e0b;
-  --sim-bad: #ef4444;
+  /* Simulation status fills, and the one ink that sits on all three. The hues
+     carry the meaning and hold across themes; the shades do not. A fill bright
+     enough to read against paper needs dark text, and dark text on a neon pill
+     looks wrong on a dark page, so each theme gets its own pairing. The ink is
+     always the page's own text colour: anything brighter reads as a hotter
+     white than the rest of the page and the badge jars against it. Every
+     pairing clears 4.5:1 (the ratio is noted beside each fill). */
+  --sim-good: #10b981; /* 6.8 */
+  --sim-warn: #f59e0b; /* 8.0 */
+  --sim-bad: #ef4444; /* 4.6 */
+  --sim-fg: var(--foreground);
 }
 
 .dark {
@@ -34,6 +41,11 @@
   --accent: #34d399;
   --accent-strong: #6ee7b7;
   --accent-fg: #052018;
+
+  /* Deeper fills, so the page's own ink reads on them without going white. */
+  --sim-good: #047857; /* 4.7 */
+  --sim-warn: #a4490a; /* 5.1 */
+  --sim-bad: #c92222; /* 4.8 */
 }
 
 @theme inline {

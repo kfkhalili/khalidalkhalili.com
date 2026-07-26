@@ -24,10 +24,8 @@ const TONE_BG: Record<Tone, string> = {
   bad: "var(--sim-bad)",
 };
 
-// One ink for all three fills; white falls under AA on the green and the red.
-// A literal rather than a token: the fills do not flip with the theme, so the
-// text on them must not either.
-const TONE_FG = "#1b1b19";
+// One ink for all three fills, themed alongside them in globals.css.
+const TONE_FG = "var(--sim-fg)";
 
 function Bar({
   label,
