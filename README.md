@@ -56,10 +56,13 @@ app/
       [slug]/page.tsx          # one route, two adapters: essays and explorables
       [slug]/opengraph-image.tsx # the share card, drawn per article per locale
   globals.css
-  icon.svg
+  favicon.ico                  # the KA mark, 16/32/48 in one file
+  icon0.png, icon1.png         # the same mark at 96 and 192
+  apple-icon.png               # 180, square and opaque: iOS masks it itself
   robots.ts                    # → /robots.txt
   sitemap.ts                   # → /sitemap.xml (every indexable page; not reading/chess)
 assets/fonts/                  # TTFs for the share card (satori can't use next/font)
+assets/khatam-star-icon.svg    # the favicon before the KA mark; kept, not served
 archive/mindful-mantra/        # images from the retired blog; kept, not served (see its README)
 components/explorables/        # each explorable's body + its per-locale copy
 proxy.ts                       # locale detection + redirect (Next 16 middleware convention)
