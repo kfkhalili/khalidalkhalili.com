@@ -181,6 +181,15 @@ body {
   color: var(--muted);
   font-size: 0.97em;
 }
+/* An interactive artifact and its caption are one unit. The caption sits tight
+   against the machine (its own margin), and the pair stands further off from
+   the essay than paragraphs stand from each other. */
+.prose > figure {
+  margin-top: 2.4em;
+}
+.prose > figure + * {
+  margin-top: 2.4em;
+}
 .prose iframe {
   width: 100%;
   border-radius: 12px;

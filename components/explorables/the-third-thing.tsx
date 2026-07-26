@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { WatermelonSim } from "@/components/watermelon-sim";
 import { ZeroBitStatus } from "@/components/zero-bit-status";
 import { ContractDiagnostic } from "@/components/contract-diagnostic";
@@ -6,6 +7,30 @@ import { getThirdThingContent } from "@/components/explorables/the-third-thing.c
 /** Render a block of authored (trusted) HTML as the given prose element. */
 function Html({ as: Tag = "p", html }: { as?: "p" | "li"; html: string }) {
   return <Tag dangerouslySetInnerHTML={{ __html: html }} />;
+}
+
+/**
+ * An interactive artifact with the line that operates it. The caption is not
+ * essay prose: it addresses the reader about the machine, so it wears the
+ * machine's monospace and sits tight against it rather than in the column's
+ * reading rhythm.
+ */
+function Artifact({
+  caption,
+  children,
+}: {
+  caption: string;
+  children: ReactNode;
+}) {
+  return (
+    <figure>
+      <figcaption
+        className="mb-3 font-mono text-sm leading-relaxed text-muted"
+        dangerouslySetInnerHTML={{ __html: caption }}
+      />
+      {children}
+    </figure>
+  );
 }
 
 /**
@@ -43,9 +68,9 @@ export function ThirdThingArticle({ lang }: { lang: string }) {
         <Html key={i} html={p} />
       ))}
 
-      <Html html={c.simIntro} />
-
-      <WatermelonSim strings={c.sim} />
+      <Artifact caption={c.simCaption}>
+        <WatermelonSim strings={c.sim} />
+      </Artifact>
 
       <Html html={c.build} />
 
@@ -56,6 +81,8 @@ export function ThirdThingArticle({ lang }: { lang: string }) {
       <Html html={c.audit} />
 
       <ContractDiagnostic strings={c.diagnostic} />
+
+      <Html html={c.walkTheFloor} />
 
       {c.closing.map((p, i) => (
         <Html key={i} html={p} />

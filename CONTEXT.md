@@ -29,6 +29,15 @@ interactive explorable explanations, essays, and notes.
   sim** answers whatever the reader has entered so far and holds still until
   they change it (the contract diagnostic). Every sim splits the same way: a
   **Sim model** that is pure and has no Locale, and a view that renders it.
+- **Sim caption**: the line that tells the reader how to work a Sim ("you can run
+  this machine yourself"). It addresses the machine rather than continuing the
+  argument, so it is not set as essay prose: caption and Sim render as one
+  `figure`, the caption in monospace, tight against the machine and standing off
+  from the column. Only a Sim that needs operating gets one; prose that merely
+  happens to precede a Sim stays prose, and a Sim that says what it is needs no
+  caption at all. What the Sim itself asks, the prose leaves to it: the contract
+  diagnostic asks the four questions, so the essay points the reader at them
+  rather than listing them first.
 - **Locale**: a supported language (`en`, `de`, `ar`). Arabic is right-to-left.
 - **Page copy**: the chrome-adjacent prose (home hero, about) authored per locale
   in `content/<locale>/*.md`, falling back to the default locale.

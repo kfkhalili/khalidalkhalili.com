@@ -67,9 +67,9 @@ export function ShareRow({
 
   return (
     <div className="mt-16 flex flex-wrap items-center gap-x-5 gap-y-3 border-t border-border pt-6">
-      <span className="font-mono text-sm text-faint">{labels.label}</span>
-
       {canShare ? (
+        // No leading label here: the button says the same word, and a row that
+        // reads "Share Share" is what a header plus a button gets you.
         <button
           type="button"
           onClick={() => navigator.share({ title, url }).catch(() => {})}
@@ -79,31 +79,35 @@ export function ShareRow({
           {labels.native}
         </button>
       ) : (
-        <div className="flex items-center gap-4">
-          {SHARE_TARGETS.map((target) => (
-            <a
-              key={target}
-              href={shareIntent(target, { url, title })}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={labels[target]}
-              title={labels[target]}
-              className={linkClass}
-            >
-              <Glyph path={ICON[target]} />
-            </a>
-          ))}
+        <>
+          <span className="font-mono text-sm text-faint">{labels.label}</span>
 
-          <button
-            type="button"
-            onClick={copy}
-            aria-label={copied ? labels.copied : labels.copy}
-            title={copied ? labels.copied : labels.copy}
-            className={copied ? "text-accent-strong" : linkClass}
-          >
-            {copied ? <CheckIcon /> : <LinkIcon />}
-          </button>
-        </div>
+          <div className="flex items-center gap-4">
+            {SHARE_TARGETS.map((target) => (
+              <a
+                key={target}
+                href={shareIntent(target, { url, title })}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={labels[target]}
+                title={labels[target]}
+                className={linkClass}
+              >
+                <Glyph path={ICON[target]} />
+              </a>
+            ))}
+
+            <button
+              type="button"
+              onClick={copy}
+              aria-label={copied ? labels.copied : labels.copy}
+              title={copied ? labels.copied : labels.copy}
+              className={copied ? "text-accent-strong" : linkClass}
+            >
+              {copied ? <CheckIcon /> : <LinkIcon />}
+            </button>
+          </div>
+        </>
       )}
 
       {/* Announced on copy without moving the row's layout. */}
