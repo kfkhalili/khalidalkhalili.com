@@ -242,7 +242,7 @@ const de: ThirdThingContent = {
   ],
   dialectIntro: `Und über alles legt sich eine Art zu reden. „Schnellstmöglich.“ „Wo es sinnvoll ist.“ „Mit höchster Priorität.“ „Das müssen wir noch prüfen.“ Hör diesen Sätzen zu, wie ein Ingenieur zuhört: Keiner von ihnen kann jemals falsch sein. Das klingt wie ein Kompliment, bis du kurz darüber nachdenkst. Ein Satz, der nicht falsch sein kann, trägt keine Information; er schließt nichts aus. Staple genug davon aufeinander, und ein Statusbericht wird mit jeder möglichen Realität vereinbar, und genau das brauchen alle von ihm. Der Philosoph <a href="${FRANKFURT}" target="_blank" rel="noopener noreferrer">Harry Frankfurt</a> definierte <a href="${ON_BULLSHIT}" target="_blank" rel="noopener noreferrer">Bullshit</a> als Rede, der die Wahrheit gleichgültig ist. Er hat eine ganze Monografie darüber geschrieben. Er hätte auch einfach eine Projektstatusseite lesen und sich die Mühe sparen können.`,
   dialect: [
-    `Der Dialekt hat Zeitformen, was mir erst nach einer Weile aufgefallen ist. Arbeit lebt im Futur: Aus „Wir schauen uns das nächste Woche an“ wird „Wir haben es uns angeschaut, und wir gehen es nächsten Monat an“. Das Sich-Anschauen ist ein Liefergegenstand, der ein weiteres Sich-Anschauen hervorbringt; der Horizont rollt weiter, das Zeitmaß bläht sich auf, aus der Woche wird ein Monat. Die Eskalation hat ihr eigenes Genre: die Eskalation, die nichts liefert außer der Tatsache, dass sie stattgefunden hat, eine Eskalation mit Datum, aber ohne Folgen. Und wenn die Statusampel endlich von Gelb auf Rot springt, lies die Seite darunter: Die Sätze sagen dasselbe. Die Farbe wechselt, der Dialekt nicht. Rot ist nur Gelb mit Gewaltandrohung.`,
+    `Der Dialekt hat Zeitformen, was mir erst nach einer Weile aufgefallen ist. Arbeit lebt im Futur: Aus „Wir schauen uns das nächste Woche an“ wird „Wir haben es uns angeschaut, und wir gehen es nächsten Monat an“. Das Sich-Anschauen ist ein Liefergegenstand, der ein weiteres Sich-Anschauen hervorbringt; der Horizont rollt weiter, das Zeitmaß bläht sich auf, aus der Woche wird ein Monat. Die Eskalation hat ihr eigenes Genre: die Eskalation, die nichts liefert außer der Tatsache, dass sie stattgefunden hat, eine Eskalation mit Datum, aber ohne Folgen. Und wenn die Statusanzeige endlich von Gelb auf Rot springt, lies die Seite darunter: Die Sätze sagen dasselbe. Die Farbe wechselt, der Dialekt nicht. Rot ist nur Gelb mit Gewaltandrohung.`,
     `Fast unmöglich zu bekämpfen ist der Dialekt deshalb, weil er weder das ganze Dokument ist noch eine einzelne Person. Auf echten Statusseiten stehen ehrliche, gut kalibrierte Sätze direkt neben den ausweichenden, also kannst du nicht der Seite widersprechen, nur einzelnen Stellen, und einzelnen Stellen zu widersprechen klingt nach Pedanterie. Und der Dialekt ist ein Chor, kein Solist. „Kommt darauf an.“ „Das müssen wir noch prüfen.“ „Das kann ich dir nicht sagen.“ Wenn diese Sätze aus genug Mündern kommen, hört der Dialekt auf, jemandes Persönlichkeit zu sein, und wird zur Muttersprache des Projekts, zu dem, was Neue bei der Einarbeitung aufsaugen.`,
     `Erfahrung vollendet den Trick, und zwar nicht, weil der Veteran blufft. Wenn jemand, der das System seit zwanzig Jahren kennt, „kommt darauf an“ sagt, kommt es meistens wirklich darauf an. Wer so lange dabei ist, hat schon zu viele vollmundige Antworten zusammenbrechen sehen. Das Problem ist, dass niemand im Raum verdiente Vorsicht von Ausweichen unterscheiden kann, und beides kommt als dieselben drei Wörter heraus. Also darf sich jede leere Floskel im Chor die Glaubwürdigkeit des Veteranen leihen, und Unverbindlichkeit, von weit genug oben gesprochen, wird als Weisheit gehört.`,
   ],
@@ -304,7 +304,7 @@ const de: ThirdThingContent = {
         note: `Ein Meeting, das zum nächsten Meeting führt. Schließt nichts aus. Information: null.`,
       },
     ],
-    footer: `Informationsgehalt dieser Seite: einer von sechs Sätzen. Die Ampel fasst die anderen fünf zusammen.`,
+    footer: `Informationsgehalt dieser Seite: einer von sechs Sätzen. Die Anzeige fasst die anderen fünf zusammen.`,
     aftermath: `Jetzt rot, und lauter. Fünf Sätze haben Dringlichkeit dazugewonnen, der sechste hatte nichts, was sich aufblähen ließe, und keiner behauptet etwas Neues. Informationsgehalt: unverändert.`,
   },
   sim: {
@@ -320,7 +320,7 @@ const de: ThirdThingContent = {
     log: {
       honest: `Die Berichte decken sich mit der Realität. Probleme werden behoben, solange sie klein sind.`,
       drifting: `Die Berichte beginnen zu beschönigen. Kleine Probleme werden nicht gemeldet, und ungemeldete Probleme werden nicht behoben.`,
-      watermelon: `Außen grün, innen rot. Die Ampel steht auf Grün. Das Projekt nicht.`,
+      watermelon: `Außen grün, innen rot. Die Anzeige steht auf Grün. Das Projekt nicht.`,
       collapse: `Die Realität holte das Projekt trotzdem ein. Das tut sie immer, nur später, und größer.`,
       recovery: `Die Berichte sind wieder ehrlich, und die Zahlen sind hässlich. Erholung beginnt langsam, dann beschleunigt sie sich.`,
     },
