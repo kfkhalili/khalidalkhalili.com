@@ -119,8 +119,33 @@ describe("ThirdThingArticle", () => {
     const indexOf = (needle: string) => order.findIndex((t) => t.includes(needle));
 
     expect(indexOf(c.statusPage.heading)).toBeGreaterThan(indexOf(text(c.dialectIntro)));
-    expect(indexOf(c.sim.badgeLabel)).toBeGreaterThan(indexOf(text(c.simIntro)));
+    expect(indexOf(c.sim.badgeLabel)).toBeGreaterThan(indexOf(text(c.why[c.why.length - 1])));
     expect(indexOf(c.diagnostic.heading)).toBeGreaterThan(indexOf(text(c.audit)));
+  });
+
+  it("captions the sim with the line that operates it, in the machine's voice", () => {
+    const c = getThirdThingContent("en");
+    const { container } = render(<ThirdThingArticle lang="en" />);
+    const figures = [...container.querySelectorAll("figure")];
+
+    // Caption and machine are one unit, so the line reads as a label rather
+    // than as another paragraph of the essay. Only the sim needs one: the other
+    // two artifacts say what they are.
+    expect(figures).toHaveLength(1);
+    const figcaption = figures[0].querySelector("figcaption")!;
+    expect(figcaption).toHaveTextContent(text(c.simCaption));
+    expect(figcaption.className).toContain("font-mono");
+    expect(figures[0].textContent).toContain(c.sim.badgeLabel);
+  });
+
+  it.each(LOCALES)("leaves the four questions to the diagnostic in %s", (locale) => {
+    // The machine asks them with buttons, so the prose that hands off to it
+    // names the count and stays out of the enumeration.
+    const c = getThirdThingContent(locale);
+    const prose = text(c.audit).toLowerCase();
+    for (const question of c.diagnostic.questions) {
+      expect(prose).not.toContain(question.q.replace(/[?؟]/g, "").toLowerCase());
+    }
   });
 
   it("renders the authored links rather than escaping them", () => {
