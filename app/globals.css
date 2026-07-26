@@ -197,6 +197,42 @@ body {
 }
 
 /* ---------------------------------------------------------------------------
+   The sims' small controls: status pills and the buttons beside them.
+
+   A line box is sized from the first font in the family list, which here is
+   always a Latin face, while Arabic glyphs are drawn by Noto Sans Arabic, whose
+   ascent runs about a third taller. At 12px the Latin face reserves 12px above
+   the baseline and Arabic ink wants up to 13.9px, so the text overshoots the
+   top of its own box: tight leading clips it, and even padding looks lopsided
+   because the overshoot is all at the top. How far it rides high depends on the
+   word (marks and tall letters push it further), so there is no offset that
+   centres every string. Latin keeps the compact box; RTL gets the font's own
+   line box, more room, and slightly more of that room above the text.
+
+   Reordering the stack to put the Arabic face first would fix the metrics, but
+   this subset also carries Latin (U+0-FF), so it would capture the numerals and
+   the mono digits too. See the note on adjustFontFallback in app/[lang]/layout.
+--------------------------------------------------------------------------- */
+.sim-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  padding: 4px 10px;
+  line-height: 1;
+}
+.sim-control {
+  border-radius: 6px;
+  border-width: 1px;
+  padding: 4px 10px;
+}
+[dir="rtl"] .sim-badge,
+[dir="rtl"] .sim-control {
+  padding-block: 7px 5px;
+  line-height: normal;
+}
+
+/* ---------------------------------------------------------------------------
    Tech-debt sim: value pulse (re-triggered by remounting the number via key).
 --------------------------------------------------------------------------- */
 @keyframes sim-pulse {
