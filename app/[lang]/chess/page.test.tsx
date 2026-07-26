@@ -40,7 +40,7 @@ const stats = (overrides: Partial<ChessStats> = {}): ChessStats => ({
 const game = (overrides: Partial<ChessGame> = {}): ChessGame => ({
   url: "https://www.chess.com/game/live/1",
   timeClass: "rapid",
-  white: { user: "ibnalkhalili", rating: 1200 },
+  white: { user: "kfkhalili", rating: 1200 },
   black: { user: "opponent", rating: 1180 },
   youAre: "white",
   outcome: "won",
@@ -70,7 +70,7 @@ describe("ChessPage", () => {
     await renderPage("ar");
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(ar.chess.title);
     const profile = screen.getByRole("link", { name: ar.chess.viewProfile });
-    expect(profile).toHaveAttribute("href", "https://www.chess.com/member/ibnalkhalili");
+    expect(profile).toHaveAttribute("href", "https://www.chess.com/member/kfkhalili");
     expect(profile).toHaveAttribute("rel", "noopener noreferrer");
   });
 
@@ -143,7 +143,7 @@ describe("ChessPage", () => {
     await renderPage();
 
     expect(screen.getByRole("heading", { name: en.chess.lastGame })).toBeInTheDocument();
-    expect(lastGame().getByText("ibnalkhalili")).toBeInTheDocument();
+    expect(lastGame().getByText("kfkhalili")).toBeInTheDocument();
     expect(lastGame().getByText("opponent")).toBeInTheDocument();
     expect(screen.getByText("rapid")).toBeInTheDocument();
     expect(screen.getByText(en.chess.won)).toBeInTheDocument();
@@ -153,16 +153,16 @@ describe("ChessPage", () => {
   it("weights my own name so the reader can tell the sides apart", async () => {
     getLatestGame.mockResolvedValue(game());
     await renderPage();
-    expect(lastGame().getByText("ibnalkhalili").className).toContain("font-semibold");
+    expect(lastGame().getByText("kfkhalili").className).toContain("font-semibold");
     expect(lastGame().getByText("opponent").className).toContain("text-muted");
   });
 
   it("recognizes my name whatever case chess.com returns it in", async () => {
     getLatestGame.mockResolvedValue(
-      game({ white: { user: "Opponent", rating: 1300 }, black: { user: "IbnAlKhalili", rating: 1250 } }),
+      game({ white: { user: "Opponent", rating: 1300 }, black: { user: "KFKhalili", rating: 1250 } }),
     );
     await renderPage();
-    expect(screen.getByText("IbnAlKhalili").className).toContain("font-semibold");
+    expect(screen.getByText("KFKhalili").className).toContain("font-semibold");
   });
 
   it.each(["won", "lost", "drew"] as const)("styles a %s game distinctly", async (outcome) => {

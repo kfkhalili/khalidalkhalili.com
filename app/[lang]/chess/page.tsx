@@ -7,6 +7,7 @@ import {
   hasRatings,
   isReplayable,
   CHESS_PROFILE_URL,
+  CHESS_USER,
 } from "@/lib/chess";
 import { ChessBoard } from "@/components/chess-board";
 
@@ -51,11 +52,10 @@ export default async function ChessPage({
   const showRatings = hasRatings(stats);
   const showGame = isReplayable(game);
 
-  const you = "ibnalkhalili";
   const player = (name: string, rating: number) => (
     <span
       className={
-        name.toLowerCase() === you
+        name.toLowerCase() === CHESS_USER
           ? "font-semibold text-foreground"
           : "text-muted"
       }
@@ -85,7 +85,7 @@ export default async function ChessPage({
             <rect x="1" y="1" width="5" height="5" fill="currentColor" opacity="0.6" />
             <rect x="6" y="6" width="5" height="5" fill="currentColor" opacity="0.6" />
           </svg>
-          {you}
+          {CHESS_USER}
           <span className="text-faint">↗</span>
         </a>
       </header>

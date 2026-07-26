@@ -10,13 +10,13 @@ import {
 } from "./chess";
 import type { ChessGame, ChessStats, GamePayload, StatsPayload } from "./chess";
 
-const USER = "ibnalkhalili";
+const USER = "kfkhalili";
 const ARCHIVE = `https://api.chess.com/pub/player/${USER}/games/archives/2026/07`;
 
 // A four-ply game, enough to prove the PGN is replayed into positions.
 const PGN = `[Event "Live Chess"]
 [Site "Chess.com"]
-[White "ibnalkhalili"]
+[White "kfkhalili"]
 [Black "opponent"]
 [Result "1-0"]
 
@@ -29,7 +29,7 @@ const GAME: GamePayload = {
   url: "https://www.chess.com/game/live/1",
   time_class: "rapid",
   pgn: PGN,
-  white: { username: "ibnalkhalili", rating: 1200, result: "win" },
+  white: { username: "kfkhalili", rating: 1200, result: "win" },
   black: { username: "opponent", rating: 1180, result: "resigned" },
 };
 
@@ -123,7 +123,7 @@ describe("getLatestGame", () => {
     expect(latest).toMatchObject({
       url: "https://www.chess.com/game/live/1",
       timeClass: "rapid",
-      white: { user: "ibnalkhalili", rating: 1200 },
+      white: { user: "kfkhalili", rating: 1200 },
       black: { user: "opponent", rating: 1180 },
       youAre: "white",
       outcome: "won",
@@ -212,7 +212,7 @@ describe("parseGame", () => {
     const parsed = parseGame(game())!;
     expect(parsed.url).toBe("https://www.chess.com/game/live/1");
     expect(parsed.timeClass).toBe("rapid");
-    expect(parsed.white).toEqual({ user: "ibnalkhalili", rating: 1200 });
+    expect(parsed.white).toEqual({ user: "kfkhalili", rating: 1200 });
     expect(parsed.black).toEqual({ user: "opponent", rating: 1180 });
   });
 
@@ -222,7 +222,7 @@ describe("parseGame", () => {
       parseGame(
         game({
           white: { username: "Opponent", rating: 1300, result: "resigned" },
-          black: { username: "IbnAlKhalili", rating: 1250, result: "win" },
+          black: { username: "KFKhalili", rating: 1250, result: "win" },
         }),
       )!.youAre,
     ).toBe("black");

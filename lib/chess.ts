@@ -1,8 +1,10 @@
 import { Chess } from "chess.js";
 
-const USER = "ibnalkhalili";
+// Lowercase, because both readers of it compare against a lowercased name:
+// chess.com echoes the handle back in whatever case it was typed in.
+export const CHESS_USER = "kfkhalili";
 const UA = "khalidalkhalili.com personal site (contact kfkhalili)";
-export const CHESS_PROFILE_URL = `https://www.chess.com/member/${USER}`;
+export const CHESS_PROFILE_URL = `https://www.chess.com/member/${CHESS_USER}`;
 
 /**
  * The slices of chess.com's payloads this module reads. Every field is optional
@@ -118,7 +120,7 @@ export function parseStats(payload: StatsPayload): StatsReading {
 export async function getChessStats(): Promise<ChessStats> {
   try {
     const payload = await api<StatsPayload>(
-      `https://api.chess.com/pub/player/${USER}/stats`,
+      `https://api.chess.com/pub/player/${CHESS_USER}/stats`,
     );
     return { ...parseStats(payload), ok: true };
   } catch {
@@ -184,7 +186,7 @@ export function parseGame(g: GamePayload | undefined): ChessGame | null {
   if (!white?.username || typeof white.rating !== "number") return null;
   if (!black?.username || typeof black.rating !== "number") return null;
 
-  const youAre = white.username.toLowerCase() === USER ? "white" : "black";
+  const youAre = white.username.toLowerCase() === CHESS_USER ? "white" : "black";
   const youResult = youAre === "white" ? white.result : black.result;
   const oppResult = youAre === "white" ? black.result : white.result;
   const outcome =
@@ -205,7 +207,7 @@ export function parseGame(g: GamePayload | undefined): ChessGame | null {
 export async function getLatestGame(): Promise<ChessGame | null> {
   try {
     const arch = await api<ArchivesPayload>(
-      `https://api.chess.com/pub/player/${USER}/games/archives`,
+      `https://api.chess.com/pub/player/${CHESS_USER}/games/archives`,
     );
     const archiveUrl = arch.archives?.at(-1);
     if (!archiveUrl) return null;
