@@ -4,9 +4,10 @@ import { pageMetadata } from "@/lib/page-metadata";
 import {
   getChessStats,
   getLatestGame,
-  hasRatings,
   isReplayable,
+  ratingForGame,
   CHESS_PROFILE_URL,
+  CHESS_CHALLENGE_URL,
   CHESS_USER,
 } from "@/lib/chess";
 import { ChessBoard } from "@/components/chess-board";
@@ -49,7 +50,7 @@ export default async function ChessPage({
 
   // Asked once, so the fallback below is exactly the case where neither section
   // drew anything, rather than a second guess at the same question.
-  const showRatings = hasRatings(stats);
+  const rating = ratingForGame(stats, game);
   const showGame = isReplayable(game);
 
   const player = (name: string, rating: number) => (
@@ -72,71 +73,63 @@ export default async function ChessPage({
           {dict.chess.title}
         </h1>
         <p className="mt-3 max-w-xl text-muted">{dict.chess.subtitle}</p>
-        <a
-          href={CHESS_PROFILE_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label={dict.chess.viewProfile}
-          title={dict.chess.viewProfile}
-          className="mt-5 inline-flex items-center gap-2 rounded-full border border-border py-1.5 pe-3 ps-2.5 font-mono text-sm text-muted transition-colors hover:border-accent/50 hover:text-foreground"
-        >
-          <svg width="13" height="13" viewBox="0 0 12 12" aria-hidden className="text-accent">
-            <rect x="0.5" y="0.5" width="11" height="11" rx="2.5" fill="none" stroke="currentColor" />
-            <rect x="1" y="1" width="5" height="5" fill="currentColor" opacity="0.6" />
-            <rect x="6" y="6" width="5" height="5" fill="currentColor" opacity="0.6" />
-          </svg>
-          {CHESS_USER}
-          <span className="text-faint">↗</span>
-        </a>
+        <div className="mt-5 flex flex-wrap items-center gap-2">
+          <a
+            href={CHESS_PROFILE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={dict.chess.viewProfile}
+            title={dict.chess.viewProfile}
+            className="inline-flex items-center gap-2 rounded-full border border-border py-1.5 pe-3 ps-2.5 font-mono text-sm text-muted transition-colors hover:border-accent/50 hover:text-foreground"
+          >
+            <svg width="13" height="13" viewBox="0 0 12 12" aria-hidden className="text-accent">
+              <rect x="0.5" y="0.5" width="11" height="11" rx="2.5" fill="none" stroke="currentColor" />
+              <rect x="1" y="1" width="5" height="5" fill="currentColor" opacity="0.6" />
+              <rect x="6" y="6" width="5" height="5" fill="currentColor" opacity="0.6" />
+            </svg>
+            {CHESS_USER}
+            <span className="text-faint">↗</span>
+          </a>
+          {/* chess.com asks for the login, so this is a link and not a form. */}
+          <a
+            href={CHESS_CHALLENGE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/5 px-3 py-1.5 font-mono text-sm text-accent-strong transition-colors hover:border-accent hover:bg-accent/10"
+          >
+            {dict.chess.challenge}
+            <span aria-hidden>↗</span>
+          </a>
+        </div>
       </header>
 
-      {showRatings && (
+      {rating && (
         <section className="mt-12">
           <h2 className="font-mono text-sm uppercase tracking-wider text-faint">
-            {dict.chess.ratings}
+            {dict.chess.rating}
           </h2>
-          <div className="mt-5 space-y-4">
-            {stats.formats.map((f) => (
-              <div key={f.key}>
-                <div className="flex items-baseline justify-between text-sm">
-                  <span className="font-medium text-foreground">{f.label}</span>
-                  <span className="font-mono tabular-nums text-foreground">
-                    {f.rating}
-                    {f.best && (
-                      <span className="text-faint"> · best {f.best}</span>
-                    )}
-                  </span>
-                </div>
-                <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-card-2">
-                  <div
-                    className="h-full rounded-full bg-accent"
-                    style={{
-                      width: `${Math.min(100, (f.rating / 2000) * 100)}%`,
-                    }}
-                  />
-                </div>
-                <p className="mt-1 font-mono text-xs text-faint">
-                  {f.win} W · {f.loss} L · {f.draw} D
-                </p>
-              </div>
-            ))}
-          </div>
-          {(stats.tactics || stats.puzzleRush) && (
-            <div className="mt-5 flex flex-wrap gap-x-8 gap-y-1 font-mono text-xs text-faint">
-              {stats.tactics && (
-                <span>
-                  {dict.chess.tactics}:{" "}
-                  <span className="text-accent-strong">{stats.tactics}</span>
-                </span>
-              )}
-              {stats.puzzleRush && (
-                <span>
-                  {dict.chess.puzzleRush}:{" "}
-                  <span className="text-accent-strong">{stats.puzzleRush}</span>
-                </span>
-              )}
+          <div className="mt-5">
+            <div className="flex items-baseline justify-between text-sm">
+              <span className="font-medium text-foreground">{rating.label}</span>
+              <span className="font-mono tabular-nums text-foreground">
+                {rating.rating}
+                {rating.best && (
+                  <span className="text-faint"> · best {rating.best}</span>
+                )}
+              </span>
             </div>
-          )}
+            <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-card-2">
+              <div
+                className="h-full rounded-full bg-accent"
+                style={{
+                  width: `${Math.min(100, (rating.rating / 2000) * 100)}%`,
+                }}
+              />
+            </div>
+            <p className="mt-1 font-mono text-xs text-faint">
+              {rating.win} W · {rating.loss} L · {rating.draw} D
+            </p>
+          </div>
         </section>
       )}
 
@@ -182,7 +175,7 @@ export default async function ChessPage({
       {/* Nothing above drew anything, whether because chess.com is down, the
           profile is empty, or the one game could not be replayed. Hand over the
           link the way the reading page does, rather than leave a bare heading. */}
-      {!showRatings && !showGame && (
+      {!rating && !showGame && (
         <div className="mt-12 border-t border-border pt-6">
           <a
             href={CHESS_PROFILE_URL}

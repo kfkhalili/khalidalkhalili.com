@@ -5,6 +5,9 @@ import { Chess } from "chess.js";
 export const CHESS_USER = "kfkhalili";
 const UA = "khalidalkhalili.com personal site (contact kfkhalili)";
 export const CHESS_PROFILE_URL = `https://www.chess.com/member/${CHESS_USER}`;
+// chess.com's new-game panel, with the opponent field already filled in. It
+// asks the visitor to log in itself, so the site never handles that.
+export const CHESS_CHALLENGE_URL = `https://www.chess.com/play/online/new?opponent=${CHESS_USER}`;
 
 /**
  * The slices of chess.com's payloads this module reads. Every field is optional
@@ -23,8 +26,6 @@ export type StatsPayload = {
   chess_rapid?: FormatPayload;
   chess_blitz?: FormatPayload;
   chess_bullet?: FormatPayload;
-  tactics?: { highest?: RatingSnapshot };
-  puzzle_rush?: { best?: { score?: number } };
 };
 
 type ArchivesPayload = { archives?: string[] };
@@ -65,24 +66,17 @@ type FormatStat = {
 /** Everything chess.com's stats payload says, before transport state is added. */
 export type StatsReading = {
   formats: FormatStat[];
-  tactics: number | null;
-  puzzleRush: number | null;
 };
 
 export type ChessStats = StatsReading & {
   /**
    * Whether chess.com answered. Not whether there is anything to draw: a live
    * account with no rated games answers 200 with no formats at all. Ask
-   * `hasRatings` for that; reading this instead is what once let the page
+   * `ratingForGame` for that; reading this instead is what once let the page
    * suppress its own fallback and render a bare heading.
    */
   ok: boolean;
 };
-
-/** Whether the ratings section has anything to draw. */
-export function hasRatings(stats: ChessStats): boolean {
-  return stats.formats.length > 0;
-}
 
 function toFormat(
   key: string,
@@ -109,11 +103,7 @@ export function parseStats(payload: StatsPayload): StatsReading {
     toFormat("blitz", "Blitz", payload.chess_blitz),
     toFormat("bullet", "Bullet", payload.chess_bullet),
   ].filter((f): f is FormatStat => f !== null);
-  return {
-    formats,
-    tactics: payload.tactics?.highest?.rating ?? null,
-    puzzleRush: payload.puzzle_rush?.best?.score ?? null,
-  };
+  return { formats };
 }
 
 /** Reads the public profile stats. Never throws; degrades to a link. */
@@ -124,7 +114,7 @@ export async function getChessStats(): Promise<ChessStats> {
     );
     return { ...parseStats(payload), ok: true };
   } catch {
-    return { formats: [], tactics: null, puzzleRush: null, ok: false };
+    return { formats: [], ok: false };
   }
 }
 
@@ -148,6 +138,23 @@ export type ChessGame = {
  */
 export function isReplayable(game: ChessGame | null): game is ChessGame {
   return game !== null && game.fens.length > 1;
+}
+
+/**
+ * The one rating worth drawing: the format the last game was played in. Every
+ * other number on the profile is a format the reader is not looking at.
+ *
+ * No game means no format to pick, and a game in a format the profile carries
+ * no rated record for reads the same way, rather than falling back to some
+ * other format's number under the last game's name.
+ */
+export function ratingForGame(
+  stats: ChessStats,
+  game: ChessGame | null,
+): FormatStat | null {
+  if (!game) return null;
+  const key = game.timeClass.toLowerCase();
+  return stats.formats.find((f) => f.key === key) ?? null;
 }
 
 /**

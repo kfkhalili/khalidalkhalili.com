@@ -25,15 +25,13 @@ vi.mock("react-chessboard", () => ({
   ),
 }));
 
-const noStats: ChessStats = { ok: false, formats: [], tactics: null, puzzleRush: null };
+const noStats: ChessStats = { ok: false, formats: [] };
 
 const stats = (overrides: Partial<ChessStats> = {}): ChessStats => ({
   ok: true,
   formats: [
     { key: "rapid", label: "Rapid", rating: 1234, best: 1300, win: 10, loss: 5, draw: 2 },
   ],
-  tactics: 2100,
-  puzzleRush: 33,
   ...overrides,
 });
 
@@ -74,15 +72,45 @@ describe("ChessPage", () => {
     expect(profile).toHaveAttribute("rel", "noopener noreferrer");
   });
 
-  it("shows each format's rating, best, and record", async () => {
+  /** chess.com wants the opponent in the query string and handles the login. */
+  it("offers a challenge, pre-addressed to me", async () => {
+    await renderPage("ar");
+    const challenge = screen.getByRole("link", { name: ar.chess.challenge });
+    expect(challenge).toHaveAttribute(
+      "href",
+      "https://www.chess.com/play/online/new?opponent=kfkhalili",
+    );
+    expect(challenge).toHaveAttribute("rel", "noopener noreferrer");
+  });
+
+  it("shows the rating for the format the last game was played in", async () => {
     getChessStats.mockResolvedValue(stats());
+    getLatestGame.mockResolvedValue(game({ timeClass: "rapid" }));
     await renderPage();
 
-    expect(screen.getByRole("heading", { name: en.chess.ratings })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: en.chess.rating })).toBeInTheDocument();
     expect(screen.getByText("Rapid")).toBeInTheDocument();
     expect(screen.getByText(/1234/)).toBeInTheDocument();
     expect(screen.getByText(/best 1300/)).toBeInTheDocument();
     expect(screen.getByText("10 W · 5 L · 2 D")).toBeInTheDocument();
+  });
+
+  /** The whole point of the section: the other formats are not the reader's. */
+  it("leaves the formats the last game was not played in alone", async () => {
+    getChessStats.mockResolvedValue(
+      stats({
+        formats: [
+          { key: "rapid", label: "Rapid", rating: 1234, best: 1300, win: 10, loss: 5, draw: 2 },
+          { key: "blitz", label: "Blitz", rating: 999, best: null, win: 1, loss: 2, draw: 3 },
+        ],
+      }),
+    );
+    getLatestGame.mockResolvedValue(game({ timeClass: "blitz" }));
+    await renderPage();
+
+    expect(screen.getByText("Blitz")).toBeInTheDocument();
+    expect(screen.queryByText("Rapid")).not.toBeInTheDocument();
+    expect(screen.queryByText(/1234/)).not.toBeInTheDocument();
   });
 
   it("omits the best rating when there isn't one", async () => {
@@ -93,49 +121,54 @@ describe("ChessPage", () => {
         ],
       }),
     );
+    getLatestGame.mockResolvedValue(game({ timeClass: "blitz" }));
     await renderPage();
     expect(screen.queryByText(/best/)).not.toBeInTheDocument();
   });
 
-  it("draws the rating bar against a 2000 ceiling, and never past it", async () => {
+  it.each([
+    [1000, "50%"],
+    [2500, "100%"],
+  ])("draws a %i rating as %s of the 2000 ceiling, never past it", async (rating, width) => {
     getChessStats.mockResolvedValue(
       stats({
         formats: [
-          { key: "rapid", label: "Rapid", rating: 1000, best: null, win: 0, loss: 0, draw: 0 },
-          { key: "blitz", label: "Blitz", rating: 2500, best: null, win: 0, loss: 0, draw: 0 },
+          { key: "rapid", label: "Rapid", rating, best: null, win: 0, loss: 0, draw: 0 },
         ],
       }),
     );
+    getLatestGame.mockResolvedValue(game({ timeClass: "rapid" }));
     const { container } = await renderPage();
-    const widths = [...container.querySelectorAll<HTMLElement>(".bg-accent")].map(
-      (bar) => bar.style.width,
-    );
-    expect(widths).toEqual(["50%", "100%"]);
+    expect(container.querySelector<HTMLElement>(".bg-accent")!.style.width).toBe(width);
   });
 
-  it("shows the tactics and puzzle rush bests", async () => {
-    getChessStats.mockResolvedValue(stats());
-    await renderPage();
-    expect(screen.getByText("2100")).toBeInTheDocument();
-    expect(screen.getByText("33")).toBeInTheDocument();
-  });
-
-  it("omits the tactics row when there is nothing in it", async () => {
-    getChessStats.mockResolvedValue(stats({ tactics: null, puzzleRush: null }));
-    await renderPage();
-    expect(screen.queryByText(en.chess.tactics, { exact: false })).not.toBeInTheDocument();
-  });
-
-  it("hides the ratings section when chess.com can't be reached", async () => {
+  it("hides the rating when chess.com can't be reached", async () => {
     getChessStats.mockResolvedValue(noStats);
+    getLatestGame.mockResolvedValue(game());
     await renderPage();
-    expect(screen.queryByRole("heading", { name: en.chess.ratings })).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: en.chess.rating })).not.toBeInTheDocument();
   });
 
-  it("hides the ratings section when the profile has no rated formats", async () => {
+  it("hides the rating when the profile has no rated formats", async () => {
     getChessStats.mockResolvedValue(stats({ formats: [] }));
+    getLatestGame.mockResolvedValue(game());
     await renderPage();
-    expect(screen.queryByRole("heading", { name: en.chess.ratings })).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: en.chess.rating })).not.toBeInTheDocument();
+  });
+
+  /** There is no game to take a format from, so there is no rating to show. */
+  it("hides the rating when there is no last game", async () => {
+    getChessStats.mockResolvedValue(stats());
+    getLatestGame.mockResolvedValue(null);
+    await renderPage();
+    expect(screen.queryByRole("heading", { name: en.chess.rating })).not.toBeInTheDocument();
+  });
+
+  it("hides the rating when the last game's format has no rated record", async () => {
+    getChessStats.mockResolvedValue(stats());
+    getLatestGame.mockResolvedValue(game({ timeClass: "daily" }));
+    await renderPage();
+    expect(screen.queryByRole("heading", { name: en.chess.rating })).not.toBeInTheDocument();
   });
 
   it("replays the last game, with both players and the outcome", async () => {
@@ -207,7 +240,7 @@ describe("ChessPage", () => {
    * fallback is the second such link rather than the only one.
    */
   describe("when there is nothing to show", () => {
-    const emptyProfile = stats({ formats: [], tactics: null, puzzleRush: null });
+    const emptyProfile = stats({ formats: [] });
     const unreplayable = game({ fens: [], sans: [] });
 
     const fallbackShown = () =>
@@ -242,11 +275,22 @@ describe("ChessPage", () => {
       expect(fallbackShown()).toBe(true);
     });
 
-    it("stays out of the way when the ratings rendered", async () => {
+    /**
+     * The rating is drawn from the last game's format, so the only way it can
+     * render alone is a game that is real but cannot be replayed.
+     */
+    it("stays out of the way when the rating rendered", async () => {
+      getChessStats.mockResolvedValue(stats());
+      getLatestGame.mockResolvedValue(unreplayable);
+      await renderPage();
+      expect(fallbackShown()).toBe(false);
+    });
+
+    it("offers the profile when there is no game to take a format from", async () => {
       getChessStats.mockResolvedValue(stats());
       getLatestGame.mockResolvedValue(null);
       await renderPage();
-      expect(fallbackShown()).toBe(false);
+      expect(fallbackShown()).toBe(true);
     });
 
     it("stays out of the way when the game rendered", async () => {

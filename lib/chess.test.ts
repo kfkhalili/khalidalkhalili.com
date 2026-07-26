@@ -4,7 +4,7 @@ import {
   getLatestGame,
   parseGame,
   parseStats,
-  hasRatings,
+  ratingForGame,
   isReplayable,
   CHESS_PROFILE_URL,
 } from "./chess";
@@ -88,12 +88,7 @@ describe("getChessStats", () => {
 
   it("degrades to not-ok when chess.com errors", async () => {
     mockApi({ [statsUrl]: { status: 503 } });
-    expect(await getChessStats()).toEqual({
-      ok: false,
-      formats: [],
-      tactics: null,
-      puzzleRush: null,
-    });
+    expect(await getChessStats()).toEqual({ ok: false, formats: [] });
   });
 
   it("degrades to not-ok when the request itself fails", async () => {
@@ -166,27 +161,17 @@ describe("parseStats", () => {
     const reading = parseStats({
       ...RATED_RAPID,
       chess_blitz: { last: { rating: 999 } },
-      tactics: { highest: { rating: 2100 } },
-      puzzle_rush: { best: { score: 33 } },
     });
     expect(reading.formats).toEqual([
       { key: "rapid", label: "Rapid", rating: 1234, best: 1300, win: 10, loss: 5, draw: 2 },
       { key: "blitz", label: "Blitz", rating: 999, best: null, win: 0, loss: 0, draw: 0 },
     ]);
-    expect(reading.tactics).toBe(2100);
-    expect(reading.puzzleRush).toBe(33);
   });
 
   it("drops formats that have never been played", () => {
     expect(parseStats({}).formats).toEqual([]);
     expect(parseStats({ chess_bullet: {} }).formats).toEqual([]);
     expect(parseStats({ chess_bullet: { last: {} } }).formats).toEqual([]);
-  });
-
-  it("reports no tactics or puzzle rush when the profile has none", () => {
-    const reading = parseStats({ chess_rapid: { last: { rating: 1200 } } });
-    expect(reading.tactics).toBeNull();
-    expect(reading.puzzleRush).toBeNull();
   });
 
   it("keeps the formats in the order the page draws them", () => {
@@ -282,8 +267,6 @@ describe("parseGame", () => {
 const asStats = (o: Partial<ChessStats> = {}): ChessStats => ({
   ok: true,
   formats: [],
-  tactics: null,
-  puzzleRush: null,
   ...o,
 });
 
@@ -297,39 +280,58 @@ const rapid = {
   draw: 0,
 };
 
-describe("hasRatings", () => {
-  it("is true once a format has a rating", () => {
-    expect(hasRatings(asStats({ formats: [rapid] }))).toBe(true);
+const blitz = { ...rapid, key: "blitz", label: "Blitz", rating: 1400 };
+
+const asGame = (o: Partial<ChessGame> = {}): ChessGame => ({
+  url: "https://www.chess.com/game/live/1",
+  timeClass: "rapid",
+  white: { user: USER, rating: 1200 },
+  black: { user: "opponent", rating: 1180 },
+  youAre: "white",
+  outcome: "won",
+  fens: ["start", "after-1"],
+  sans: [],
+  ...o,
+});
+
+describe("ratingForGame", () => {
+  const played = (timeClass: string) => asGame({ timeClass });
+
+  it("picks the format the last game was played in", () => {
+    const stats = asStats({ formats: [rapid, blitz] });
+    expect(ratingForGame(stats, played("blitz"))).toBe(blitz);
+    expect(ratingForGame(stats, played("rapid"))).toBe(rapid);
+  });
+
+  it("has nothing to draw without a game to take the format from", () => {
+    expect(ratingForGame(asStats({ formats: [rapid] }), null)).toBeNull();
+  });
+
+  it("draws nothing rather than another format's number", () => {
+    // A daily game, or a first game in a format: the profile carries no rated
+    // record for it, and the rapid rating is not an answer to that question.
+    expect(ratingForGame(asStats({ formats: [rapid] }), played("daily"))).toBeNull();
   });
 
   it("is false for a live account with nothing rated", () => {
     // The case `ok` cannot answer: chess.com replied, there is just nothing yet.
-    expect(hasRatings(asStats({ ok: true }))).toBe(false);
+    expect(ratingForGame(asStats({ ok: true }), played("rapid"))).toBeNull();
   });
 
   it("is false when the fetch failed", () => {
-    expect(hasRatings(asStats({ ok: false }))).toBe(false);
+    expect(ratingForGame(asStats({ ok: false }), played("rapid"))).toBeNull();
   });
 
-  it("ignores puzzle scores, which the ratings section does not draw alone", () => {
-    expect(hasRatings(asStats({ tactics: 2100, puzzleRush: 33 }))).toBe(false);
+  it("matches whatever case chess.com returns the time class in", () => {
+    expect(ratingForGame(asStats({ formats: [blitz] }), played("Blitz"))).toBe(blitz);
   });
 });
 
 describe("isReplayable", () => {
-  const asGame = (fens: string[]): ChessGame => ({
-    url: "https://www.chess.com/game/live/1",
-    timeClass: "rapid",
-    white: { user: USER, rating: 1200 },
-    black: { user: "opponent", rating: 1180 },
-    youAre: "white",
-    outcome: "won",
-    fens,
-    sans: [],
-  });
+  const withFens = (fens: string[]) => asGame({ fens });
 
   it("is true for a game the board can step through", () => {
-    expect(isReplayable(asGame(["start", "after-1"]))).toBe(true);
+    expect(isReplayable(withFens(["start", "after-1"]))).toBe(true);
   });
 
   it("is false when there is no game", () => {
@@ -337,10 +339,10 @@ describe("isReplayable", () => {
   });
 
   it("is false when the PGN yielded nothing", () => {
-    expect(isReplayable(asGame([]))).toBe(false);
+    expect(isReplayable(withFens([]))).toBe(false);
   });
 
   it("is false for a lone position, which would render a static board", () => {
-    expect(isReplayable(asGame(["start"]))).toBe(false);
+    expect(isReplayable(withFens(["start"]))).toBe(false);
   });
 });
