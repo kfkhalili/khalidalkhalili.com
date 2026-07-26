@@ -27,10 +27,8 @@ export function ZeroBitStatus({ strings }: { strings: StatusPageStrings }) {
             className="sim-badge font-mono text-xs font-semibold transition-colors duration-300"
             style={{
               backgroundColor: escalated ? "var(--sim-bad)" : "var(--sim-warn)",
-              // One ink for both fills; white falls under AA on the red. A
-              // literal rather than a token: the fills do not flip with the
-              // theme, so the text on them must not either.
-              color: "#1b1b19",
+              // One ink for both fills, themed alongside them in globals.css.
+              color: "var(--sim-fg)",
             }}
           >
             {escalated ? strings.badgeRed : strings.badge}

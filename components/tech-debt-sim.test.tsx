@@ -145,8 +145,9 @@ describe("TechDebtSim", () => {
     expect(velocity).toBeLessThanOrEqual(60);
     const velocityBar = container.querySelector<HTMLElement>(".rounded-t-md")!;
     expect(velocityBar.style.backgroundColor).toBe("var(--sim-warn)");
-    // Amber is light enough to need dark text on it.
-    expect(velocityBar.style.color).toBe("rgb(27, 27, 25)");
+    // Fill and ink are both themed: each theme pairs its own fills with its own
+    // text colour, so the component names tokens rather than picking a literal.
+    expect(velocityBar.style.color).toBe("var(--sim-fg)");
   });
 
   it("pays debt back down when the allocation is raised again", () => {
