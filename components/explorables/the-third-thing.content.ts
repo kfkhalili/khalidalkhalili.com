@@ -227,7 +227,7 @@ const de: ThirdThingContent = {
   tags: [`Explorable`, `IT-Projekte`],
   opening: [
     `Soweit ich das überblicke, gibt es genau zwei ehrliche Arten, Software von einer anderen Firma zu kaufen.`,
-    `Du kannst ein Produkt kaufen. Sie behalten ihren Code und ihre Roadmap, und sie halten Abstand. Du bekommst klare Schnittstellen, Dokumentation und das Recht, dich anderswo umzusehen. Ob ihre Versprechen vage sind, ist ihre Sache. Du hast sie für das gewählt, was sie heute können, und nichts in deinem Plan steht und fällt damit, was sie nächstes Jahr vielleicht tun.`,
+    `Du kannst ein Produkt kaufen. Sie behalten ihren Code und ihre Roadmap, und sie wahren den Abstand. Du bekommst klare Schnittstellen, Dokumentation und das Recht, dich anderswo umzusehen. Ob ihre Versprechen vage sind, ist ihre Sache. Du hast sie für das gewählt, was sie heute können, und nichts in deinem Plan steht und fällt damit, was sie nächstes Jahr vielleicht tun.`,
     `Oder du kaufst eine Dienstleistung. Sie arbeiten in deinem Backlog, auf deiner Infrastruktur, nach deinen Prioritäten, und alles, was sie bauen, gehört dir. Bezahlt werden sie pro gelieferter Story. Wenn es nicht mehr passt, ersetzt du sie und behältst die Software. So einfach ist das.`,
     `An Katastrophen herrscht in der Unternehmens-IT kein Mangel. Aber eine bestimmte Sorte beginnt immer gleich: Jemand unterschreibt einen Vertrag für ein <strong>drittes Ding</strong>. Diesen Film habe ich inzwischen ein paar Mal gesehen.`,
   ],
@@ -259,7 +259,7 @@ const de: ThirdThingContent = {
   ],
   audit: `Also prüfe deine Lieferanten. Vier Fragen: Wem gehört der Code, wer betreibt ihn, wer bezahlt die Rechnung, wer kann die Arbeit sehen. Wenn sich die Antworten nicht zu einer der beiden ehrlichen Formen fügen, musst du nicht auf die Katastrophe warten; geh durch das Projekt, und du siehst die Symptome längst wuchern. Eine Tabelle, die sich selbst wiederholt. Ein Sync-Call, den die Leute ignorieren oder nur zähneknirschend annehmen. Eine Seite, die niemand findet. Ein Raum voller anständiger Leute, die eine Sprache sprechen, in der nichts falsch sein kann.`,
   closing: [
-    `Ich tue nicht so, als wäre das alles in einem laufenden Projekt leicht zu reparieren. Verträge wie das dritte Ding werden für Jahre unterschrieben, und wer das Problem klar sieht, hat noch lange nicht das Gewicht, es laut auszusprechen. Aber Beständigkeit wirkt in beide Richtungen. Ein kaputtes Modell überdauert, weil es die Menschen überlebt, die dagegen ankämpfen. Ein repariertes Modell überdauert auf genau dieselbe Weise. Repariere die Form einmal, und sie hält noch lange, nachdem alle Beteiligten das Projekt gewechselt haben. Einmal gehört zu werden, könnte genügen. Und die Chancen, gehört zu werden, kommen immer wieder: jede Verlängerung, jede Erweiterung, jede Krise, in der eine Drohung ausgesprochen wird, weil nichts anderes mehr übrig ist. Jede davon ist eine weitere Gelegenheit.`,
+    `Ich tue nicht so, als wäre das alles in einem laufenden Projekt leicht zu reparieren. Verträge wie das dritte Ding werden auf Jahre unterschrieben, und wer das Problem klar sieht, hat noch lange nicht das Gewicht, es laut auszusprechen. Aber Beständigkeit wirkt in beide Richtungen. Ein kaputtes Modell überdauert, weil es die Menschen überlebt, die dagegen ankämpfen. Ein repariertes Modell überdauert auf genau dieselbe Weise. Repariere die Form einmal, und sie hält noch lange, nachdem alle Beteiligten das Projekt gewechselt haben. Einmal gehört zu werden, könnte genügen. Und die Chancen, gehört zu werden, kommen immer wieder: jede Verlängerung, jede Erweiterung, jede Krise, in der eine Drohung ausgesprochen wird, weil nichts anderes mehr übrig ist. Jede davon ist eine weitere Gelegenheit.`,
     `Und wenn die Chance kommt, denk daran: Die Teilung kostet niemanden die Stelle. Dieselben Leute, sortiert in Formen, in denen sie an dem gemessen werden, was sie wirklich gut können. Die Wissenschaftler dürfen Wissenschaftler sein. Der Manager bekommt echte Hebel statt Schuldzuweisungen. Niemand muss mehr die Tabelle pflegen oder den täglichen Sync-Call absitzen oder in Floskeln antworten. Das ist das Hoffnungsvollste an alledem. Niemand in diesen Räumen will den Bullshit. Nicht der Veteran, nicht der Manager, nicht der Lieferant. Also stell die vier Fragen, laut, selbst wenn du gerade erst dazugekommen bist; eine Frage ist keine Anklage. Menschen kehren zu schlichten Sätzen zurück, sobald es wieder bezahlbar ist. <strong>Nicht die Menschen musst du reparieren, sondern das Modell.</strong>`,
   ],
   statusPage: {
@@ -292,7 +292,7 @@ const de: ThirdThingContent = {
       },
       {
         // Der ehrliche Satz. Keine laute Variante: Dringlichkeit findet hier nichts.
-        calm: `Der Migrationslauf am Dienstag ist durch: 12 von 14 Services sind fertig, die letzten zwei folgen im nächsten Sprint.`,
+        calm: `Der Migrationslauf am Dienstag ist durch: 12 von 14 Services sind migriert, die letzten zwei folgen im nächsten Sprint.`,
         note: `Ein Datum, eine Zahl und eine Zusage, die scheitern kann. Dieser Satz könnte falsch sein, also sagt er dir etwas. Die einzige Information auf der Seite.`,
       },
       {
@@ -318,7 +318,7 @@ const de: ThirdThingContent = {
       honest: `Die Berichte decken sich mit der Realität. Probleme werden behoben, solange sie klein sind.`,
       drifting: `Die Berichte beginnen zu beschönigen. Kleine Probleme werden nicht gemeldet, und ungemeldete Probleme werden nicht behoben.`,
       watermelon: `Außen grün, innen rot. Die Ampel steht auf Grün. Das Projekt nicht.`,
-      collapse: `Die Realität kam trotzdem an. Das tut sie immer, nur später, und größer.`,
+      collapse: `Die Realität holte das Projekt trotzdem ein. Das tut sie immer, nur später, und größer.`,
       recovery: `Die Berichte sind wieder ehrlich, und die Zahlen sind hässlich. Erholung beginnt langsam, dann beschleunigt sie sich.`,
     },
   },
