@@ -65,7 +65,7 @@ const en: TechDebtContent = {
   modelHeading: `How the Model Works`,
   modelIntro: `This simulation isn't random. It is driven by the battle between two opposing forces: <strong>Entropy</strong> and <strong>Investment</strong>.`,
   modelSteps: [
-    `<strong>The Growth of Complexity (Entropy).</strong> Software naturally tends toward disorder as features are added, and if you do nothing, debt grows, and the more it grows, the more it compounds.`,
+    `<strong>The Growth of Complexity (Entropy).</strong> Software doesn't rot on its own; it rots as you change it. Every new feature pushes the structure a little further toward disorder, and if you do nothing, debt grows, and the more it grows, the more it compounds.`,
     `<strong>The Payback (Investment).</strong> By allocating time to cleanup, you generate a "payback" rate. The goal is to find the equilibrium where your payback matches the natural growth of complexity.`,
     `<strong>The Drag on Velocity.</strong> This is the core mechanic: velocity isn't just about how fast you type. It is <code>100% − (Drag from Debt) − (Time Spent Refactoring)</code>.`,
   ],
@@ -136,7 +136,7 @@ const de: TechDebtContent = {
   modelHeading: `Wie das Modell funktioniert`,
   modelIntro: `Diese Simulation ist nicht zufällig. Sie wird vom Kampf zwischen zwei gegensätzlichen Kräften angetrieben: <strong>Entropie</strong> und <strong>Investition</strong>.`,
   modelSteps: [
-    `<strong>Das Wachstum der Komplexität (Entropie).</strong> Software neigt von Natur aus zur Unordnung, wenn Features hinzukommen. Tust du nichts, wachsen die Schulden, und je mehr sie wachsen, desto stärker verzinsen sie sich.`,
+    `<strong>Das Wachstum der Komplexität (Entropie).</strong> Software zerfällt nicht von selbst; sie zerfällt, während man sie verändert. Jedes neue Feature treibt die Struktur ein Stück weiter in die Unordnung. Tust du nichts, wachsen die Schulden, und je mehr sie wachsen, desto stärker verzinsen sie sich.`,
     `<strong>Die Tilgung (Investition).</strong> Indem du Zeit fürs Aufräumen einplanst, erzeugst du eine „Tilgungsrate“. Das Ziel ist das Gleichgewicht, in dem deine Tilgung dem natürlichen Wachstum der Komplexität entspricht.`,
     `<strong>Die Bremswirkung auf die Geschwindigkeit.</strong> Das ist der Kernmechanismus: Geschwindigkeit hängt nicht nur davon ab, wie schnell du tippst. Sie ist <code>100 % − (Bremse durch Schulden) − (Zeit fürs Refactoring)</code>.`,
   ],
