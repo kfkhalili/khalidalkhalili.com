@@ -106,7 +106,7 @@ export function WatermelonSim({ strings }: { strings: WatermelonStrings }) {
               type="button"
               onClick={() => setPressure(value)}
               className={
-                "rounded-md border px-2.5 py-1 text-xs transition-colors " +
+                "sim-control text-xs transition-colors " +
                 (active
                   ? "border-accent bg-accent/10 text-accent-strong"
                   : "border-border text-muted hover:text-foreground")
@@ -134,11 +134,7 @@ export function WatermelonSim({ strings }: { strings: WatermelonStrings }) {
       <div className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs">
         <span className="text-muted">{strings.badgeLabel}</span>
         <span
-          // Arabic needs its font's own line box: leading-none clips the marks
-          // and descenders that sit outside the em square (the kasra in حرِج).
-          // That line box fills the pill, so RTL also needs the taller padding
-          // to keep the same breathing room Latin caps get for free.
-          className="inline-flex items-center justify-center rounded-full px-2.5 pt-1 pb-1 font-semibold leading-none transition-colors duration-300 rtl:pt-1.5 rtl:pb-1.5 rtl:leading-[normal]"
+          className="sim-badge font-semibold transition-colors duration-300"
           style={{
             backgroundColor: TONE_BG[badgeTone],
             color: badgeTone === "warn" ? "#1b1b19" : "#ffffff",

@@ -63,7 +63,7 @@ export function ContractDiagnostic({ strings }: { strings: DiagnosticStrings }) 
                       )
                     }
                     className={
-                      "rounded-md border px-2.5 py-1 text-xs transition-colors " +
+                      "sim-control text-xs transition-colors " +
                       (active
                         ? "border-accent bg-accent/10 text-accent-strong"
                         : "border-border text-muted hover:text-foreground")
