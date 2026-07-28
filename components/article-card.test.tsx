@@ -8,7 +8,7 @@ const article: Article = {
   title: "Technical Debt",
   description: "A stock-and-flow model of entropy.",
   date: "2026-02-09",
-  tags: ["Explorable", "Software"],
+  tags: ["Software Design", "Systems"],
   lang: "en",
   kind: "explorable",
   collection: "writing",
@@ -18,7 +18,7 @@ const article: Article = {
 describe("ArticleCard", () => {
   it("links to the article inside the current locale", () => {
     render(<ArticleCard lang="en" article={article} />);
-    expect(screen.getByRole("link")).toHaveAttribute(
+    expect(screen.getByRole("link", { name: /Technical Debt/ })).toHaveAttribute(
       "href",
       "/en/writing/technical-debt",
     );
@@ -33,6 +33,21 @@ describe("ArticleCard", () => {
   it("lists every tag", () => {
     render(<ArticleCard lang="en" article={article} />);
     for (const tag of article.tags) expect(screen.getByText(tag)).toBeInTheDocument();
+  });
+
+  it("sends each tag to the index narrowed to it, in the current locale", () => {
+    render(<ArticleCard lang="de" article={article} />);
+    expect(screen.getByRole("link", { name: "Software Design" })).toHaveAttribute(
+      "href",
+      "/de/writing?tag=Software%20Design",
+    );
+  });
+
+  it("keeps the tag links out of the article link", () => {
+    // An anchor inside an anchor is not renderable, so the card is a div with
+    // two destinations rather than one link wrapping the badge row.
+    const { container } = render(<ArticleCard lang="en" article={article} />);
+    expect(container.querySelector("a a")).toBeNull();
   });
 
   it("renders a machine-readable date alongside the localized one", () => {
@@ -73,6 +88,6 @@ describe("ArticleCard", () => {
   it("renders an untagged article without an empty badge row", () => {
     render(<ArticleCard lang="en" article={{ ...article, tags: [] }} />);
     expect(screen.getByRole("heading", { level: 3 })).toBeInTheDocument();
-    expect(screen.queryByText("Explorable")).not.toBeInTheDocument();
+    expect(screen.queryByText("Software Design")).not.toBeInTheDocument();
   });
 });

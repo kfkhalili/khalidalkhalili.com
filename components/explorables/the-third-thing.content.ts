@@ -103,7 +103,7 @@ const MS_ROADMAP = `https://www.microsoft.com/en-us/microsoft-365/roadmap`;
 const en: ThirdThingContent = {
   title: `The Third Thing`,
   description: `Why troubled IT projects grow shadow spreadsheets, status theater, and language that cannot be wrong, and how one broken vendor model produces all of it.`,
-  tags: [`Explorable`, `IT Projects`],
+  tags: [`IT Projects`],
   opening: [
     `As far as I can tell, there are exactly two honest ways to buy software from another company.`,
     `You can buy a product. They keep their code, their roadmap, and their distance. You get clear interfaces, documentation, and the right to look elsewhere. Whether their promises are vague is their business. You chose them for what they can do today, and nothing in your plan stands or falls with what they might do next year.`,
@@ -226,7 +226,7 @@ const en: ThirdThingContent = {
 const de: ThirdThingContent = {
   title: `Das dritte Ding`,
   description: `Warum kriselnde IT-Projekte Schattentabellen, Statustheater und eine Sprache hervorbringen, die nie falsch sein kann, und wie ein einziges kaputtes Lieferantenmodell all das erzeugt.`,
-  tags: [`Explorable`, `IT-Projekte`],
+  tags: [`IT-Projekte`],
   opening: [
     `Soweit ich das überblicke, gibt es genau zwei ehrliche Arten, Software von einer anderen Firma zu kaufen.`,
     `Du kannst ein Produkt kaufen. Sie behalten ihren Code und ihre Roadmap, und sie wahren den Abstand. Du bekommst klare Schnittstellen, Dokumentation und das Recht, dich anderswo umzusehen. Ob ihre Versprechen vage sind, ist ihre Sache. Du hast sie für das gewählt, was sie heute können, und nichts in deinem Plan steht und fällt damit, was sie nächstes Jahr vielleicht tun.`,
@@ -349,7 +349,7 @@ const de: ThirdThingContent = {
 const ar: ThirdThingContent = {
   title: `الشيء الثالث`,
   description: `لماذا تُنبت مشاريع تقنية المعلومات المتعثّرة جدولًا بعد جدول ومسرحيةَ الاجتماعات ولغةً لا يمكن أن تكون خاطئة، وكيف يصنع كلَّ ذلك نموذجُ توريدٍ مكسورٌ واحد.`,
-  tags: [`استكشاف تفاعلي`, `مشاريع تقنية المعلومات`],
+  tags: [`مشاريع تقنية المعلومات`],
   opening: [
     `على حدّ علمي، هناك بالضبط طريقتان صريحتان لشراء البرامج من شركات أخرى.`,
     `يمكنك أن تشتريها كمنتَج. يحتفظون بمصدر البرنامج وخارطة طريقهم ومسافتهم منك. وتحصل أنت على واجهاتٍ واضحة، وتوثيق، وحقِّ البحث عن بديل. إن كانت وعودهم غامضة فذلك شأنهم وحدهم. أنت اخترتهم لما يستطيعونه اليوم، ولا شيء في خطتك يقوم أو يسقط بما قد يفعلونه السنة المقبلة.`,

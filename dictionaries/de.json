@@ -19,7 +19,14 @@
   "writing": {
     "title": "Texte",
     "subtitle": "Interaktive Explorables und Essays über Software, Systeme und die Menschen, die sie bauen. Mehr folgt.",
-    "filters": { "label": "Nach Sammlung filtern", "all": "Alle", "writing": "Essays", "prose": "Prosa" }
+    "filters": {
+      "label": "Nach Sammlung filtern",
+      "all": "Alle",
+      "writing": "Essays",
+      "prose": "Prosa",
+      "tag": "Nach Schlagwort filtern",
+      "noMatch": "Hier passt noch nichts dazu."
+    }
   },
   "reading": {
     "title": "Lesen",

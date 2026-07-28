@@ -17,7 +17,17 @@ interactive explorable explanations, essays, and notes.
   `collection` frontmatter field and defaulting to `writing`. `writing` is the
   current work; `prose` is the short literary pieces written 2012-13. Where
   `kind` says how an Article renders, `collection` says where it came from,
-  which is what the reader filters by on the index.
+  which is one of the two things the reader narrows the index by.
+- **Tag**: what a piece is about, written in the piece's own language and shown
+  on its card and in its header. A tag is a place rather than a label: it links
+  to the writing index narrowed to it, so it reads the same from a card, from a
+  piece, or from a link someone was sent. Where a Collection is a glance at the
+  same shelf and so lives in the index's own state, a Tag lives in the URL
+  (`?tag=`), because it is somewhere the reader arrived. Matched exactly, and
+  refused when the URL names more than one, which would ask for two shelves at
+  once. Both filter rows on the index describe the whole index rather than the
+  shelf currently shown, so neither appears, disappears, or shortens as it is
+  used: what the reader is aiming at stays where it was.
 - **Hidden**: an Article kept in the repo but off the site, set by `hidden: true`
   in an essay's frontmatter or on an explorable's registry entry. Hidden is not
   unlisted: the piece leaves the index, the home page and the sitemap, and no
@@ -119,6 +129,14 @@ interactive explorable explanations, essays, and notes.
   `…Path` is relative, for metadata that resolves against `metadataBase`; `…Url`
   is absolute, for the copy button and the sitemap, which inherits no base.
   Pure and tested (`lib/share.test.ts`).
+- **Tag link** (`lib/tags.ts`): the one module that knows a tag is a place. It
+  names the query key, writes the href a tag is shown as, reads the key back on
+  the index, narrows the list, and counts the index's tags for the filter row. The tag on a card, the tag in an article's
+  header, and the index answering them all cross it, so a tag cannot be written
+  one way and read another; escaping happens once, which is what keeps an
+  Arabic tag or an ampersand from rewriting the query. Type-only import of
+  `Article`, so it stays free of the libraries that read from disk and can be
+  reached from a Client Component. Pure and tested (`lib/tags.test.ts`).
 - **Page self-description** (`lib/page-metadata.ts`): the one place a page says
   which address it lives at. Next replaces an inherited Open Graph block rather
   than merging into it, so a page that names any of it must name all of it; this

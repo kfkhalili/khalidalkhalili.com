@@ -117,6 +117,15 @@ badge for non-English posts, at `/<locale>/writing/<slug>`.
 pieces from 2012-13. The chips only appear once more than one collection has
 something in it.
 
+`tags` are the other way into the index. Every tag is a link to
+`/<locale>/writing?tag=<tag>`, wherever it is shown: on a card and in a piece's
+own header. The index reads that query parameter and shows only the pieces
+carrying it. It also carries a row of every tag it holds, with counts and an
+"All" chip, which is always the same row whichever tag is in force, so choosing
+one never moves the articles underneath. Tags are matched exactly, so keep the
+spelling steady across pieces, and write them in the language of the piece: an
+explorable's tags are localized alongside its title in its content module.
+
 `hidden: true` takes a piece off the site without deleting it. It disappears
 from the writing index, the home page, and the sitemap, and no page is built for
 it, so its URL 404s rather than staying quietly reachable. The file stays where

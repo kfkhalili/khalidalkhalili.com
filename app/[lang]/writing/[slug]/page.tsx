@@ -16,6 +16,7 @@ import {
   toLocale,
 } from "@/lib/i18n";
 import { articlePath, articleUrl, articleLanguages } from "@/lib/share";
+import { tagHref } from "@/lib/tags";
 import { site } from "@/lib/site";
 import { ShareRow } from "@/components/share-row";
 
@@ -100,12 +101,13 @@ export default async function ArticlePage({
         <header className="mt-8">
           <div className="flex flex-wrap items-center gap-1.5">
             {article.tags.map((t) => (
-              <span
+              <Link
                 key={t}
-                className="rounded-full border border-border px-2 py-0.5 text-xs text-faint"
+                href={tagHref(lang, t)}
+                className="rounded-full border border-border px-2 py-0.5 text-xs text-faint transition-colors hover:border-accent/40 hover:text-accent-strong"
               >
                 {t}
-              </span>
+              </Link>
             ))}
             {badge && (
               <span className="rounded-full border border-accent/40 px-2 py-0.5 text-xs text-accent-strong">
