@@ -68,6 +68,11 @@
 
 html {
   scroll-behavior: smooth;
+  /* Hold the scrollbar's width whether or not the page is long enough to need
+     one. Otherwise a short page (the writing index narrowed to one tag, a 404)
+     loses the scrollbar and every centred column on the site slides sideways
+     as it loads. Overlay scrollbars take no width, so this costs them nothing. */
+  scrollbar-gutter: stable;
 }
 
 body {

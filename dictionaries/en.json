@@ -19,7 +19,14 @@
   "writing": {
     "title": "Writing",
     "subtitle": "Interactive explorables and essays on software, systems, and the people who build them. More to come.",
-    "filters": { "label": "Filter by collection", "all": "All", "writing": "Essays", "prose": "Prose" }
+    "filters": {
+      "label": "Filter by collection",
+      "all": "All",
+      "writing": "Essays",
+      "prose": "Prose",
+      "tag": "Filter by tag",
+      "noMatch": "Nothing here matches that yet."
+    }
   },
   "reading": {
     "title": "Reading",

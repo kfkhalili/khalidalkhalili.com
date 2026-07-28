@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { WritingList, type Chip } from "./writing-list";
+import { WritingList, type Chip, type TagChip } from "./writing-list";
 import type { Article } from "@/lib/articles";
 
 const article = (slug: string, collection: string, title = slug): Article => ({
@@ -29,8 +29,22 @@ const chips: Chip[] = [
   { key: "prose", label: "Prose", count: 1 },
 ];
 
+/**
+ * As the writing route builds them: "all" first, then one per tag, counted over
+ * the whole index. `active` is the only thing that moves as the URL changes.
+ */
+const tagChipsFor = (active: string): TagChip[] =>
+  [
+    { key: "all", label: "All", count: 3, href: "/en/writing" },
+    { key: "Software", label: "Software", count: 2, href: "/en/writing?tag=Software" },
+    { key: "Systems", label: "Systems", count: 1, href: "/en/writing?tag=Systems" },
+  ].map((c) => ({ ...c, active: c.key === active }));
+
 const titles = () =>
   screen.getAllByRole("heading", { level: 3 }).map((h) => h.textContent);
+
+/** The tag row, which shares its "All" label with the collection row. */
+const tagRow = () => within(screen.getByRole("group", { name: "Filter by tag" }));
 
 const renderList = (over: Partial<Parameters<typeof WritingList>[0]> = {}) =>
   render(
@@ -38,7 +52,10 @@ const renderList = (over: Partial<Parameters<typeof WritingList>[0]> = {}) =>
       lang="en"
       articles={articles}
       chips={chips}
+      tagChips={tagChipsFor("all")}
       filterLabel="Filter by collection"
+      tagLabel="Filter by tag"
+      emptyLabel="Nothing here matches that yet."
       {...over}
     />,
   );
@@ -92,6 +109,65 @@ describe("WritingList", () => {
 
     await userEvent.click(prose);
     expect(prose.className).toContain("border-accent/60");
+  });
+
+  it("offers a link per tag, each carrying its count", () => {
+    renderList();
+    for (const chip of tagChipsFor("all")) {
+      expect(
+        tagRow().getByRole("link", { name: new RegExp(`${chip.label}\\s*${chip.count}`) }),
+      ).toHaveAttribute("href", chip.href);
+    }
+  });
+
+  it("offers the same tags whichever one is in force", () => {
+    // The row is the reason the articles below it do not move when a tag is
+    // chosen: it describes the whole index, so it cannot shrink to the one tag
+    // already chosen, or grow back when the reader leaves it.
+    const unfiltered = renderList();
+    const before = tagRow()
+      .getAllByRole("link")
+      .map((l) => l.textContent);
+    unfiltered.unmount();
+
+    renderList({
+      articles: articles.slice(0, 2),
+      tagChips: tagChipsFor("Software"),
+    });
+    expect(tagRow().getAllByRole("link").map((l) => l.textContent)).toEqual(before);
+  });
+
+  it("marks the tag the URL is at, and only that one", () => {
+    renderList({ tagChips: tagChipsFor("Software") });
+    const software = tagRow().getByRole("link", { name: /Software/ });
+    const all = tagRow().getByRole("link", { name: /All/ });
+
+    expect(software).toHaveAttribute("aria-current", "page");
+    expect(software.className).toContain("border-accent/60");
+    expect(all).not.toHaveAttribute("aria-current");
+    expect(all.className).toContain("border-border");
+  });
+
+  it("opens on the 'all' tag chip when the URL names no tag", () => {
+    renderList();
+    expect(tagRow().getByRole("link", { name: /All/ })).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
+  });
+
+  it("says so when the filters meet on nothing, rather than showing a blank shelf", () => {
+    renderList({ articles: [], tagChips: tagChipsFor("Software") });
+    expect(screen.getByText("Nothing here matches that yet.")).toBeInTheDocument();
+    // The rows have to survive the empty shelf: they are the way back out.
+    expect(tagRow().getByRole("link", { name: /All/ })).toBeInTheDocument();
+  });
+
+  it("hides the tag row when there is only one tag to choose", () => {
+    renderList({
+      tagChips: tagChipsFor("all").slice(0, 2),
+    });
+    expect(screen.queryByRole("group", { name: "Filter by tag" })).not.toBeInTheDocument();
   });
 
   it("hides the chips when there is only one collection to choose", () => {

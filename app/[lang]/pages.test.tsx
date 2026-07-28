@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import Home, { generateMetadata as homeMetadata } from "./page";
 import AboutPage, { generateMetadata as aboutMetadata } from "./about/page";
 import ProjectsPage, { generateMetadata as projectsMetadata } from "./projects/page";
@@ -9,6 +9,7 @@ import { getProjects } from "@/lib/projects";
 import { readContent } from "@/lib/content";
 import { LOCALES } from "@/lib/i18n";
 import en from "@/dictionaries/en.json";
+import de from "@/dictionaries/de.json";
 import ar from "@/dictionaries/ar.json";
 
 vi.mock("next/navigation", () => ({ usePathname: () => "/en" }));
@@ -37,7 +38,6 @@ describe("Home", () => {
   });
 
   it("sends both calls to action into the current locale", async () => {
-    const de = (await import("@/dictionaries/de.json")).default;
     await renderPage(Home, { lang: "de" });
     const featured = getAllArticles("de").find((a) => a.featured)!;
 
@@ -150,7 +150,6 @@ describe("ProjectsPage", () => {
   });
 
   it("takes its metadata from the dictionary", async () => {
-    const de = (await import("@/dictionaries/de.json")).default;
     const metadata = await projectsMetadata({ params: Promise.resolve({ lang: "de" }) });
     expect(metadata).toMatchObject({
       title: de.projects.title,
@@ -209,5 +208,73 @@ describe("WritingPage", () => {
     });
     // The copy falls back, but the address is still the one that was asked for.
     expect(metadata.alternates?.canonical).toBe("/fr/writing");
+  });
+
+  describe("narrowed to a tag", () => {
+    /** The index as a reader arrives at it from a tag on a card or a piece. */
+    const renderTagged = async (lang: string, tag?: string | string[]) =>
+      render(
+        await WritingPage({
+          params: Promise.resolve({ lang }),
+          searchParams: Promise.resolve({ tag }),
+        }),
+      );
+
+    it("shows only the pieces carrying the tag, in the shipped HTML", async () => {
+      const [first] = getAllArticles("en").filter((a) => a.tags.length > 0);
+      await renderTagged("en", first.tags[0]);
+
+      const shown = getAllArticles("en").filter((a) => a.tags.includes(first.tags[0]));
+      expect(screen.getAllByRole("heading", { level: 3 })).toHaveLength(shown.length);
+      expect(screen.getByRole("heading", { name: first.title })).toBeInTheDocument();
+    });
+
+    it("marks the chosen tag, and links every other one back out", async () => {
+      const tag = getAllArticles("de")[0].tags[0];
+      await renderTagged("de", tag);
+      const row = within(screen.getByRole("group", { name: de.writing.filters.tag }));
+
+      expect(row.getByRole("link", { name: new RegExp(tag) })).toHaveAttribute(
+        "aria-current",
+        "page",
+      );
+      expect(
+        row.getByRole("link", { name: new RegExp(de.writing.filters.all) }),
+      ).toHaveAttribute("href", "/de/writing");
+    });
+
+    it("offers the same tag row filtered or not, so the articles do not move", async () => {
+      const tag = getAllArticles("en")[0].tags[0];
+      const rowLinks = () =>
+        within(screen.getByRole("group", { name: en.writing.filters.tag }))
+          .getAllByRole("link")
+          .map((l) => l.textContent);
+
+      const unfiltered = await renderTagged("en");
+      const before = rowLinks();
+      unfiltered.unmount();
+
+      await renderTagged("en", tag);
+      expect(rowLinks()).toEqual(before);
+    });
+
+    it("says so when the tag names nothing", async () => {
+      await renderTagged("en", "no-such-tag");
+      expect(screen.queryAllByRole("heading", { level: 3 })).toHaveLength(0);
+      expect(screen.getByText(en.writing.filters.noMatch)).toBeInTheDocument();
+    });
+
+    it("opens on the whole index when the URL asks for two tags at once", async () => {
+      await renderTagged("en", ["Software Design", "IT Projects"]);
+      expect(screen.getAllByRole("heading", { level: 3 })).toHaveLength(
+        getAllArticles("en").length,
+      );
+      expect(
+        within(screen.getByRole("group", { name: en.writing.filters.tag })).getByRole(
+          "link",
+          { name: new RegExp(en.writing.filters.all) },
+        ),
+      ).toHaveAttribute("aria-current", "page");
+    });
   });
 });
