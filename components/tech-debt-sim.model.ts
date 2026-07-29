@@ -107,6 +107,19 @@ export const moraleTone = (v: number): Tone =>
  */
 export type LogKey = "critical" | "warning" | "stalled" | "healthy" | "normal";
 
+/**
+ * Every line the log can show, worst last. The sim lays all five over each other
+ * to hold its height steady, so it needs them in a fixed order rather than one
+ * at a time.
+ */
+export const LOG_KEYS = [
+  "healthy",
+  "normal",
+  "stalled",
+  "warning",
+  "critical",
+] as const satisfies readonly LogKey[];
+
 export function logKey(state: SimState): LogKey {
   if (state.tdr >= 80) return "critical";
   if (state.tdr >= 40) return "warning";

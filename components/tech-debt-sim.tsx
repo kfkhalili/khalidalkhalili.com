@@ -5,6 +5,7 @@ import type { SimStrings } from "@/components/explorables/technical-debt.content
 import { useSimClock } from "@/components/use-sim-clock";
 import {
   DEFAULT_RATE,
+  LOG_KEYS,
   PRESETS,
   initialState,
   logKey,
@@ -59,6 +60,56 @@ function Bar({
   );
 }
 
+/**
+ * One line showing, the rest stacked underneath it in the same grid cell.
+ *
+ * The cell is as tall as the longest line at whatever width it is rendered at,
+ * so swapping lines never moves anything below. That matters here because the
+ * two places copy changes, picking an archetype and the log reacting to it, sit
+ * directly above the bars: sizing the box to the line in play would jog the bars
+ * on every click, exactly when the reader is trying to watch them.
+ *
+ * The hidden lines are `invisible` rather than unmounted (visibility keeps them
+ * out of the a11y tree while they hold the box open) and `aria-hidden` on top of
+ * that, so `live` announces only the line that is actually showing. It is opt-in:
+ * worth it for the line answering a click, noise for the one a timer drives.
+ */
+function Layered({
+  lines,
+  active,
+  live = false,
+  className,
+}: {
+  lines: string[];
+  active: number;
+  live?: boolean;
+  className?: string;
+}) {
+  return (
+    <div
+      role={live ? "status" : undefined}
+      aria-live={live ? "polite" : undefined}
+      className={"grid " + className}
+    >
+      {lines.map((line, i) => (
+        <p
+          key={i}
+          aria-hidden={i !== active}
+          className={
+            "col-start-1 row-start-1 " + (i === active ? "" : "invisible")
+          }
+        >
+          {/* Remounting via key replays the fade, so a changed line reads as
+              changed rather than as text that was always there. */}
+          <span key={active} className="status-rewrite">
+            {line}
+          </span>
+        </p>
+      ))}
+    </div>
+  );
+}
+
 export function TechDebtSim({ strings }: { strings: SimStrings }) {
   const [state, setState] = useState<SimState>(initialState);
   const [refactorRate, setRefactorRate] = useState(DEFAULT_RATE);
@@ -66,6 +117,12 @@ export function TechDebtSim({ strings }: { strings: SimStrings }) {
   const { ref, running } = useSimClock(() =>
     setState((s) => nextState(s, refactorRate)),
   );
+
+  // Off a preset, the slider is between archetypes: `custom` is the line after
+  // the four, so an unmatched rate lands on it.
+  const archetypes = [...strings.archetypes, strings.custom];
+  const matched = PRESETS.findIndex((value) => value === refactorRate);
+  const archetype = matched === -1 ? strings.archetypes.length : matched;
 
   return (
     <div
@@ -90,7 +147,7 @@ export function TechDebtSim({ strings }: { strings: SimStrings }) {
         />
       </div>
 
-      <div className="mb-6 flex flex-wrap gap-2">
+      <div className="mb-3 flex flex-wrap gap-2">
         {PRESETS.map((value, i) => {
           const active = refactorRate === value;
           return (
@@ -111,6 +168,13 @@ export function TechDebtSim({ strings }: { strings: SimStrings }) {
         })}
       </div>
 
+      <Layered
+        lines={archetypes}
+        active={archetype}
+        live
+        className="mb-6 text-sm leading-snug text-muted"
+      />
+
       <div className="flex gap-3">
         <Bar label={strings.bars[0]} value={state.velocity} tone={velocityTone(state.velocity)} />
         <Bar label={strings.bars[1]} value={state.tdr} tone={tdrTone(state.tdr)} />
@@ -125,9 +189,11 @@ export function TechDebtSim({ strings }: { strings: SimStrings }) {
           {running ? strings.running : strings.paused}
         </span>
       </div>
-      <p className="mt-3 min-h-[1.4em] border-t border-border pt-3 text-sm text-muted">
-        {strings.log[logKey(state)]}
-      </p>
+      <Layered
+        lines={LOG_KEYS.map((key) => strings.log[key])}
+        active={LOG_KEYS.indexOf(logKey(state))}
+        className="mt-3 border-t border-border pt-3 text-sm text-muted"
+      />
     </div>
   );
 }

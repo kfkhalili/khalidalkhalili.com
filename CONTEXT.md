@@ -45,9 +45,18 @@ interactive explorable explanations, essays, and notes.
   `figure`, the caption in monospace, tight against the machine and standing off
   from the column. Only a Sim that needs operating gets one; prose that merely
   happens to precede a Sim stays prose, and a Sim that says what it is needs no
-  caption at all. What the Sim itself asks, the prose leaves to it: the contract
-  diagnostic asks the four questions, so the essay points the reader at them
-  rather than listing them first.
+  caption at all. What the Sim itself says, the prose leaves to it: the contract
+  diagnostic asks the four questions and the technical-debt sim explains each of
+  the four archetypes as you pick it, so the piece names the count and points the
+  reader at the machine rather than enumerating first.
+- **Layered copy** (`Layered` in `components/tech-debt-sim.tsx`): a block of Sim
+  copy that swaps lines without changing height. Every line it can show is laid
+  into one grid cell, so the cell is as tall as the longest line at whatever
+  width it is rendered at, and the lines not showing are `invisible` (holding the
+  box open, out of the a11y tree) rather than unmounted. A Sim that resized to
+  the line in play would jog the bars underneath on every pick, which is the
+  moment the reader is watching them. Lines that share a block are written to a
+  similar length in every Locale, so the reserve is the copy rather than padding.
 - **Locale**: a supported language (`en`, `de`, `ar`). Arabic is right-to-left.
 - **Page copy**: the chrome-adjacent prose (home hero, about) authored per locale
   in `content/<locale>/*.md`, falling back to the default locale.

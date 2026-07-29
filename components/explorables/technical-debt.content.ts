@@ -5,6 +5,8 @@ export type SimStrings = {
   allocation: string;
   allocationAria: string;
   presets: string[]; // 4 archetype labels, aligned with the sim's fixed values
+  archetypes: string[]; // what each preset costs you, aligned with `presets`
+  custom: string; // shown instead when the slider sits between the archetypes
   bars: [string, string, string]; // velocity, tech debt, morale
   week: string;
   running: string;
@@ -30,8 +32,6 @@ export type TechDebtContent = {
   intro: string;
   ousterhout: string;
   accumulate: string;
-  archetypesHeading: string;
-  archetypes: string[];
   modelHeading: string;
   modelIntro: string;
   modelSteps: string[];
@@ -52,16 +52,9 @@ const en: TechDebtContent = {
   title: `Visualizing the Drag of Technical Debt`,
   description: `An interactive model of technical debt as a drag coefficient on team velocity: the tension between shipping fast now and investing in design.`,
   tags: [`Software Design`],
-  intro: `Technical debt is often discussed as a metaphor, but it behaves more like a physical law: it is a drag coefficient on your team's velocity.`,
+  intro: `Technical debt is often discussed as a metaphor, but it behaves more like a physical law: it is a drag coefficient on your team's velocity. Four strategies cover most of the range. They are represented in the model below. Pick one and watch which bar pays for it.`,
   ousterhout: `In <em><a href="${BOOK}" target="_blank" rel="noopener noreferrer">A Philosophy of Software Design</a></em>, John Ousterhout defines complexity as "anything related to the structure of a software system that makes it hard to understand and modify". This interactive model visualizes that friction. It explores the tension between <strong>Tactical Programming</strong> (shipping fast now) and <strong>Strategic Programming</strong> (investing in design for the future).`,
   accumulate: `Complexity accumulates whether we like it or not. The only influence we have is how much time we set for dealing with it. More time to fix bugs and refactor code means you have less time to ship features, so you'll need some kind of strategy.`,
-  archetypesHeading: `Four Archetypes`,
-  archetypes: [
-    `<strong>Startup Rush (10%):</strong> The "Tactical" approach. You ship fast early on, but you are borrowing against the future. Eventually, the debt load becomes so heavy that morale and velocity collapse.`,
-    `<strong>Sustainable (30%):</strong> The "Strategic" sweet spot. You invest just enough (about a third of your time) to keep debt flat. This yields the highest long-term velocity.`,
-    `<strong>Enterprise Safe (50%):</strong> A low-risk, lower-speed approach where stability is prioritized over new features.`,
-    `<strong>Full Refactor (80%):</strong> The emergency brake. You stop shipping to clean up the mess. It works, but it's a painful, slow recovery.`,
-  ],
   modelHeading: `How the Model Works`,
   modelIntro: `This simulation isn't random. It is driven by the battle between two opposing forces: <strong>Entropy</strong> and <strong>Investment</strong>.`,
   modelSteps: [
@@ -105,6 +98,15 @@ const en: TechDebtContent = {
     allocation: `Refactor allocation`,
     allocationAria: `Refactor allocation percentage`,
     presets: [`Startup Rush`, `Sustainable`, `Enterprise Safe`, `Full Refactor`],
+    // Kept to a similar length on purpose: the block reserves the height of the
+    // longest line, so one runaway blurb pads the box for all four.
+    archetypes: [
+      `The tactical approach: you ship fast early on by borrowing against the future, until the debt load collapses morale and velocity.`,
+      `The strategic sweet spot: about a third of your time keeps debt flat, which is what buys the highest velocity long term.`,
+      `Low risk and lower speed, with stability prioritized over new features. Nothing breaks here, and not much ships either.`,
+      `The emergency brake: you stop shipping entirely to clean up the mess. It works, but the recovery is slow and painful.`,
+    ],
+    custom: `A hand-set allocation, somewhere between the four strategies. The bars settle wherever entropy and payback happen to balance.`,
     bars: [`Velocity`, `Tech debt`, `Morale`],
     week: `Week`,
     running: `● running`,
@@ -123,16 +125,9 @@ const de: TechDebtContent = {
   title: `Die Bremswirkung technischer Schulden sichtbar gemacht`,
   description: `Ein interaktives Modell technischer Schulden als Bremskoeffizient, der auf die Geschwindigkeit eines Teams wirkt: das Spannungsfeld zwischen schnellem Ausliefern und Investition in gutes Design.`,
   tags: [`Softwaredesign`],
-  intro: `Technische Schulden werden oft als Metapher behandelt, doch sie verhalten sich eher wie ein Naturgesetz: Sie sind ein Bremskoeffizient, der auf die Geschwindigkeit deines Teams wirkt.`,
+  intro: `Technische Schulden werden oft als Metapher behandelt, doch sie verhalten sich eher wie ein Naturgesetz: Sie sind ein Bremskoeffizient, der auf die Geschwindigkeit deines Teams wirkt. Vier Strategien decken den größten Teil der Bandbreite ab. Du findest sie alle im Modell weiter unten. Wähle eine aus und schau, welcher Balken dafür bezahlt.`,
   ousterhout: `In <em><a href="${BOOK}" target="_blank" rel="noopener noreferrer">A Philosophy of Software Design</a></em> definiert John Ousterhout Komplexität als „alles an der Struktur eines Softwaresystems, das es schwer verständlich und schwer änderbar macht“. Dieses interaktive Modell macht diese Reibung sichtbar. Es beleuchtet das Spannungsfeld zwischen <strong>taktischer Programmierung</strong> (jetzt schnell ausliefern) und <strong>strategischer Programmierung</strong> (in Design für die Zukunft investieren).`,
   accumulate: `Komplexität sammelt sich an, ob es uns gefällt oder nicht. Das Einzige, worauf wir Einfluss haben, ist, wie viel Zeit wir uns nehmen, um mit ihr umzugehen. Mehr Zeit für Bugfixes und Refactoring bedeutet weniger Zeit, um Features auszuliefern. Du brauchst also eine Strategie.`,
-  archetypesHeading: `Vier Archetypen`,
-  archetypes: [
-    `<strong>Startup-Rush (10 %):</strong> Der „taktische“ Ansatz. Anfangs lieferst du schnell, doch du borgst dir Zeit aus der Zukunft. Irgendwann wird die Schuldenlast so schwer, dass Moral und Geschwindigkeit zusammenbrechen.`,
-    `<strong>Nachhaltig (30 %):</strong> Der „strategische“ Sweet Spot. Du investierst gerade genug (etwa ein Drittel deiner Zeit), um die Schulden konstant zu halten. Das bringt langfristig die höchste Geschwindigkeit.`,
-    `<strong>Auf Nummer sicher (50 %):</strong> Ein risikoarmer, langsamerer Ansatz, bei dem Stabilität Vorrang vor neuen Features hat.`,
-    `<strong>Komplettes Refactoring (80 %):</strong> Die Notbremse. Du lieferst nichts mehr aus, um aufzuräumen. Es funktioniert, aber die Erholung ist schmerzhaft und langsam.`,
-  ],
   modelHeading: `Wie das Modell funktioniert`,
   modelIntro: `Diese Simulation ist nicht zufällig. Sie wird vom Kampf zwischen zwei gegensätzlichen Kräften angetrieben: <strong>Entropie</strong> und <strong>Investition</strong>.`,
   modelSteps: [
@@ -176,6 +171,14 @@ const de: TechDebtContent = {
     allocation: `Refactoring-Anteil`,
     allocationAria: `Refactoring-Anteil in Prozent`,
     presets: [`Startup-Rush`, `Nachhaltig`, `Auf Nummer sicher`, `Komplettes Refactoring`],
+    // Siehe die englische Fassung: ähnliche Länge, damit der Block nicht wächst.
+    archetypes: [
+      `Der taktische Ansatz: Anfangs lieferst du schnell, borgst dir Zeit aus der Zukunft, bis Moral und Geschwindigkeit unter der Last einbrechen.`,
+      `Der strategische Sweet Spot: Etwa ein Drittel deiner Zeit reicht, um die Schulden konstant und die Geschwindigkeit langfristig hoch zu halten.`,
+      `Risikoarm und deutlich langsamer: Stabilität hat immer Vorrang vor neuen Features. Hier geht nichts kaputt, dafür aber auch kaum etwas raus.`,
+      `Die Notbremse: Du lieferst gar nichts mehr aus und räumst nur noch auf. Es funktioniert, aber die Erholung ist langsam und schmerzhaft.`,
+    ],
+    custom: `Ein selbst gewählter Anteil, irgendwo zwischen den vier Strategien. Die Balken pendeln sich dort ein, wo Entropie und Tilgung sich ausgleichen.`,
     bars: [`Geschwindigkeit`, `Tech-Schulden`, `Moral`],
     week: `Woche`,
     running: `● läuft`,
@@ -194,16 +197,9 @@ const ar: TechDebtContent = {
   title: `الأثر الكابح للدَّين التقني`,
   description: `نموذجٌ تفاعليّ يُظهر الدَّين التقني بوصفه معاملَ كبحٍ على سرعة الفريق: التوتر بين الإطلاق السريع الآن والاستثمار في التصميم.`,
   tags: [`تصميم البرمجيات`],
-  intro: `غالبًا ما يُناقَش الدَّين التقني بوصفه استعارة، لكنه يتصرّف أشبه بقانونٍ فيزيائي: فهو معاملُ كبحٍ يُبطّئ سرعة فريقك.`,
+  intro: `غالبًا ما يُناقَش الدَّين التقني بوصفه استعارة، لكنه يتصرّف أشبه بقانونٍ فيزيائي: فهو معاملُ كبحٍ يُبطّئ سرعة فريقك. وتغطّي أربعُ استراتيجياتٍ معظمَ هذا المدى، وتجدها جميعًا في النموذج أدناه. اختر واحدةً وراقب العمود الذي يدفع الثمن.`,
   ousterhout: `في كتاب <em><a href="${BOOK}" target="_blank" rel="noopener noreferrer">A Philosophy of Software Design</a></em>، يُعرّف جون أوسترهاوت التعقيد بأنه «كل ما يتعلّق ببنية نظامٍ برمجي ويجعله صعب الفهم والتعديل». يجسّد هذا النموذج التفاعلي ذلك الاحتكاك، ويستكشف التوتر بين <strong>البرمجة التكتيكية</strong> (الإطلاق السريع الآن) و<strong>البرمجة الاستراتيجية</strong> (الاستثمار في التصميم من أجل المستقبل).`,
   accumulate: `يتراكم التعقيد شئنا أم أبينا. وما يمكننا التحكم فيه هو مقدار الوقت الذي نخصّصه للتعامل معه. فالمزيد من الوقت لإصلاح العيوب وإعادة هيكلة الشيفرة يعني وقتًا أقل لإطلاق الميزات، لذا لا بدّ من استراتيجيةٍ ما.`,
-  archetypesHeading: `أربعة أنماط`,
-  archetypes: [
-    `<strong>الاندفاع الأولي (10%):</strong> النهج «التكتيكي». تُطلق الميزات بسرعةٍ في البداية، لكنك تقترض من المستقبل. وفي النهاية تصبح حِمولة الدَّين ثقيلةً إلى حدٍّ تنهار عنده المعنويات والسرعة.`,
-    `<strong>مستدام (30%):</strong> نقطة التوازن «الاستراتيجية». تستثمر ما يكفي تمامًا (نحو ثلث وقتك) لإبقاء الدَّين ثابتًا. وهذا يحقّق أعلى سرعةٍ على المدى الطويل.`,
-    `<strong>أمان المؤسسة (50%):</strong> نهجٌ منخفض المخاطر وأبطأ، يُقدَّم فيه الاستقرار على الميزات الجديدة.`,
-    `<strong>إعادة هيكلة شاملة (80%):</strong> مكابح الطوارئ. تتوقّف عن الإطلاق لتنظيف الفوضى. ينجح الأمر، لكنه تعافٍ بطيءٌ ومؤلم.`,
-  ],
   modelHeading: `كيف يعمل النموذج`,
   modelIntro: `هذه المحاكاة ليست عشوائية. إنها مدفوعةٌ بصراعٍ بين قوّتين متضادّتين: <strong>الإنتروبيا</strong> و<strong>الاستثمار</strong>.`,
   modelSteps: [
@@ -247,6 +243,13 @@ const ar: TechDebtContent = {
     allocation: `حصّة إعادة الهيكلة`,
     allocationAria: `نسبة حصّة إعادة الهيكلة`,
     presets: [`الاندفاع الأولي`, `مستدام`, `أمان المؤسسة`, `إعادة هيكلة شاملة`],
+    archetypes: [
+      `النهج التكتيكي: تُطلق الميزات بسرعةٍ في البداية، لكنك تقترض من المستقبل، حتى تنهار المعنويات والسرعة تحت عبء الدَّين.`,
+      `نقطة التوازن الاستراتيجية: يكفي نحو ثلث وقتك لإبقاء الدَّين ثابتًا، وهذا ما يمنحك أعلى سرعةٍ على المدى الطويل.`,
+      `مخاطر أقلّ وسرعة أقلّ، مع تقديم الاستقرار على الميزات الجديدة. لا شيء ينكسر هنا، ولا يكاد شيء يُطلَق.`,
+      `مكابح الطوارئ: تتوقّف عن الإطلاق تمامًا لتنظيف ما تراكم من فوضى. ينجح الأمر، لكنك تدفع ثمنه تعافيًا بطيئًا ومؤلمًا.`,
+    ],
+    custom: `حصّةٌ ضبطتها بنفسك، في مكانٍ ما بين الاستراتيجيات الأربع. تستقرّ الأعمدة حيث تتعادل الإنتروبيا مع السداد.`,
     bars: [`السرعة`, `الدَّين التقني`, `المعنويات`],
     week: `الأسبوع`,
     running: `● يعمل`,
