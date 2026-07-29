@@ -8,6 +8,13 @@ const strings: SimStrings = {
   allocation: "Refactoring allocation",
   allocationAria: "Refactoring allocation",
   presets: ["Ship it", "Sustainable", "Balanced", "Rewrite"],
+  archetypes: [
+    "Borrowing against the future.",
+    "Just enough to hold debt flat.",
+    "Stability over features.",
+    "Stop shipping and clean up.",
+  ],
+  custom: "Somewhere between the archetypes.",
   bars: ["Velocity", "Tech debt", "Morale"],
   week: "Week",
   running: "running",
@@ -28,6 +35,17 @@ function bars(): [number, number, number] {
   );
   return [velocity, debt, morale];
 }
+
+/**
+ * The one line showing in a layered block. Every line stays mounted to hold the
+ * block's height, so "is it in the document" says nothing about what is on screen.
+ */
+const shown = (lines: string[]) =>
+  lines.filter(
+    (line) => !screen.getByText(line).closest("p")!.className.includes("invisible"),
+  );
+const logLine = () => shown(Object.values(strings.log));
+const archetypeLine = () => shown([...strings.archetypes, strings.custom]);
 
 const slider = () => screen.getByRole("slider", { name: strings.allocationAria });
 /** The allocation readout above the slider, as opposed to the preset labels. */
@@ -99,7 +117,7 @@ describe("TechDebtSim", () => {
     // Debt's drag alone costs 80 points of velocity, and morale follows it down.
     expect(velocity).toBe(20);
     expect(morale).toBe(12);
-    expect(screen.getByText(strings.log.critical)).toBeInTheDocument();
+    expect(logLine()).toEqual([strings.log.critical]);
   });
 
   it("turns the debt bar amber before it turns red", () => {
@@ -121,7 +139,7 @@ describe("TechDebtSim", () => {
     const [, debt] = bars();
     expect(debt).toBeGreaterThanOrEqual(40);
     expect(debt).toBeLessThan(80);
-    expect(screen.getByText(strings.log.warning)).toBeInTheDocument();
+    expect(logLine()).toEqual([strings.log.warning]);
   });
 
   it("stalls when the whole team refactors and nothing ships", () => {
@@ -132,7 +150,7 @@ describe("TechDebtSim", () => {
     const [velocity, debt] = bars();
     expect(velocity).toBeLessThan(20);
     expect(debt).toBeLessThan(40);
-    expect(screen.getByText(strings.log.stalled)).toBeInTheDocument();
+    expect(logLine()).toEqual([strings.log.stalled]);
   });
 
   it("turns a bar amber while it is merely middling", () => {
@@ -171,6 +189,56 @@ describe("TechDebtSim", () => {
     expect(readout()).toBe("80%");
     expect(rewrite.className).toContain("border-accent");
     expect(screen.getByRole("button", { name: /Ship it/ }).className).toContain("border-border");
+  });
+
+  it("explains the archetype in play, and only that one", () => {
+    render(<TechDebtSim strings={strings} />);
+    expect(archetypeLine()).toEqual([strings.archetypes[1]]);
+
+    fireEvent.click(screen.getByRole("button", { name: /Rewrite/ }));
+    expect(archetypeLine()).toEqual([strings.archetypes[3]]);
+  });
+
+  it("says so when the slider sits between the archetypes", () => {
+    render(<TechDebtSim strings={strings} />);
+    setRate(37);
+    expect(archetypeLine()).toEqual([strings.custom]);
+  });
+
+  /**
+   * The reason the sim lays its copy out this way: the explanation sits directly
+   * above the bars, so a box that resized to the line in play would jog the bars
+   * on every pick. Keeping every line mounted holds the height at the longest one.
+   */
+  it("keeps every archetype and log line mounted, so neither block can resize", () => {
+    render(<TechDebtSim strings={strings} />);
+    for (const line of [...strings.archetypes, strings.custom, ...Object.values(strings.log)]) {
+      expect(screen.getByText(line)).toBeInTheDocument();
+    }
+
+    // Whatever the sim is doing, exactly one line of each block is showing.
+    for (const rate of [0, 30, 37, 100]) {
+      setRate(rate);
+      tick(30);
+      expect(archetypeLine()).toHaveLength(1);
+      expect(logLine()).toHaveLength(1);
+    }
+  });
+
+  it("lays the lines of a block over each other rather than in a column", () => {
+    const { container } = render(<TechDebtSim strings={strings} />);
+    const block = screen.getByText(strings.archetypes[1]).closest("div")!;
+    expect(block.className).toContain("grid");
+    expect(container.querySelectorAll(".col-start-1.row-start-1").length).toBe(
+      strings.archetypes.length + 1 + Object.keys(strings.log).length,
+    );
+  });
+
+  it("announces the archetype it swapped to, but not the log the clock drives", () => {
+    render(<TechDebtSim strings={strings} />);
+    const blockOf = (line: string) => screen.getByText(line).closest("div")!;
+    expect(blockOf(strings.archetypes[1])).toHaveAttribute("aria-live", "polite");
+    expect(blockOf(strings.log.healthy)).not.toHaveAttribute("aria-live");
   });
 
   it("marks the sustainable preset as active on open", () => {

@@ -17,19 +17,15 @@ export function TechnicalDebtArticle({ lang }: { lang: string }) {
 
   return (
     <>
+      {/* The four archetypes are the sim's presets, and each explains itself
+          when you pick it, so the paragraph that introduces the sim names the
+          count and hands off rather than enumerating them in a section here. */}
       <Html html={c.intro} />
 
       <TechDebtSim strings={c.sim} />
 
       <Html html={c.ousterhout} />
       <Html html={c.accumulate} />
-
-      <h2>{c.archetypesHeading}</h2>
-      <ul>
-        {c.archetypes.map((item, i) => (
-          <Html key={i} as="li" html={item} />
-        ))}
-      </ul>
 
       <h2>{c.modelHeading}</h2>
       <Html html={c.modelIntro} />

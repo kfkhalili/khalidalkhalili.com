@@ -86,6 +86,10 @@ describe("technical-debt sim strings", () => {
   it.each(LOCALES)("labels the four presets and three bars in %s", (locale) => {
     const sim = TD_CONTENT[locale].sim;
     expect(sim.presets).toHaveLength(4);
+    // Every preset explains itself when picked, plus a line for the allocations
+    // between them.
+    expect(sim.archetypes).toHaveLength(sim.presets.length);
+    expect(sim.custom.trim()).not.toBe("");
     expect(sim.bars).toHaveLength(3);
     expect(Object.keys(sim.log).sort()).toEqual([
       "critical",

@@ -53,13 +53,35 @@ describe("TechnicalDebtArticle", () => {
     ).toBeInTheDocument();
   });
 
-  it("lays out the argument as headings, a list, and numbered steps", () => {
+  it("lays out the argument as headings and numbered steps", () => {
     const c = getTechDebtContent("en");
     const { container } = render(<TechnicalDebtArticle lang="en" />);
-    expect(screen.getByRole("heading", { name: c.archetypesHeading })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: c.modelHeading })).toBeInTheDocument();
-    expect(container.querySelectorAll("ul > li")).toHaveLength(c.archetypes.length);
     expect(container.querySelectorAll("ol > li")).toHaveLength(c.modelSteps.length);
+  });
+
+  it.each(LOCALES)("hands the four archetypes off to the sim in %s", (locale) => {
+    // The sim explains each archetype when you pick it, so the paragraph that
+    // introduces the sim names the count and stays out of the enumeration. It
+    // is the same prose that sets the sim up, not a section of its own.
+    const c = getTechDebtContent(locale);
+    const prose = text(c.intro).toLowerCase();
+    for (const label of c.sim.presets) {
+      expect(prose).not.toContain(label.toLowerCase());
+    }
+    for (const blurb of c.sim.archetypes) {
+      expect(prose).not.toContain(text(blurb).toLowerCase());
+    }
+  });
+
+  it("introduces the sim in the paragraph directly above it", () => {
+    const c = getTechDebtContent("en");
+    const { container } = render(<TechnicalDebtArticle lang="en" />);
+    const order = [...container.children];
+    const intro = order.findIndex((el) => el.textContent?.includes(text(c.intro)));
+    const sim = order.findIndex((el) => el.textContent?.includes(c.sim.allocation));
+    expect(intro).toBeGreaterThanOrEqual(0);
+    expect(sim).toBe(intro + 1);
   });
 
   it("folds the hindsight notes away behind their summaries", () => {
