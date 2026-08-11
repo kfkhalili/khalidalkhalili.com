@@ -122,7 +122,11 @@ interactive explorable explanations, essays, and notes.
   break.
 - **Goodreads parse** (`parseShelf` in `lib/goodreads.ts`): the pure RSS → `Book[]`
   transform, exposed as the test surface. `lib/goodreads.test.ts` feeds it fixtures
-  with no network.
+  with no network. It also flattens each review's HTML to text, keeping paragraphs
+  as blank lines: the page shows a review as text, so a tag is either a break or
+  nothing. `excerpt` sits beside it as a second pure function rather than inside
+  it, because how much of a review a page shows is the page's business and the
+  feed keeps the whole of it either way.
 - **Chess parse** (`parseStats` and `parseGame` in `lib/chess.ts`): the same seam
   for chess.com, which answers with JSON rather than RSS. `parseStats` reads a
   profile into ratings; `parseGame` decides whether a payload is a game worth

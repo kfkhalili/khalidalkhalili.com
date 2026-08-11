@@ -8,18 +8,24 @@ import ar from "@/dictionaries/ar.json";
 
 const getBookshelf = vi.hoisted(() => vi.fn());
 
-vi.mock("@/lib/goodreads", () => ({ getBookshelf }));
+// Only the network half is stubbed: `excerpt` is pure, so the page is tested
+// against the real truncation rather than against a stand-in for it.
+vi.mock("@/lib/goodreads", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/lib/goodreads")>()),
+  getBookshelf,
+}));
 
-const book = (title: string, rating = 0): Book => ({
+const book = (title: string, rating = 0, review = ""): Book => ({
   title,
   author: `${title}'s author`,
   cover: `https://covers.test/${title}.jpg`,
   rating,
   link: `https://www.goodreads.com/book/show/${title}`,
+  review,
 });
 
 function shelf(overrides: Partial<Bookshelf> = {}): Bookshelf {
-  return { currentlyReading: [], read: [], ok: true, ...overrides };
+  return { currentlyReading: [], read: [], latestReview: null, ok: true, ...overrides };
 }
 
 const renderPage = async (lang = "en") =>
@@ -93,8 +99,48 @@ describe("ReadingPage", () => {
     }
   });
 
+  it("leads with the latest review", async () => {
+    getBookshelf.mockResolvedValue(
+      shelf({ latestReview: book("Maus", 4, "A brilliant reconstruction.") }),
+    );
+    await renderPage();
+
+    expect(screen.getByRole("heading", { name: en.reading.latestReview })).toBeInTheDocument();
+    expect(screen.getByText("A brilliant reconstruction.")).toBeInTheDocument();
+    expect(screen.getByText("Maus")).toBeInTheDocument();
+    expect(screen.getByLabelText("4/5")).toBeInTheDocument();
+  });
+
+  it("shows only the opening of a long review, and links out for the rest", async () => {
+    const long = `${"word ".repeat(300)}end`;
+    getBookshelf.mockResolvedValue(shelf({ latestReview: book("Long", 3, long) }));
+    await renderPage();
+
+    const shown = screen.getByText(/^word word/).textContent!;
+    expect(shown.length).toBeLessThan(long.length);
+    expect(shown.endsWith("…")).toBe(true);
+
+    const link = screen.getByRole("link", { name: new RegExp(en.reading.readFullReview) });
+    expect(link).toHaveAttribute("href", "https://www.goodreads.com/book/show/Long");
+    expect(link).toHaveAttribute("rel", "noopener noreferrer");
+  });
+
+  // An English review on the Arabic page, or the reverse: the text sets its own
+  // direction, or the ellipsis and the punctuation land on the wrong end.
+  it("lets the review find its own direction, whatever page it's shown on", async () => {
+    getBookshelf.mockResolvedValue(
+      shelf({ latestReview: book("Maus", 4, "A brilliant reconstruction.") }),
+    );
+    const { container } = await renderPage("ar");
+
+    expect(screen.getByText("A brilliant reconstruction.")).toHaveAttribute("dir", "auto");
+    expect(screen.getByText("Maus").closest("[dir]")).toHaveAttribute("dir", "auto");
+    expect(container.querySelector("[dir='rtl'], [dir='ltr']")).toBeNull();
+  });
+
   it("hides an empty section rather than showing an empty heading", async () => {
     await renderPage();
+    expect(screen.queryByRole("heading", { name: en.reading.latestReview })).not.toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: en.reading.currentlyReading })).not.toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: en.reading.recentlyRead })).not.toBeInTheDocument();
   });

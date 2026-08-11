@@ -32,6 +32,8 @@
     "title": "Reading",
     "subtitle": "Books I've read and what I'm in the middle of, pulled live from my Goodreads shelves.",
     "currentlyReading": "Currently reading",
+    "latestReview": "Latest review",
+    "readFullReview": "Read the full review on Goodreads",
     "recentlyRead": "Recently read",
     "viewOnGoodreads": "See my full shelf on Goodreads",
     "unavailable": "My shelf on Goodreads"

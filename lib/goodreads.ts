@@ -8,11 +8,14 @@ export type Book = {
   cover: string;
   rating: number; // 0–5 (0 = unrated)
   link: string;
+  review: string; // my own review, as plain text; "" when I didn't write one
 };
 
 export type Bookshelf = {
   currentlyReading: Book[];
   read: Book[];
+  /** The newest finished book I actually wrote about. Null if none did. */
+  latestReview: Book | null;
   ok: boolean; // false if Goodreads couldn't be reached
 };
 
@@ -49,6 +52,47 @@ function renderableCover(url: string): string {
   }
 }
 
+/**
+ * Goodreads stores a review as a fragment of HTML: paragraphs, line breaks and
+ * the odd `<em>`. The page renders it as text in JSX, which React escapes, so
+ * this is about reading well rather than about safety: tags that carry a break
+ * become one, everything else goes, and the paragraphs survive as blank lines
+ * for the page to honour. Entities are already decoded by `field` above, so a
+ * review that spelled out `&lt;b&gt;` is stripped here too rather than shown.
+ */
+function stripHtml(html: string): string {
+  return html
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<\/p\s*>/gi, "\n\n")
+    .replace(/<[^>]*>/g, "")
+    .replace(/[^\S\n]+/g, " ")
+    .split("\n")
+    .map((line) => line.trim())
+    .join("\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
+/**
+ * The opening of a review, cut to a budget on a word boundary so the page can
+ * link out for the rest. Pure, and separate from the parse: how much of a
+ * review a page shows is the page's business, not the feed's.
+ */
+export function excerpt(text: string, maxChars = 420): string {
+  const clean = text.trim();
+  if (clean.length <= maxChars) return clean;
+
+  const cut = clean.slice(0, maxChars);
+  const boundary = cut.search(/\s\S*$/); // start of the word being severed
+  // A cut can land mid-clause, and "illiteracy,…" reads as a typo rather than
+  // as an ellipsis. Dangling separators go; sentence-enders are left alone.
+  const kept = (boundary > 0 ? cut.slice(0, boundary) : cut).replace(
+    /[\s,;:،؛-]+$/u,
+    "",
+  );
+  return `${kept}…`;
+}
+
 /** Pure RSS → Book[] transform. Exposed as the test surface; no network. */
 export function parseShelf(xml: string): Book[] {
   return xml
@@ -66,6 +110,7 @@ export function parseShelf(xml: string): Book[] {
         ),
         rating: Number.parseInt(field(item, "user_rating") || "0", 10) || 0,
         link: field(item, "link"),
+        review: stripHtml(field(item, "user_review")),
       };
     })
     .filter((b) => b.title && b.cover);
@@ -88,8 +133,16 @@ export async function getBookshelf(readLimit = 30): Promise<Bookshelf> {
       fetchShelf("currently-reading"),
       fetchShelf("read"),
     ]);
-    return { currentlyReading, read: read.slice(0, readLimit), ok: true };
+    // The shelf arrives newest-finished-first, so the first reviewed book on it
+    // is the latest review. Searched before the slice: I read a good deal more
+    // than I write about, and the newest review can sit well past `readLimit`.
+    return {
+      currentlyReading,
+      read: read.slice(0, readLimit),
+      latestReview: read.find((b) => b.review) ?? null,
+      ok: true,
+    };
   } catch {
-    return { currentlyReading: [], read: [], ok: false };
+    return { currentlyReading: [], read: [], latestReview: null, ok: false };
   }
 }

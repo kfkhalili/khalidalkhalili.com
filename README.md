@@ -49,7 +49,7 @@ app/
     page.tsx                   # home
     about/page.tsx
     projects/page.tsx
-    reading/page.tsx           # live Goodreads shelves (rendered per request)
+    reading/page.tsx           # live Goodreads shelves + latest review (per request)
     chess/page.tsx             # live Chess.com ratings + last game (per request)
     writing/
       page.tsx                 # index: merges essays + explorables
@@ -80,7 +80,7 @@ lib/
   page-metadata.ts             # a page's canonical, hreflang set, and og block
   site.ts                      # name, origin, external profiles
   projects.ts                  # registry for the projects page
-  goodreads.ts                 # shelf RSS → Book[]
+  goodreads.ts                 # shelf RSS → Book[], reviews included; excerpt()
   chess.ts                     # Chess.com stats + last game → typed shapes
 ```
 

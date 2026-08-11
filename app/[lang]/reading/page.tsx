@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { resolveLocale } from "@/lib/i18n";
+import { resolveLocale, type Dictionary } from "@/lib/i18n";
 import { pageMetadata } from "@/lib/page-metadata";
-import { getBookshelf, type Book } from "@/lib/goodreads";
+import { excerpt, getBookshelf, type Book } from "@/lib/goodreads";
 import { site } from "@/lib/site";
 
 // Render on demand: pull the current Goodreads shelf each time the page loads.
@@ -26,6 +26,17 @@ export async function generateMetadata({
   });
 }
 
+/** A rating out of five. Unrated books say nothing rather than showing zero. */
+function Stars({ rating }: { rating: number }) {
+  if (rating <= 0) return null;
+  return (
+    <p className="mt-0.5 text-xs text-accent-strong" aria-label={`${rating}/5`}>
+      {"★".repeat(rating)}
+      <span className="text-border">{"★".repeat(5 - rating)}</span>
+    </p>
+  );
+}
+
 function Cover({ book }: { book: Book }) {
   return (
     <a
@@ -47,15 +58,7 @@ function Cover({ book }: { book: Book }) {
         {book.title}
       </p>
       <p className="line-clamp-1 text-xs text-faint">{book.author}</p>
-      {book.rating > 0 && (
-        <p
-          className="mt-0.5 text-xs text-accent-strong"
-          aria-label={`${book.rating}/5`}
-        >
-          {"★".repeat(book.rating)}
-          <span className="text-border">{"★".repeat(5 - book.rating)}</span>
-        </p>
-      )}
+      <Stars rating={book.rating} />
     </a>
   );
 }
@@ -88,6 +91,67 @@ function CurrentBook({ book }: { book: Book }) {
   );
 }
 
+/**
+ * The newest book I finished and wrote about. Only the opening of the review
+ * lives here: the full text is Goodreads' copy, and one book's worth of opinion
+ * should not outweigh the shelf it sits above.
+ */
+function LatestReview({
+  book,
+  dict,
+}: {
+  book: Book;
+  dict: Dictionary["reading"];
+}) {
+  return (
+    <section className="mt-12">
+      <h2 className="font-mono text-sm uppercase tracking-wider text-faint">
+        {dict.latestReview}
+      </h2>
+      <article className="mt-5 rounded-lg border border-border bg-card-2 p-5 sm:p-6">
+        <div className="flex gap-4">
+          {/* Same 2:3 crop the shelf covers use, so the three agree. */}
+          <div className="relative h-28 w-[4.667rem] shrink-0 overflow-hidden rounded-md border border-border shadow-sm">
+            <Image
+              src={book.cover}
+              alt={book.title}
+              fill
+              sizes="75px"
+              className="object-cover"
+            />
+          </div>
+          {/* A book names itself in its own script whatever page it lands on,
+              so direction is inferred per line rather than inherited from the
+              reader's locale: without it, an English title on the Arabic page
+              hands its trailing punctuation to the wrong end. */}
+          <div className="min-w-0 self-center" dir="auto">
+            <p className="font-medium leading-snug text-foreground">
+              {book.title}
+            </p>
+            <p className="mt-1 text-sm text-muted">{book.author}</p>
+            <Stars rating={book.rating} />
+          </div>
+        </div>
+        {/* The parse leaves paragraphs as blank lines; pre-line honours them. */}
+        <p
+          dir="auto"
+          className="mt-5 whitespace-pre-line text-sm leading-relaxed text-muted"
+        >
+          {excerpt(book.review)}
+        </p>
+        <a
+          href={book.link}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-4 inline-block text-sm text-accent transition-colors hover:text-accent-strong"
+        >
+          {dict.readFullReview} ↗
+        </a>
+      </article>
+    </section>
+  );
+}
+
 export default async function ReadingPage({
   params,
 }: {
@@ -105,6 +169,10 @@ export default async function ReadingPage({
         </h1>
         <p className="mt-3 max-w-xl text-muted">{dict.reading.subtitle}</p>
       </header>
+
+      {shelf.latestReview && (
+        <LatestReview book={shelf.latestReview} dict={dict.reading} />
+      )}
 
       {shelf.currentlyReading.length > 0 && (
         <section className="mt-12">
