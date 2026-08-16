@@ -4,7 +4,11 @@
     "shortName": "Khalid",
     "description": "Ich baue und schreibe. Interaktive Explorables, Essays und Notizen über Software, Systeme und die Menschen, die sie bauen."
   },
-  "nav": { "projects": "Projekte", "writing": "Texte", "reading": "Lesen", "chess": "Schach", "about": "Über mich" },
+  "nav": {
+    "projects": "Projekte",
+    "writing": "Texte",
+    "elsewhere": "Anderswo"
+  },
   "home": {
     "ctaExplore": "Zum neuesten Explorable",
     "ctaRead": "Zu den Texten",
@@ -14,7 +18,11 @@
   "projects": {
     "title": "Projekte",
     "subtitle": "Produkte, die ich baue, und Experimente, an denen ich bastle. Manches ist live, manches nimmt noch Gestalt an.",
-    "status": { "live": "Live", "beta": "Beta", "building": "Bald verfügbar" }
+    "status": {
+      "live": "Live",
+      "beta": "Beta",
+      "building": "Bald verfügbar"
+    }
   },
   "writing": {
     "title": "Texte",
@@ -28,6 +36,14 @@
       "noMatch": "Hier passt noch nichts dazu."
     }
   },
+  "elsewhere": {
+    "title": "Anderswo",
+    "subtitle": "Wo ich im übrigen Internet unterwegs bin: was ich lese, worüber ich nachdenke und ob ich gerade gewinne. Alles direkt geladen.",
+    "quiet": "Gerade nicht erreichbar.",
+    "readingTeaser": "Lese gerade",
+    "islamTeaser": "Neueste Reflexion",
+    "chessTeaser": "Aktuelle Wertung"
+  },
   "reading": {
     "title": "Lesen",
     "subtitle": "Bücher, die ich gelesen habe, und was ich gerade lese, live aus meinen Goodreads-Regalen.",
@@ -37,6 +53,17 @@
     "recentlyRead": "Zuletzt gelesen",
     "viewOnGoodreads": "Mein ganzes Regal auf Goodreads",
     "unavailable": "Mein Regal auf Goodreads"
+  },
+  "islam": {
+    "title": "Islam",
+    "subtitle": "Verse, zu denen ich immer wieder zurückkehre, und was ich fand, als ich bei ihnen verweilte. Direkt aus dem, was ich auf QuranReflect geschrieben habe.",
+    "reflections": "Reflexionen",
+    "reflection": "Reflexion",
+    "lesson": "Lehre",
+    "readOn": "Auf QuranReflect lesen",
+    "empty": "Hier ist noch nichts veröffentlicht.",
+    "viewProfile": "Alle meine Reflexionen auf QuranReflect",
+    "unavailable": "Mein QuranReflect-Profil"
   },
   "chess": {
     "title": "Schach",
@@ -51,7 +78,9 @@
     "challenge": "Fordere mich heraus",
     "unavailable": "Mein Chess.com-Profil"
   },
-  "article": { "back": "Texte" },
+  "article": {
+    "back": "Texte"
+  },
   "share": {
     "label": "Teilen",
     "native": "Teilen",
@@ -61,7 +90,14 @@
     "x": "Auf X teilen",
     "whatsapp": "Über WhatsApp teilen"
   },
-  "footer": { "tagline": "Zum Entdecken gemacht." },
-  "theme": { "toggle": "Design umschalten" },
-  "language": { "label": "Sprache" }
+  "footer": {
+    "about": "Über mich",
+    "tagline": "Zum Entdecken gemacht."
+  },
+  "theme": {
+    "toggle": "Design umschalten"
+  },
+  "language": {
+    "label": "Sprache"
+  }
 }

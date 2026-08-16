@@ -57,6 +57,27 @@ interactive explorable explanations, essays, and notes.
   the line in play would jog the bars underneath on every pick, which is the
   moment the reader is watching them. Lines that share a block are written to a
   similar length in every Locale, so the reserve is the copy rather than padding.
+- **Elsewhere**: the three pages whose body is me on someone else's platform,
+  pulled live and degrading to a link when that platform is down (`reading`,
+  `islam`, `chess`). They are one kind of page rather than three unrelated ones,
+  which is why they share a nav slot, an index at `/[lang]/elsewhere`, and their
+  absence from the Site inventory. The index is a way in, not a summary: each
+  card carries the least that answers "what is he doing over there" and links to
+  the page holding the rest. The feeds are fetched together and read separately,
+  so a platform that is down quiets its own card and leaves the other two
+  standing. Naming it for where the writing lives rather than for what it is
+  worth is deliberate: `chess` and `islam` are not the same kind of thing to me,
+  and a heading like "pastimes" would claim they are.
+- **Reflection**: something I wrote about an ayah, published on QuranReflect and
+  shown whole on the Islam page: the words are mine, so nothing is held back,
+  and the ayat it cites are quoted under it, as QuranReflect itself lays a post
+  out: the Uthmani text over a rendering in the Reflection's own language. What stays on QuranReflect is the
+  conversation underneath, which is what the card's link is for. QuranReflect
+  distinguishes two kinds and so does the page: a *reflection* is a
+  heart-response to an ayah, a *lesson* is a point of understanding drawn from
+  one. A Reflection carries the passages it is about as citations that link to
+  Quran.com, and it dates itself in the language I wrote it in, exactly as a
+  Byline does.
 - **Locale**: a supported language (`en`, `de`, `ar`). Arabic is right-to-left.
 - **Page copy**: the chrome-adjacent prose (home hero, about) authored per locale
   in `content/<locale>/*.md`, falling back to the default locale.
@@ -120,13 +141,37 @@ interactive explorable explanations, essays, and notes.
   **component adapter** (explorables → their `Body`, rendered in the page's locale).
   Registry entries carry a typed `Body`, so the registry↔renderer link can't silently
   break.
+- **Borrowed prose** (`lib/prose.ts`): writing that arrives from someone else's
+  platform, made renderable. `plainText` flattens a fragment of HTML to text,
+  keeping paragraphs as blank lines: the pages render these as text, so a tag is
+  either a break or nothing. It serves the Goodreads reviews, the QuranReflect
+  bodies, and the renderings under their quoted ayat alike. `excerpt` cuts to a
+  budget on a word boundary for the places that show an opening and link out:
+  the reading page's latest review (Goodreads holds the canonical copy) and the
+  Elsewhere teasers (a card is a way in, not the piece). A Reflection is my own
+  writing, so the Islam page shows it whole and excerpts nothing. Both functions
+  are pure and belong to no one feed, which is why they live here rather than in
+  the one that needed them first.
 - **Goodreads parse** (`parseShelf` in `lib/goodreads.ts`): the pure RSS → `Book[]`
   transform, exposed as the test surface. `lib/goodreads.test.ts` feeds it fixtures
-  with no network. It also flattens each review's HTML to text, keeping paragraphs
-  as blank lines: the page shows a review as text, so a tag is either a break or
-  nothing. `excerpt` sits beside it as a second pure function rather than inside
-  it, because how much of a review a page shows is the page's business and the
-  feed keeps the whole of it either way.
+  with no network. Entities are decoded before `plainText` sees a review, so one
+  that spelled out a tag is stripped rather than resurrected.
+- **QuranReflect feed** (`lib/quran-reflect.ts`): the same seam for my reflections,
+  and the only feed on the site that is authenticated. The Quran Foundation
+  gateway wants an OAuth2 client-credentials token and the client id on every
+  call, so the credentials live in the environment and this module is imported
+  only by server-rendered pages. Nothing is held between requests, deliberately:
+  a render buys one token per scope and passes it down, so every view shows the
+  feed as it is and a refusal costs exactly one view. The two scopes fail
+  separately: `post.read` gets the reflections and can fail the feed; `content`
+  gets the surah names and the quoted ayat, and a render that could not reach it
+  still shows the reflections. A quote is the ayah in Uthmani script over a
+  credited rendering in the Reflection's own language (the Byline rule again),
+  fetched per cited verse: whole-surah citations stay chips, a long range quotes
+  its opening ayat, and a verse the gateway could not produce quiets its own
+  quote while the chip above still cites and links the passage.
+  `parseReflections`, `parseChapters`, `parseVerse`, `verseKeys`, `quotesFor`
+  and `refLabel` are the pure surface, fixture-tested with no network.
 - **Chess parse** (`parseStats` and `parseGame` in `lib/chess.ts`): the same seam
   for chess.com, which answers with JSON rather than RSS. `parseStats` reads a
   profile into ratings; `parseGame` decides whether a payload is a game worth
@@ -161,7 +206,8 @@ interactive explorable explanations, essays, and notes.
   reads the same registries the pages render from, so a new article or locale
   appears in it without anyone remembering to. Where the repo holds no date it
   claims none, rather than stamping the build time. Pages whose body is a live
-  third-party API (`reading`, `chess`) are linked by the site and crawlable, but
+  third-party API (`elsewhere` and the three it gathers) are linked by the site and
+  crawlable, but
   deliberately not nominated here.
 - **Share card** (`app/[lang]/writing/[slug]/opengraph-image`): the article's
   metadata rendered as an image, prerendered per locale. It carries the site's

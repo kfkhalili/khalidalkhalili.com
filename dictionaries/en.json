@@ -4,7 +4,11 @@
     "shortName": "Khalid",
     "description": "A builder who writes. Interactive explorable explanations, essays, and notes on software, systems, and the people who make them."
   },
-  "nav": { "projects": "Projects", "writing": "Writing", "reading": "Reading", "chess": "Chess", "about": "About" },
+  "nav": {
+    "projects": "Projects",
+    "writing": "Writing",
+    "elsewhere": "Elsewhere"
+  },
   "home": {
     "ctaExplore": "Explore the latest explorable",
     "ctaRead": "Read the writing",
@@ -14,7 +18,11 @@
   "projects": {
     "title": "Projects",
     "subtitle": "Products I'm building and experiments I tinker with. Some are live, some are still taking shape.",
-    "status": { "live": "Live", "beta": "Beta", "building": "Coming soon" }
+    "status": {
+      "live": "Live",
+      "beta": "Beta",
+      "building": "Coming soon"
+    }
   },
   "writing": {
     "title": "Writing",
@@ -28,6 +36,14 @@
       "noMatch": "Nothing here matches that yet."
     }
   },
+  "elsewhere": {
+    "title": "Elsewhere",
+    "subtitle": "Where I am on the rest of the internet: what I'm reading, what I'm reflecting on, and whether I'm winning. All pulled live.",
+    "quiet": "Not reachable right now.",
+    "readingTeaser": "Currently reading",
+    "islamTeaser": "Latest reflection",
+    "chessTeaser": "Current rating"
+  },
   "reading": {
     "title": "Reading",
     "subtitle": "Books I've read and what I'm in the middle of, pulled live from my Goodreads shelves.",
@@ -37,6 +53,17 @@
     "recentlyRead": "Recently read",
     "viewOnGoodreads": "See my full shelf on Goodreads",
     "unavailable": "My shelf on Goodreads"
+  },
+  "islam": {
+    "title": "Islam",
+    "subtitle": "Verses I keep coming back to, and what I found when I sat with them. Pulled live from what I've written on QuranReflect.",
+    "reflections": "Reflections",
+    "reflection": "Reflection",
+    "lesson": "Lesson",
+    "readOn": "Read it on QuranReflect",
+    "empty": "Nothing published here yet.",
+    "viewProfile": "All my reflections on QuranReflect",
+    "unavailable": "My QuranReflect profile"
   },
   "chess": {
     "title": "Chess",
@@ -51,7 +78,9 @@
     "challenge": "Challenge me",
     "unavailable": "My Chess.com profile"
   },
-  "article": { "back": "Writing" },
+  "article": {
+    "back": "Writing"
+  },
   "share": {
     "label": "Share",
     "native": "Share",
@@ -61,7 +90,14 @@
     "x": "Share on X",
     "whatsapp": "Share on WhatsApp"
   },
-  "footer": { "tagline": "Made to be explored." },
-  "theme": { "toggle": "Toggle theme" },
-  "language": { "label": "Language" }
+  "footer": {
+    "about": "About",
+    "tagline": "Made to be explored."
+  },
+  "theme": {
+    "toggle": "Toggle theme"
+  },
+  "language": {
+    "label": "Language"
+  }
 }

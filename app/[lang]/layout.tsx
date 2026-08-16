@@ -91,7 +91,7 @@ export default async function RootLayout({
           <RubHizbBackdrop />
           <SiteHeader lang={lang} dict={dict} />
           <main className="w-full flex-1">{children}</main>
-          <SiteFooter dict={dict} />
+          <SiteFooter lang={lang} dict={dict} />
         </ThemeProvider>
       </body>
     </html>

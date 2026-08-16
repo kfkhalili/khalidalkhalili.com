@@ -4,7 +4,11 @@
     "shortName": "خالد",
     "description": "أبني وأكتب. استكشافات تفاعلية ومقالات وملاحظات عن البرمجيات والأنظمة ومن يبنونها."
   },
-  "nav": { "projects": "مشاريع", "writing": "كتابات", "reading": "قراءات", "chess": "شطرنج", "about": "عنّي" },
+  "nav": {
+    "projects": "مشاريع",
+    "writing": "كتابات",
+    "elsewhere": "أماكن أخرى"
+  },
   "home": {
     "ctaExplore": "جرّب أحدث استكشاف تفاعلي",
     "ctaRead": "اقرأ الكتابات",
@@ -14,7 +18,11 @@
   "projects": {
     "title": "مشاريع",
     "subtitle": "منتجاتٌ أبنيها وتجاربُ أعبث بها. بعضها متاحٌ الآن، وبعضها ما زال يتشكّل.",
-    "status": { "live": "متاح", "beta": "تجريبي", "building": "قريبًا" }
+    "status": {
+      "live": "متاح",
+      "beta": "تجريبي",
+      "building": "قريبًا"
+    }
   },
   "writing": {
     "title": "كتابات",
@@ -28,6 +36,14 @@
       "noMatch": "لا شيء هنا يطابق ذلك بعد."
     }
   },
+  "elsewhere": {
+    "title": "أماكن أخرى",
+    "subtitle": "أين أكون في بقية الإنترنت: ما أقرأه، وما أتأمّل فيه، وهل أفوز الآن. كلّه مأخوذٌ مباشرةً.",
+    "quiet": "غير متاح الآن.",
+    "readingTeaser": "أقرأ حاليًا",
+    "islamTeaser": "أحدث تأمّل",
+    "chessTeaser": "التصنيف الحالي"
+  },
   "reading": {
     "title": "قراءات",
     "subtitle": "كتبٌ قرأتها وما أنا بصدد قراءته الآن، مأخوذةً مباشرةً من رفوفي على Goodreads.",
@@ -37,6 +53,17 @@
     "recentlyRead": "قرأت مؤخرًا",
     "viewOnGoodreads": "شاهد رفّي كاملًا على Goodreads",
     "unavailable": "رفّي على Goodreads"
+  },
+  "islam": {
+    "title": "إسلام",
+    "subtitle": "آياتٌ أعود إليها دائمًا، وما وجدتُه حين وقفتُ عندها. مأخوذةً مباشرةً مما كتبته على QuranReflect.",
+    "reflections": "تأمّلات",
+    "reflection": "تأمّل",
+    "lesson": "فائدة",
+    "readOn": "اقرأه كاملًا على QuranReflect",
+    "empty": "لا شيء منشورٌ هنا بعد.",
+    "viewProfile": "كل تأمّلاتي على QuranReflect",
+    "unavailable": "ملفي على QuranReflect"
   },
   "chess": {
     "title": "شطرنج",
@@ -51,7 +78,9 @@
     "challenge": "تحدَّني",
     "unavailable": "ملفي الشخصي على Chess.com"
   },
-  "article": { "back": "الكتابات" },
+  "article": {
+    "back": "الكتابات"
+  },
   "share": {
     "label": "مشاركة",
     "native": "مشاركة",
@@ -61,7 +90,14 @@
     "x": "المشاركة على إكس",
     "whatsapp": "المشاركة عبر واتساب"
   },
-  "footer": { "tagline": "وُجد ليُستكشَف." },
-  "theme": { "toggle": "تبديل المظهر" },
-  "language": { "label": "اللغة" }
+  "footer": {
+    "about": "عنّي",
+    "tagline": "وُجد ليُستكشَف."
+  },
+  "theme": {
+    "toggle": "تبديل المظهر"
+  },
+  "language": {
+    "label": "اللغة"
+  }
 }

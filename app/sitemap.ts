@@ -14,12 +14,12 @@ import { localeUrl, localeAlternateUrls } from "@/lib/share";
  * around it, so it is listed once, at its own language, claiming no
  * translations it doesn't have.
  *
- * Two things are deliberately absent. `reading` and `chess` render a live
- * third-party API and degrade to a bare link when it's down, so the site links
- * them but doesn't nominate them. And `lastModified` is omitted wherever the
- * repo holds no real date: stamping the build time would announce that the
- * whole site changed on every deploy, which is how a `lastmod` stops being
- * believed at all.
+ * Two things are deliberately absent. `elsewhere` and the three pages it gathers
+ * (`reading`, `islam`, `chess`) render a live third-party API and degrade to a
+ * bare link when it's down, so the site links them but doesn't nominate them.
+ * And `lastModified` is omitted wherever the repo holds no real date: stamping
+ * the build time would announce that the whole site changed on every deploy,
+ * which is how a `lastmod` stops being believed at all.
  */
 
 /** The newest real date, ignoring articles whose frontmatter carried none. */

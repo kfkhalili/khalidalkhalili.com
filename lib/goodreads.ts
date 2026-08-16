@@ -1,3 +1,9 @@
+import { excerpt, plainText } from "@/lib/prose";
+
+// Re-exported because a Goodreads review is the reason this site has an
+// excerpt at all, and the reading page has always reached for it here.
+export { excerpt };
+
 const USER_ID = "6598624";
 const UA =
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36";
@@ -54,44 +60,10 @@ function renderableCover(url: string): string {
 
 /**
  * Goodreads stores a review as a fragment of HTML: paragraphs, line breaks and
- * the odd `<em>`. The page renders it as text in JSX, which React escapes, so
- * this is about reading well rather than about safety: tags that carry a break
- * become one, everything else goes, and the paragraphs survive as blank lines
- * for the page to honour. Entities are already decoded by `field` above, so a
- * review that spelled out `&lt;b&gt;` is stripped here too rather than shown.
+ * the odd `<em>`. `field` above has already decoded the entities by the time
+ * `plainText` sees it, so a review that spelled out `&lt;b&gt;` is stripped
+ * rather than shown.
  */
-function stripHtml(html: string): string {
-  return html
-    .replace(/<br\s*\/?>/gi, "\n")
-    .replace(/<\/p\s*>/gi, "\n\n")
-    .replace(/<[^>]*>/g, "")
-    .replace(/[^\S\n]+/g, " ")
-    .split("\n")
-    .map((line) => line.trim())
-    .join("\n")
-    .replace(/\n{3,}/g, "\n\n")
-    .trim();
-}
-
-/**
- * The opening of a review, cut to a budget on a word boundary so the page can
- * link out for the rest. Pure, and separate from the parse: how much of a
- * review a page shows is the page's business, not the feed's.
- */
-export function excerpt(text: string, maxChars = 420): string {
-  const clean = text.trim();
-  if (clean.length <= maxChars) return clean;
-
-  const cut = clean.slice(0, maxChars);
-  const boundary = cut.search(/\s\S*$/); // start of the word being severed
-  // A cut can land mid-clause, and "illiteracy,…" reads as a typo rather than
-  // as an ellipsis. Dangling separators go; sentence-enders are left alone.
-  const kept = (boundary > 0 ? cut.slice(0, boundary) : cut).replace(
-    /[\s,;:،؛-]+$/u,
-    "",
-  );
-  return `${kept}…`;
-}
 
 /** Pure RSS → Book[] transform. Exposed as the test surface; no network. */
 export function parseShelf(xml: string): Book[] {
@@ -110,7 +82,7 @@ export function parseShelf(xml: string): Book[] {
         ),
         rating: Number.parseInt(field(item, "user_rating") || "0", 10) || 0,
         link: field(item, "link"),
-        review: stripHtml(field(item, "user_review")),
+        review: plainText(field(item, "user_review")),
       };
     })
     .filter((b) => b.title && b.cover);

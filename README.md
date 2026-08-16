@@ -19,6 +19,26 @@ npm install
 npm run dev      # http://localhost:3000  (redirects to /en)
 ```
 
+### Environment
+
+Every feed but one is public and needs nothing. The Islam page reads my
+QuranReflect posts through the [Quran Foundation
+gateway](https://api-docs.quran.foundation), which wants an OAuth2
+client-credentials pair. Put it in `.env.local` (and in the Vercel project for
+deploys):
+
+```
+QURAN_FOUNDATION_CLIENT_ID=…
+QURAN_FOUNDATION_CLIENT_SECRET=…
+QURAN_FOUNDATION_ENV=prelive     # optional; omit once the credentials are production ones
+```
+
+The pair needs two scopes: `post.read` for the reflections, `content` for the
+surah names and the ayat they cite. A client granted neither still renders the
+page, which
+degrades to a link rather than an error, so the site runs without any of this
+set. The credentials are read on the server only and never reach the browser.
+
 ## Test
 
 [Vitest](https://vitest.dev) + [Testing Library](https://testing-library.com), in
@@ -35,8 +55,8 @@ Tests sit next to what they test (`lib/i18n.test.ts`, `components/site-header.te
 and pure transforms are tested apart from the I/O around them: `articles.test.ts`
 covers the seams, `articles.essays.test.ts` the reading of files.
 
-Nothing touches the network or the disk it doesn't own. Goodreads and Chess.com
-run through a stubbed `fetch`; the essay tests back `content/writing` with an
+Nothing touches the network or the disk it doesn't own. Goodreads, Chess.com and
+the Quran Foundation gateway run through a stubbed `fetch`; the essay tests back `content/writing` with an
 in-memory filesystem; the share card captures the element tree satori would be
 handed rather than rasterizing it.
 
@@ -49,7 +69,9 @@ app/
     page.tsx                   # home
     about/page.tsx
     projects/page.tsx
+    elsewhere/page.tsx         # index: one teaser card per live feed below
     reading/page.tsx           # live Goodreads shelves + latest review (per request)
+    islam/page.tsx             # live QuranReflect reflections (per request, authenticated)
     chess/page.tsx             # live Chess.com ratings + last game (per request)
     writing/
       page.tsx                 # index: merges essays + explorables
@@ -60,7 +82,7 @@ app/
   icon0.png, icon1.png         # the same mark at 96 and 192
   apple-icon.png               # 180, square and opaque: iOS masks it itself
   robots.ts                    # → /robots.txt
-  sitemap.ts                   # → /sitemap.xml (every indexable page; not reading/chess)
+  sitemap.ts                   # → /sitemap.xml (every indexable page; not elsewhere/*)
 assets/fonts/                  # TTFs for the share card (satori can't use next/font)
 assets/khatam-star-icon.svg    # the favicon before the KA mark; kept, not served
 archive/mindful-mantra/        # images from the retired blog; kept, not served (see its README)
@@ -80,8 +102,10 @@ lib/
   page-metadata.ts             # a page's canonical, hreflang set, and og block
   site.ts                      # name, origin, external profiles
   projects.ts                  # registry for the projects page
-  goodreads.ts                 # shelf RSS → Book[], reviews included; excerpt()
+  prose.ts                     # someone else's writing → text, and an excerpt of it
+  goodreads.ts                 # shelf RSS → Book[], reviews included
   chess.ts                     # Chess.com stats + last game → typed shapes
+  quran-reflect.ts             # QuranReflect posts + quoted ayat via the Quran Foundation gateway
 ```
 
 ## Write an essay

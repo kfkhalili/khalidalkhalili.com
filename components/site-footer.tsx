@@ -1,7 +1,8 @@
+import Link from "next/link";
 import { site } from "@/lib/site";
 import type { Dictionary } from "@/lib/i18n";
 
-export function SiteFooter({ dict }: { dict: Dictionary }) {
+export function SiteFooter({ lang, dict }: { lang: string; dict: Dictionary }) {
   const year = new Date().getFullYear();
 
   return (
@@ -17,6 +18,15 @@ export function SiteFooter({ dict }: { dict: Dictionary }) {
 
         <div className="flex flex-col gap-1 text-sm text-muted sm:items-end">
           <div className="flex items-center gap-4">
+            {/* About lives here rather than in the nav: the home page already
+                introduces me, so this is where someone goes looking for the
+                longer version rather than something the bar must carry. */}
+            <Link
+              href={`/${lang}/about`}
+              className="transition-colors hover:text-foreground"
+            >
+              {dict.footer.about}
+            </Link>
             <a
               href={site.linkedin}
               target="_blank"
