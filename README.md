@@ -69,7 +69,6 @@ app/
     page.tsx                   # home
     about/page.tsx
     projects/page.tsx
-    elsewhere/page.tsx         # index: one teaser card per live feed below
     reading/page.tsx           # live Goodreads shelves + latest review (per request)
     islam/page.tsx             # live QuranReflect reflections (per request, authenticated)
     chess/page.tsx             # live Chess.com ratings + last game (per request)
@@ -82,7 +81,7 @@ app/
   icon0.png, icon1.png         # the same mark at 96 and 192
   apple-icon.png               # 180, square and opaque: iOS masks it itself
   robots.ts                    # → /robots.txt
-  sitemap.ts                   # → /sitemap.xml (every indexable page; not elsewhere/*)
+  sitemap.ts                   # → /sitemap.xml (every indexable page; not the live feeds)
 assets/fonts/                  # TTFs for the share card (satori can't use next/font)
 assets/khatam-star-icon.svg    # the favicon before the KA mark; kept, not served
 archive/mindful-mantra/        # images from the retired blog; kept, not served (see its README)

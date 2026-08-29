@@ -1,9 +1,9 @@
 /**
  * Prose that arrives from another platform, made renderable. Feeds hand this
  * site fragments of HTML (a Goodreads review, a QuranReflect body, the
- * rendering under a quoted ayah), and the places that show an opening rather
- * than the whole (the reading page's latest review, the Elsewhere teasers)
- * cut it on a word boundary. The rules are the same wherever they are used
+ * rendering under a quoted ayah), and a place that shows an opening rather
+ * than the whole (the reading page's latest review) cuts it on a word
+ * boundary. The rules are the same wherever they are used
  * and belong to no one feed, so they live here: pure, no network, no locale.
  */
 

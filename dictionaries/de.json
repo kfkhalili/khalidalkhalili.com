@@ -7,7 +7,9 @@
   "nav": {
     "projects": "Projekte",
     "writing": "Texte",
-    "elsewhere": "Anderswo"
+    "reading": "Lesen",
+    "islam": "Islam",
+    "chess": "Schach"
   },
   "home": {
     "ctaExplore": "Zum neuesten Explorable",
@@ -35,14 +37,6 @@
       "tag": "Nach Schlagwort filtern",
       "noMatch": "Hier passt noch nichts dazu."
     }
-  },
-  "elsewhere": {
-    "title": "Anderswo",
-    "subtitle": "Wo ich im übrigen Internet unterwegs bin: was ich lese, worüber ich nachdenke und ob ich gerade gewinne. Alles direkt geladen.",
-    "quiet": "Gerade nicht erreichbar.",
-    "readingTeaser": "Lese gerade",
-    "islamTeaser": "Neueste Reflexion",
-    "chessTeaser": "Aktuelle Wertung"
   },
   "reading": {
     "title": "Lesen",

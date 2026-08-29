@@ -11,14 +11,16 @@ export function SiteHeader({ lang, dict }: { lang: string; dict: Dictionary }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
-  // Three sections, because the site has three. The live feeds (reading, islam,
-  // chess) are one kind of page and sit behind `elsewhere` rather than each
-  // taking a slot; `about` is in the footer, where the home hero has already
-  // done its job. A six-item bar collided with the wordmark in German.
+  // Every section names itself: a feed behind a label like "Elsewhere" is a
+  // feed nobody visits. `about` stays in the footer, where the home hero has
+  // already done its job; losing it is what lets five items fit where six once
+  // collided with the wordmark in German.
   const nav = [
     { href: `/${lang}/projects`, label: dict.nav.projects },
     { href: `/${lang}/writing`, label: dict.nav.writing },
-    { href: `/${lang}/elsewhere`, label: dict.nav.elsewhere },
+    { href: `/${lang}/reading`, label: dict.nav.reading },
+    { href: `/${lang}/islam`, label: dict.nav.islam },
+    { href: `/${lang}/chess`, label: dict.nav.chess },
   ];
   const isActive = (href: string) =>
     pathname === href || pathname.startsWith(href + "/");

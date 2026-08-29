@@ -57,17 +57,13 @@ interactive explorable explanations, essays, and notes.
   the line in play would jog the bars underneath on every pick, which is the
   moment the reader is watching them. Lines that share a block are written to a
   similar length in every Locale, so the reserve is the copy rather than padding.
-- **Elsewhere**: the three pages whose body is me on someone else's platform,
+- **Live feeds**: the three pages whose body is me on someone else's platform,
   pulled live and degrading to a link when that platform is down (`reading`,
   `islam`, `chess`). They are one kind of page rather than three unrelated ones,
-  which is why they share a nav slot, an index at `/[lang]/elsewhere`, and their
-  absence from the Site inventory. The index is a way in, not a summary: each
-  card carries the least that answers "what is he doing over there" and links to
-  the page holding the rest. The feeds are fetched together and read separately,
-  so a platform that is down quiets its own card and leaves the other two
-  standing. Naming it for where the writing lives rather than for what it is
-  worth is deliberate: `chess` and `islam` are not the same kind of thing to me,
-  and a heading like "pastimes" would claim they are.
+  which is why they share their absence from the Site inventory. Each holds its
+  own nav item: a spell behind a shared "Elsewhere" index showed that a feed
+  hidden under a label that names none of them is a feed nobody visits, and the
+  index is gone.
 - **Reflection**: something I wrote about an ayah, published on QuranReflect and
   shown whole on the Islam page: the words are mine, so nothing is held back,
   and the ayat it cites are quoted under it, as QuranReflect itself lays a post
@@ -146,9 +142,9 @@ interactive explorable explanations, essays, and notes.
   keeping paragraphs as blank lines: the pages render these as text, so a tag is
   either a break or nothing. It serves the Goodreads reviews, the QuranReflect
   bodies, and the renderings under their quoted ayat alike. `excerpt` cuts to a
-  budget on a word boundary for the places that show an opening and link out:
-  the reading page's latest review (Goodreads holds the canonical copy) and the
-  Elsewhere teasers (a card is a way in, not the piece). A Reflection is my own
+  budget on a word boundary for the place that shows an opening and links out:
+  the reading page's latest review (Goodreads holds the canonical copy). A
+  Reflection is my own
   writing, so the Islam page shows it whole and excerpts nothing. Both functions
   are pure and belong to no one feed, which is why they live here rather than in
   the one that needed them first.
@@ -206,9 +202,8 @@ interactive explorable explanations, essays, and notes.
   reads the same registries the pages render from, so a new article or locale
   appears in it without anyone remembering to. Where the repo holds no date it
   claims none, rather than stamping the build time. Pages whose body is a live
-  third-party API (`elsewhere` and the three it gathers) are linked by the site and
-  crawlable, but
-  deliberately not nominated here.
+  third-party API (`reading`, `islam`, `chess`) are linked by the site and
+  crawlable, but deliberately not nominated here.
 - **Share card** (`app/[lang]/writing/[slug]/opengraph-image`): the article's
   metadata rendered as an image, prerendered per locale. It carries the site's
   own constraints: satori can't see `next/font`, so the faces are vendored in

@@ -57,7 +57,7 @@ describe("SiteHeader", () => {
     expect(screen.getByRole("link", { name: en.nav.writing }).className).toContain(
       "text-foreground",
     );
-    expect(screen.getByRole("link", { name: en.nav.elsewhere }).className).toContain(
+    expect(screen.getByRole("link", { name: en.nav.reading }).className).toContain(
       "text-muted",
     );
   });
@@ -116,13 +116,13 @@ describe("SiteHeader", () => {
   });
 
   it("marks the current section in the mobile panel too", async () => {
-    pathname = "/en/elsewhere";
+    pathname = "/en/reading";
     render(<SiteHeader lang="en" dict={dict} />);
     await userEvent.click(menuButton());
 
     const panel = screen.getByRole("banner").lastElementChild as HTMLElement;
     expect(
-      within(panel).getByRole("link", { name: en.nav.elsewhere }).className,
+      within(panel).getByRole("link", { name: en.nav.reading }).className,
     ).toContain("text-foreground");
     expect(
       within(panel).getByRole("link", { name: en.nav.writing }).className,

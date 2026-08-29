@@ -7,7 +7,9 @@
   "nav": {
     "projects": "Projects",
     "writing": "Writing",
-    "elsewhere": "Elsewhere"
+    "reading": "Reading",
+    "islam": "Islam",
+    "chess": "Chess"
   },
   "home": {
     "ctaExplore": "Explore the latest explorable",
@@ -35,14 +37,6 @@
       "tag": "Filter by tag",
       "noMatch": "Nothing here matches that yet."
     }
-  },
-  "elsewhere": {
-    "title": "Elsewhere",
-    "subtitle": "Where I am on the rest of the internet: what I'm reading, what I'm reflecting on, and whether I'm winning. All pulled live.",
-    "quiet": "Not reachable right now.",
-    "readingTeaser": "Currently reading",
-    "islamTeaser": "Latest reflection",
-    "chessTeaser": "Current rating"
   },
   "reading": {
     "title": "Reading",
