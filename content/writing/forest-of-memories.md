@@ -1,7 +1,6 @@
 ---
 title: "Forest of Memories"
 date: 2013-07-02
-lang: en
 collection: prose
 hidden: true
 tags: []

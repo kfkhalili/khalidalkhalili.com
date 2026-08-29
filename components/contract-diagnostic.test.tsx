@@ -124,13 +124,10 @@ describe("ContractDiagnostic", () => {
     expect(screen.getByRole("status")).toHaveTextContent(strings.verdicts.hosted);
   });
 
-  it("renders the real article copy, in every locale", () => {
-    for (const locale of ["en", "de", "ar"] as const) {
-      const diagnostic = TT_CONTENT[locale].diagnostic;
-      const { unmount } = render(<ContractDiagnostic strings={diagnostic} />);
-      expect(screen.getByText(diagnostic.heading)).toBeInTheDocument();
-      expect(screen.getAllByRole("radio")).toHaveLength(8);
-      unmount();
-    }
+  it("renders the real article copy", () => {
+    const diagnostic = TT_CONTENT.diagnostic;
+    render(<ContractDiagnostic strings={diagnostic} />);
+    expect(screen.getByText(diagnostic.heading)).toBeInTheDocument();
+    expect(screen.getAllByRole("radio")).toHaveLength(8);
   });
 });

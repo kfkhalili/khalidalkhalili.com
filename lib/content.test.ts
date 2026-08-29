@@ -2,20 +2,19 @@ import { describe, it, expect } from "vitest";
 import fs from "node:fs";
 import path from "node:path";
 import { readMarkdown, renderMarkdown, renderInline, readContent } from "./content";
-import { LOCALES } from "./i18n";
 
 const CONTENT_DIR = path.join(process.cwd(), "content");
 
 describe("readMarkdown", () => {
   it("splits frontmatter from a trimmed body", () => {
-    const file = path.join(CONTENT_DIR, "en", "home.md");
+    const file = path.join(CONTENT_DIR, "home.md");
     const { meta, body } = readMarkdown(file);
     expect(meta.heading).toBeTypeOf("string");
     expect(body).toBe(body.trim());
   });
 
   it("throws when the file is missing", () => {
-    expect(() => readMarkdown(path.join(CONTENT_DIR, "en", "nope.md"))).toThrow();
+    expect(() => readMarkdown(path.join(CONTENT_DIR, "nope.md"))).toThrow();
   });
 });
 
@@ -46,8 +45,8 @@ describe("renderMarkdown", () => {
   });
 
   it("leaves internal links alone", () => {
-    const html = renderMarkdown("[home](/en)");
-    expect(html).toContain('href="/en"');
+    const html = renderMarkdown("[home](/writing)");
+    expect(html).toContain('href="/writing"');
     expect(html).not.toContain("target=");
   });
 });
@@ -64,8 +63,8 @@ describe("renderInline", () => {
 });
 
 describe("readContent", () => {
-  it.each(LOCALES)("reads the %s home copy", (locale) => {
-    const { meta, body, html } = readContent(locale, "home");
+  it("reads the home copy", () => {
+    const { meta, body, html } = readContent("home");
     expect(meta.heading).toBeTruthy();
     expect(meta.eyebrow).toBeTruthy();
     expect(meta.lead).toBeTruthy();
@@ -73,31 +72,19 @@ describe("readContent", () => {
     expect(html).toBeTypeOf("string");
   });
 
-  it.each(LOCALES)("reads the %s about copy and renders its body", (locale) => {
-    const { meta, html } = readContent(locale, "about");
+  it("reads the about copy and renders its body", () => {
+    const { meta, html } = readContent("about");
     expect(meta.title).toBeTruthy();
     expect(html).toContain("<p>");
   });
 
-  it("gives each locale its own copy", () => {
-    const en = readContent("en", "home");
-    const de = readContent("de", "home");
-    expect(de.meta.heading).not.toBe(en.meta.heading);
+  it("throws when the slug does not exist", () => {
+    expect(() => readContent("not-a-page")).toThrow();
   });
 
-  it("falls back to the default locale when a translation is missing", () => {
-    expect(readContent("fr", "home")).toEqual(readContent("en", "home"));
-  });
-
-  it("throws when the slug does not exist in any locale", () => {
-    expect(() => readContent("en", "not-a-page")).toThrow();
-  });
-
-  it("covers every page the site reads, in every locale", () => {
-    for (const locale of LOCALES) {
-      for (const slug of ["home", "about"]) {
-        expect(fs.existsSync(path.join(CONTENT_DIR, locale, `${slug}.md`))).toBe(true);
-      }
+  it("covers every page the site reads", () => {
+    for (const slug of ["home", "about"]) {
+      expect(fs.existsSync(path.join(CONTENT_DIR, `${slug}.md`))).toBe(true);
     }
   });
 });

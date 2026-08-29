@@ -2,7 +2,6 @@ import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
 import { marked } from "marked";
-import { DEFAULT_LOCALE } from "@/lib/i18n";
 
 const CONTENT_DIR = path.join(process.cwd(), "content");
 
@@ -36,18 +35,14 @@ export function renderInline(md: string): string {
 }
 
 /**
- * Page copy: content/<locale>/<slug>.md, falling back to the default locale
- * when a translation doesn't exist yet. Returns frontmatter, the raw body, and
- * the body rendered to HTML.
+ * Page copy: content/<slug>.md. Returns frontmatter, the raw body, and the
+ * body rendered to HTML.
  */
-export function readContent(
-  locale: string,
-  slug: string,
-): { meta: ContentMeta; body: string; html: string } {
-  const localeFile = path.join(CONTENT_DIR, locale, `${slug}.md`);
-  const file = fs.existsSync(localeFile)
-    ? localeFile
-    : path.join(CONTENT_DIR, DEFAULT_LOCALE, `${slug}.md`);
-  const { meta, body } = readMarkdown(file);
+export function readContent(slug: string): {
+  meta: ContentMeta;
+  body: string;
+  html: string;
+} {
+  const { meta, body } = readMarkdown(path.join(CONTENT_DIR, `${slug}.md`));
   return { meta: meta as ContentMeta, body, html: renderMarkdown(body) };
 }

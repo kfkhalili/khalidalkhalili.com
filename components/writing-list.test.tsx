@@ -10,7 +10,6 @@ const article = (slug: string, collection: string, title = slug): Article => ({
   description: `About ${title}.`,
   date: "2026-02-09",
   tags: ["Software"],
-  lang: "en",
   kind: "essay",
   collection: collection as Article["collection"],
   readingTime: 6,
@@ -49,7 +48,6 @@ const tagRow = () => within(screen.getByRole("group", { name: "Filter by tag" })
 const renderList = (over: Partial<Parameters<typeof WritingList>[0]> = {}) =>
   render(
     <WritingList
-      lang="en"
       articles={articles}
       chips={chips}
       tagChips={tagChipsFor("all")}

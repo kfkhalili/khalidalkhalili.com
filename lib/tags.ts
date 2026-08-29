@@ -11,9 +11,9 @@ import type { Article } from "@/lib/articles";
  */
 export const TAG_PARAM = "tag";
 
-/** Where a tag leads, inside the reader's locale. */
-export function tagHref(lang: string, tag: string): string {
-  return `/${lang}/writing?${TAG_PARAM}=${encodeURIComponent(tag)}`;
+/** Where a tag leads. */
+export function tagHref(tag: string): string {
+  return `/writing?${TAG_PARAM}=${encodeURIComponent(tag)}`;
 }
 
 /**

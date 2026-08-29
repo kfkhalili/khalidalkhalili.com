@@ -1,7 +1,6 @@
 ---
 title: "The Box"
 date: 2013-04-28
-lang: en
 collection: prose
 hidden: true
 tags: []

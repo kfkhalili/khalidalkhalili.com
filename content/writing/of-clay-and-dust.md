@@ -1,7 +1,6 @@
 ---
 title: "Of Clay and Dust"
 date: 2012-11-27
-lang: en
 collection: prose
 hidden: true
 tags: []

@@ -1,7 +1,6 @@
 ---
 title: "Thoughts Wander"
 date: 2012-12-16
-lang: en
 collection: prose
 hidden: true
 tags: []

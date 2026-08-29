@@ -28,11 +28,10 @@ export type TagChip = Chip & { href: string; active: boolean };
  * reader, so choosing a filter never adds or removes a row. The articles stay
  * where they are, and a second click lands where the reader aimed it.
  *
- * Chips arrive already built and localized. Nothing here reaches into the
- * article libraries, which read from disk and must stay off the client.
+ * Chips arrive already built. Nothing here reaches into the article
+ * libraries, which read from disk and must stay off the client.
  */
 export function WritingList({
-  lang,
   articles,
   chips,
   tagChips,
@@ -40,7 +39,6 @@ export function WritingList({
   tagLabel,
   emptyLabel,
 }: {
-  lang: string;
   articles: Article[];
   chips: Chip[];
   tagChips: TagChip[];
@@ -125,7 +123,7 @@ export function WritingList({
       ) : (
         <div className="mt-6 grid gap-4">
           {shown.map((article) => (
-            <ArticleCard key={article.slug} lang={lang} article={article} />
+            <ArticleCard key={article.slug} article={article} />
           ))}
         </div>
       )}

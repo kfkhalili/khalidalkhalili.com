@@ -1,7 +1,6 @@
 ---
 title: "Recognition"
 date: 2012-10-18
-lang: en
 collection: prose
 hidden: true
 tags: []

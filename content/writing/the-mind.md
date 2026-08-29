@@ -1,7 +1,6 @@
 ---
 title: "The Mind"
 date: 2012-08-27
-lang: en
 collection: prose
 hidden: true
 tags: []

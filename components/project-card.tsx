@@ -1,6 +1,6 @@
 import Image from "next/image";
 import type { Project, ProjectStatus } from "@/lib/projects";
-import type { Dictionary } from "@/lib/i18n";
+import { strings } from "@/lib/strings";
 
 const STATUS_CLASS: Record<ProjectStatus, string> = {
   live: "border-accent/50 text-accent-strong",
@@ -8,13 +8,7 @@ const STATUS_CLASS: Record<ProjectStatus, string> = {
   building: "border-border text-faint",
 };
 
-export function ProjectCard({
-  project,
-  dict,
-}: {
-  project: Project;
-  dict: Dictionary;
-}) {
+export function ProjectCard({ project }: { project: Project }) {
   const host = project.url.replace(/^https?:\/\//, "").replace(/\/$/, "");
 
   return (
@@ -52,7 +46,7 @@ export function ProjectCard({
           <span
             className={`rounded-full border px-2 py-0.5 text-xs ${STATUS_CLASS[project.status]}`}
           >
-            {dict.projects.status[project.status]}
+            {strings.projects.status[project.status]}
           </span>
         </div>
       </div>

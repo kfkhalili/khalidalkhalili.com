@@ -1,7 +1,6 @@
 ---
 title: "At The Leopold"
 date: 2013-04-12
-lang: en
 collection: prose
 hidden: true
 tags: []

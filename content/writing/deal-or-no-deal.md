@@ -1,7 +1,6 @@
 ---
 title: "Deal or No Deal"
 date: 2013-04-21
-lang: en
 collection: prose
 hidden: true
 tags: []

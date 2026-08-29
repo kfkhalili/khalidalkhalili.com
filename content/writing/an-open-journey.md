@@ -1,7 +1,6 @@
 ---
 title: "An Open Journey"
 date: 2012-12-22
-lang: en
 collection: prose
 hidden: true
 tags: []

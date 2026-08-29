@@ -1,7 +1,6 @@
 ---
 title: "The Dancer"
 date: 2013-03-20
-lang: en
 collection: prose
 hidden: true
 tags: []

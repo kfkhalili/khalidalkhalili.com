@@ -125,13 +125,10 @@ describe("ZeroBitStatus", () => {
     expect(screen.getByText(strings.sentences[0].calm)).toBeInTheDocument();
   });
 
-  it("renders the real article copy, in every locale", async () => {
-    for (const locale of ["en", "de", "ar"] as const) {
-      const page = TT_CONTENT[locale].statusPage;
-      const { unmount } = render(<ZeroBitStatus strings={page} />);
-      expect(screen.getByText(page.heading)).toBeInTheDocument();
-      expect(screen.getAllByRole("button")).toHaveLength(page.sentences.length + 1);
-      unmount();
-    }
+  it("renders the real article copy", () => {
+    const page = TT_CONTENT.statusPage;
+    render(<ZeroBitStatus strings={page} />);
+    expect(screen.getByText(page.heading)).toBeInTheDocument();
+    expect(screen.getAllByRole("button")).toHaveLength(page.sentences.length + 1);
   });
 });

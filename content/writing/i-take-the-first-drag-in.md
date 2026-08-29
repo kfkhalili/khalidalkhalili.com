@@ -1,7 +1,6 @@
 ---
 title: "I take the first drag in"
 date: 2013-03-12
-lang: en
 collection: prose
 hidden: true
 tags: []

@@ -8,7 +8,6 @@ function article(over: Partial<Article>): Article {
     description: "",
     date: "2026-01-01",
     tags: [],
-    lang: "en",
     kind: "explorable",
     collection: "writing",
     readingTime: 1,

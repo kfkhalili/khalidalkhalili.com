@@ -1,0 +1,107 @@
+/**
+ * Every piece of chrome copy on the site (nav, buttons, labels), in one place.
+ * Page prose lives in `content/`; article copy lives with the article. This is
+ * only the furniture around them.
+ */
+export const strings = {
+  site: {
+    title: "Khalid Alkhalili",
+    shortName: "Khalid",
+    description:
+      "A builder who writes. Interactive explorable explanations, essays, and notes on software, systems, and the people who make them.",
+  },
+  nav: {
+    projects: "Projects",
+    writing: "Writing",
+    reading: "Reading",
+    islam: "Islam",
+    chess: "Chess",
+  },
+  home: {
+    ctaExplore: "Explore the latest explorable",
+    ctaRead: "Read the writing",
+    featured: "Featured explorable",
+    allWriting: "All writing",
+  },
+  projects: {
+    title: "Projects",
+    subtitle:
+      "Products I'm building and experiments I tinker with. Some are live, some are still taking shape.",
+    status: {
+      live: "Live",
+      beta: "Beta",
+      building: "Coming soon",
+    },
+  },
+  writing: {
+    title: "Writing",
+    subtitle:
+      "Interactive explorables and essays on software, systems, and the people who build them. More to come.",
+    filters: {
+      label: "Filter by collection",
+      all: "All",
+      writing: "Essays",
+      prose: "Prose",
+      tag: "Filter by tag",
+      noMatch: "Nothing here matches that yet.",
+    },
+  },
+  reading: {
+    title: "Reading",
+    subtitle:
+      "Books I've read and what I'm in the middle of, pulled live from my Goodreads shelves.",
+    currentlyReading: "Currently reading",
+    latestReview: "Latest review",
+    readFullReview: "Read the full review on Goodreads",
+    recentlyRead: "Recently read",
+    viewOnGoodreads: "See my full shelf on Goodreads",
+    unavailable: "My shelf on Goodreads",
+  },
+  islam: {
+    title: "Islam",
+    subtitle:
+      "Verses I keep coming back to, and what I found when I sat with them. Pulled live from what I've written on QuranReflect.",
+    reflections: "Reflections",
+    reflection: "Reflection",
+    lesson: "Lesson",
+    readOn: "Read it on QuranReflect",
+    empty: "Nothing published here yet.",
+    viewProfile: "All my reflections on QuranReflect",
+    unavailable: "My QuranReflect profile",
+  },
+  chess: {
+    title: "Chess",
+    subtitle:
+      "My live rating and a replay of my most recent game, pulled from Chess.com.",
+    rating: "Rating",
+    lastGame: "Last game",
+    won: "Won",
+    lost: "Lost",
+    drew: "Drew",
+    reviewGame: "Review on Chess.com",
+    viewProfile: "My Chess.com profile",
+    challenge: "Challenge me",
+    unavailable: "My Chess.com profile",
+  },
+  article: {
+    back: "Writing",
+  },
+  share: {
+    label: "Share",
+    native: "Share",
+    copy: "Copy link",
+    copied: "Link copied",
+    linkedin: "Share on LinkedIn",
+    x: "Share on X",
+    whatsapp: "Share on WhatsApp",
+  },
+  footer: {
+    about: "About",
+    tagline: "Made to be explored.",
+  },
+  theme: {
+    toggle: "Toggle theme",
+  },
+};
+
+export type Strings = typeof strings;

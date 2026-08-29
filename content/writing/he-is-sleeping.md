@@ -1,7 +1,6 @@
 ---
 title: "He is sleeping"
 date: 2012-07-20
-lang: en
 collection: prose
 hidden: true
 tags: []

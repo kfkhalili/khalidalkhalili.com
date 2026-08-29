@@ -1,7 +1,6 @@
 ---
 title: "The Old Man and I"
 date: 2013-01-02
-lang: en
 collection: prose
 hidden: true
 tags: []

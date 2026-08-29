@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { site } from "@/lib/site";
-import type { Dictionary } from "@/lib/i18n";
+import { strings } from "@/lib/strings";
 
-export function SiteFooter({ lang, dict }: { lang: string; dict: Dictionary }) {
+export function SiteFooter() {
   const year = new Date().getFullYear();
 
   return (
@@ -10,10 +10,10 @@ export function SiteFooter({ lang, dict }: { lang: string; dict: Dictionary }) {
       <div className="relative mx-auto flex max-w-3xl flex-col gap-4 px-5 py-12 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <div className="font-mono text-sm font-semibold text-foreground">
-            {dict.site.shortName.toLowerCase()}
+            {strings.site.shortName.toLowerCase()}
             <span className="text-accent">.</span>
           </div>
-          <p className="mt-1 text-sm text-muted">{dict.footer.tagline}</p>
+          <p className="mt-1 text-sm text-muted">{strings.footer.tagline}</p>
         </div>
 
         <div className="flex flex-col gap-1 text-sm text-muted sm:items-end">
@@ -22,10 +22,10 @@ export function SiteFooter({ lang, dict }: { lang: string; dict: Dictionary }) {
                 introduces me, so this is where someone goes looking for the
                 longer version rather than something the bar must carry. */}
             <Link
-              href={`/${lang}/about`}
+              href="/about"
               className="transition-colors hover:text-foreground"
             >
-              {dict.footer.about}
+              {strings.footer.about}
             </Link>
             <a
               href={site.linkedin}
@@ -46,7 +46,7 @@ export function SiteFooter({ lang, dict }: { lang: string; dict: Dictionary }) {
             </a>
           </div>
           <p className="text-faint">
-            © {year} {dict.site.title}
+            © {year} {strings.site.title}
           </p>
         </div>
       </div>

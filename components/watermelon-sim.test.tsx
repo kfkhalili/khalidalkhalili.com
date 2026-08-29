@@ -301,13 +301,10 @@ describe("WatermelonSim", () => {
     expect(() => tick(5)).not.toThrow();
   });
 
-  it("renders the real article copy, in every locale", () => {
-    for (const locale of ["en", "de", "ar"] as const) {
-      const sim = TT_CONTENT[locale].sim;
-      const { unmount } = render(<WatermelonSim strings={sim} />);
-      expect(screen.getByRole("slider", { name: sim.pressureAria })).toBeInTheDocument();
-      for (const label of sim.bars) expect(screen.getByText(label)).toBeInTheDocument();
-      unmount();
-    }
+  it("renders the real article copy", () => {
+    const sim = TT_CONTENT.sim;
+    render(<WatermelonSim strings={sim} />);
+    expect(screen.getByRole("slider", { name: sim.pressureAria })).toBeInTheDocument();
+    for (const label of sim.bars) expect(screen.getByText(label)).toBeInTheDocument();
   });
 });
