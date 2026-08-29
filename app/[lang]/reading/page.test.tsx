@@ -50,10 +50,10 @@ describe("ReadingPage", () => {
     expect(screen.getByRole("heading", { name: en.reading.currentlyReading })).toBeInTheDocument();
     expect(screen.getByText("Dune")).toBeInTheDocument();
     expect(screen.getByText("Dune's author")).toBeInTheDocument();
-    // next/image rewrites the src through the optimizer, so assert the origin
-    // it was pointed at rather than the literal attribute.
-    expect(screen.getByRole("img", { name: "Dune" }).getAttribute("src")).toContain(
-      encodeURIComponent(book("Dune").cover),
+    // Covers are unoptimized, so the src is Goodreads' URL itself: the metered
+    // optimizer never sees it.
+    expect(screen.getByRole("img", { name: "Dune" }).getAttribute("src")).toBe(
+      book("Dune").cover,
     );
   });
 

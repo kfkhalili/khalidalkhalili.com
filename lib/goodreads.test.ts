@@ -30,7 +30,7 @@ const FIXTURE = `<?xml version="1.0"?>
   </item>
 </channel></rss>`;
 
-/** A renderable cover, i.e. one on a host next.config.ts allows. */
+/** A cover URL like the ones the live feed carries. */
 const cover = (name: string) => `https://i.gr-assets.com/x/${name}.jpg`;
 
 describe("parseShelf", () => {
@@ -66,30 +66,29 @@ describe("parseShelf", () => {
     expect(parseShelf("<rss><channel></channel></rss>")).toEqual([]);
   });
 
-  // next/image throws on a host next.config.ts doesn't list, which on this
-  // render-per-request page is a 500 for the whole shelf, not one broken cover.
-  it("keeps covers from any Goodreads asset subdomain", () => {
+  // Covers render unoptimized, so a book keeps its cover wherever Goodreads
+  // hosts it. The old gr-assets allowlist silently dropped a book whose cover
+  // moved to another CDN.
+  it("keeps a cover from whichever host Goodreads names", () => {
     const item = (cover: string) =>
       `<rss><channel><item><title>T</title><author_name>A</author_name><book_large_image_url>${cover}</book_large_image_url><user_rating>0</user_rating><link>L</link></item></channel></rss>`;
 
-    for (const host of ["i.gr-assets.com", "s.gr-assets.com", "gr-assets.com"]) {
+    for (const host of [
+      "i.gr-assets.com",
+      "s.gr-assets.com",
+      "images-na.ssl-images-amazon.com",
+    ]) {
       const url = `https://${host}/x/c.jpg`;
       expect(parseShelf(item(url))[0]?.cover).toBe(url);
     }
   });
 
-  it("drops a cover this site is not configured to render", () => {
-    const item = (cover: string) =>
-      `<rss><channel><item><title>T</title><author_name>A</author_name><book_large_image_url>${cover}</book_large_image_url><user_rating>0</user_rating><link>L</link></item></channel></rss>`;
-
-    for (const bad of [
-      "https://images-na.ssl-images-amazon.com/x/c.jpg",
-      "https://evil.example.com/x/c.jpg",
-      "https://gr-assets.com.evil.example/x/c.jpg", // suffix must not be enough
-      "not-a-url",
-    ]) {
-      expect(parseShelf(item(bad))).toEqual([]);
-    }
+  // next/image still throws on a src it cannot parse, which on this
+  // render-per-request page is a 500 for the whole shelf, not one broken cover.
+  it("drops a cover that is not a URL at all", () => {
+    const item =
+      `<rss><channel><item><title>T</title><author_name>A</author_name><book_large_image_url>not-a-url</book_large_image_url><user_rating>0</user_rating><link>L</link></item></channel></rss>`;
+    expect(parseShelf(item)).toEqual([]);
   });
 
   it("falls back through the cover sizes Goodreads offers", () => {

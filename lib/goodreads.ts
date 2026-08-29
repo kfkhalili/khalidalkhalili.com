@@ -43,16 +43,16 @@ function field(item: string, name: string): string {
 }
 
 /**
- * The image hosts `next.config.ts` allows `next/image` to load. It refuses any
- * other host by throwing, which on a page rendered per request means a 500. So
- * a cover this site could not render is treated as no cover at all, and the
- * book drops out the same way a cover-less one always has.
+ * Covers render `unoptimized`, straight from whichever CDN Goodreads names, so
+ * any host is fine. But `next/image` still throws on a src it cannot parse,
+ * which on a page rendered per request means a 500. So a value that is not an
+ * absolute URL is treated as no cover at all, and the book drops out the same
+ * way a cover-less one always has.
  */
-const COVER_HOST = /^([a-z0-9-]+\.)*gr-assets\.com$/;
-
 function renderableCover(url: string): string {
   try {
-    return COVER_HOST.test(new URL(url).hostname) ? url : "";
+    new URL(url);
+    return url;
   } catch {
     return ""; // not a URL at all
   }

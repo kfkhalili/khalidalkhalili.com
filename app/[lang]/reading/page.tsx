@@ -46,10 +46,15 @@ function Cover({ book }: { book: Book }) {
       className="group block"
     >
       <div className="relative aspect-[2/3] overflow-hidden rounded-md border border-border bg-card-2 shadow-sm">
+        {/* Covers arrive from Goodreads' CDN already small and compressed.
+            Vercel's optimizer is metered, and re-encoding them once burned
+            through the quota: every cover answered 402 for the rest of the
+            month. `unoptimized` serves them as-is, on every cover here. */}
         <Image
           src={book.cover}
           alt={book.title}
           fill
+          unoptimized
           sizes="(min-width: 768px) 120px, 33vw"
           className="object-cover transition-transform duration-300 group-hover:scale-105"
         />
@@ -77,6 +82,7 @@ function CurrentBook({ book }: { book: Book }) {
           src={book.cover}
           alt={book.title}
           fill
+          unoptimized
           sizes="75px"
           className="object-cover"
         />
@@ -116,6 +122,7 @@ function LatestReview({
               src={book.cover}
               alt={book.title}
               fill
+              unoptimized
               sizes="75px"
               className="object-cover"
             />
