@@ -1,7 +1,6 @@
 ---
 title: "The Pandit Departs"
 date: 2012-12-13
-lang: en
 collection: prose
 hidden: true
 tags: []

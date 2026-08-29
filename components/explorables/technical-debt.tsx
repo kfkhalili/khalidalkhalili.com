@@ -1,5 +1,5 @@
 import { TechDebtSim } from "@/components/tech-debt-sim";
-import { getTechDebtContent } from "@/components/explorables/technical-debt.content";
+import { TD_CONTENT } from "@/components/explorables/technical-debt.content";
 
 /** Render a block of authored (trusted) HTML as the given prose element. */
 function Html({ as: Tag = "p", html }: { as?: "p" | "li"; html: string }) {
@@ -7,13 +7,13 @@ function Html({ as: Tag = "p", html }: { as?: "p" | "li"; html: string }) {
 }
 
 /**
- * Body of the technical-debt explorable: the prose + live simulation, in the
- * page's language. One JSX skeleton; all copy comes from the locale-keyed content
- * module. Rendered inside the shared `.prose` wrapper by the article route via the
- * explorables registry (the "component adapter" behind the article render seam).
+ * Body of the technical-debt explorable: the prose + live simulation. One JSX
+ * skeleton; all copy comes from the co-located content module. Rendered inside
+ * the shared `.prose` wrapper by the article route via the explorables
+ * registry (the "component adapter" behind the article render seam).
  */
-export function TechnicalDebtArticle({ lang }: { lang: string }) {
-  const c = getTechDebtContent(lang);
+export function TechnicalDebtArticle() {
+  const c = TD_CONTENT;
 
   return (
     <>

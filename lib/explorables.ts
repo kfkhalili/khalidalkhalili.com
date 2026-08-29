@@ -4,16 +4,13 @@ import { TechnicalDebtArticle } from "@/components/explorables/technical-debt";
 import { TD_CONTENT } from "@/components/explorables/technical-debt.content";
 import { ThirdThingArticle } from "@/components/explorables/the-third-thing";
 import { TT_CONTENT } from "@/components/explorables/the-third-thing.content";
-import { toLocale, type Locale } from "@/lib/i18n";
 
-/** An explorable = article metadata + the component that renders its body (in a locale). */
-export type Explorable = Article & { Body: ComponentType<{ lang: string }> };
+/** An explorable = article metadata + the component that renders its body. */
+export type Explorable = Article & { Body: ComponentType };
 
-type LocalizedMeta = { title: string; description: string; tags: string[] };
-
-// Locale-independent facts live on the def; title/description/tags come from the
-// explorable's own content module, so one registry entry yields a localized
-// Article per request. The typed Body↔registry link keeps this off slug strings.
+// Registry facts live on the def; title/description/tags come from the
+// explorable's own content module, next to the copy they describe. The typed
+// Body↔registry link keeps this off slug strings.
 type ExplorableDef = {
   slug: string;
   date: string;
@@ -21,8 +18,8 @@ type ExplorableDef = {
   /** Kept in the registry but off the site. See `hidden` on Article. */
   hidden?: boolean;
   readingTime: number;
-  Body: ComponentType<{ lang: string }>;
-  content: Record<Locale, LocalizedMeta>;
+  Body: ComponentType;
+  content: { title: string; description: string; tags: string[] };
 };
 
 const DEFS: ExplorableDef[] = [
@@ -45,16 +42,13 @@ const DEFS: ExplorableDef[] = [
 ];
 
 /** The serializable half: everything but the Body component. */
-function resolveMeta(def: ExplorableDef, lang: string): Article {
-  const loc = toLocale(lang);
-  const meta = def.content[loc];
+function resolveMeta(def: ExplorableDef): Article {
   return {
     slug: def.slug,
-    title: meta.title,
-    description: meta.description,
-    tags: meta.tags,
+    title: def.content.title,
+    description: def.content.description,
+    tags: def.content.tags,
     date: def.date,
-    lang: loc,
     featured: def.featured,
     kind: "explorable",
     collection: "writing",
@@ -62,8 +56,8 @@ function resolveMeta(def: ExplorableDef, lang: string): Article {
   };
 }
 
-function resolve(def: ExplorableDef, lang: string): Explorable {
-  return { ...resolveMeta(def, lang), Body: def.Body };
+function resolve(def: ExplorableDef): Explorable {
+  return { ...resolveMeta(def), Body: def.Body };
 }
 
 /**
@@ -74,9 +68,9 @@ function visibleDefs(): ExplorableDef[] {
   return DEFS.filter((d) => !d.hidden);
 }
 
-/** All explorables localized to `lang`, each carrying its Body. */
-export function getExplorables(lang: string): Explorable[] {
-  return visibleDefs().map((def) => resolve(def, lang));
+/** All explorables, each carrying its Body. */
+export function getExplorables(): Explorable[] {
+  return visibleDefs().map(resolve);
 }
 
 /**
@@ -84,15 +78,15 @@ export function getExplorables(lang: string): Explorable[] {
  * Client Component. A Body is a React component and cannot cross that boundary,
  * so anything assembling the writing index reads from here.
  */
-export function getExplorableArticles(lang: string): Article[] {
-  return visibleDefs().map((def) => resolveMeta(def, lang));
+export function getExplorableArticles(): Article[] {
+  return visibleDefs().map(resolveMeta);
 }
 
-/** One explorable (localized to `lang`) by slug, or undefined if absent or hidden. */
-export function findExplorable(slug: string, lang: string): Explorable | undefined {
+/** One explorable by slug, or undefined if absent or hidden. */
+export function findExplorable(slug: string): Explorable | undefined {
   const def = visibleDefs().find((d) => d.slug === slug);
-  return def ? resolve(def, lang) : undefined;
+  return def ? resolve(def) : undefined;
 }
 
-/** Slugs for static param generation (locale-independent). */
+/** Slugs for static param generation. */
 export const EXPLORABLE_SLUGS = DEFS.filter((d) => !d.hidden).map((d) => d.slug);

@@ -331,13 +331,10 @@ describe("TechDebtSim", () => {
     expect(() => tick(5)).not.toThrow();
   });
 
-  it("renders the real article copy, in every locale", () => {
-    for (const locale of ["en", "de", "ar"] as const) {
-      const sim = TD_CONTENT[locale].sim;
-      const { unmount } = render(<TechDebtSim strings={sim} />);
-      expect(screen.getByRole("slider", { name: sim.allocationAria })).toBeInTheDocument();
-      for (const label of sim.bars) expect(screen.getByText(label)).toBeInTheDocument();
-      unmount();
-    }
+  it("renders the real article copy", () => {
+    const sim = TD_CONTENT.sim;
+    render(<TechDebtSim strings={sim} />);
+    expect(screen.getByRole("slider", { name: sim.allocationAria })).toBeInTheDocument();
+    for (const label of sim.bars) expect(screen.getByText(label)).toBeInTheDocument();
   });
 });

@@ -1,7 +1,6 @@
 ---
 title: "Velvet Contemplations"
 date: 2013-05-11
-lang: en
 collection: prose
 hidden: true
 tags: []

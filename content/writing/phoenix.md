@@ -1,7 +1,6 @@
 ---
 title: "Phoenix"
 date: 2012-09-07
-lang: en
 collection: prose
 hidden: true
 tags: []

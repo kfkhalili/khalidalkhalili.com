@@ -35,7 +35,7 @@ vi.mock("node:fs", async (importActual) => {
 
 const { getAllArticles, getEssaySlugs, getEssayContent, getExplorable } =
   await import("./articles");
-const { articleDate, articleReadingTime } = await import("./format");
+const { articleDate, articleReadingTime, formatDate } = await import("./format");
 const { getExplorables, getExplorableArticles } = await import("./explorables");
 
 function writeEssay(name: string, contents: string) {
@@ -82,7 +82,6 @@ describe("getEssayContent", () => {
         "description: On spreadsheets.",
         "date: 2026-05-04",
         "tags: [Software, Work]",
-        "lang: en",
         "featured: true",
         "---",
         "",
@@ -97,7 +96,6 @@ describe("getEssayContent", () => {
       description: "On spreadsheets.",
       date: "2026-05-04",
       tags: ["Software", "Work"],
-      lang: "en",
       featured: true,
       kind: "essay",
     });
@@ -105,7 +103,7 @@ describe("getEssayContent", () => {
     expect(result?.html).toContain('target="_blank"');
   });
 
-  it("falls back to the filename, the opening line, no tags, and the default locale", () => {
+  it("falls back to the filename, the opening line, and no tags", () => {
     writeEssay("bare.md", "---\n---\nJust a body.");
     const { article } = getEssayContent("bare")!;
     expect(article).toMatchObject({
@@ -114,7 +112,6 @@ describe("getEssayContent", () => {
       description: "Just a body.",
       date: "",
       tags: [],
-      lang: "en",
       featured: false,
       collection: "writing",
     });
@@ -223,15 +220,15 @@ describe("getAllArticles", () => {
   // Metadata, not the explorables themselves: the index is handed to a Client
   // Component, so it carries no Body.
   it("returns the explorables when there are no essays", () => {
-    expect(getAllArticles("en")).toEqual(getExplorableArticles("en"));
-    expect(getAllArticles("en").map((a) => a.slug)).toEqual(
-      getExplorables("en").map((e) => e.slug),
+    expect(getAllArticles()).toEqual(getExplorableArticles());
+    expect(getAllArticles().map((a) => a.slug)).toEqual(
+      getExplorables().map((e) => e.slug),
     );
   });
 
   it("carries no Body into the index", () => {
     expect(
-      getAllArticles("en").every((a) => !("Body" in a)),
+      getAllArticles().every((a) => !("Body" in a)),
     ).toBe(true);
   });
 
@@ -239,10 +236,10 @@ describe("getAllArticles", () => {
     writeEssay("old.md", "---\ntitle: Old\ndate: 2020-01-01\n---\nbody");
     writeEssay("new.md", "---\ntitle: New\ndate: 2099-01-01\n---\nbody");
 
-    const articles = getAllArticles("en");
+    const articles = getAllArticles();
     expect(articles[0].title).toBe("New");
     expect(articles[articles.length - 1].title).toBe("Old");
-    expect(articles).toHaveLength(getExplorables("en").length + 2);
+    expect(articles).toHaveLength(getExplorables().length + 2);
 
     const dates = articles.map((a) => a.date);
     expect([...dates].sort().reverse()).toEqual(dates);
@@ -251,19 +248,19 @@ describe("getAllArticles", () => {
   it("keeps a stable order for articles sharing a date", () => {
     writeEssay("a.md", "---\ntitle: A\ndate: 2050-01-01\n---\nbody");
     writeEssay("b.md", "---\ntitle: B\ndate: 2050-01-01\n---\nbody");
-    expect(getAllArticles("en").slice(0, 2).map((a) => a.title)).toEqual(["A", "B"]);
+    expect(getAllArticles().slice(0, 2).map((a) => a.title)).toEqual(["A", "B"]);
   });
 
   it("lets an essay on disk shadow the explorable of the same slug", () => {
     writeEssay("technical-debt.md", "---\ntitle: Essay wins\ndate: 2020-01-01\n---\nbody");
-    const articles = getAllArticles("en");
+    const articles = getAllArticles();
     expect(articles.filter((a) => a.slug === "technical-debt")).toHaveLength(1);
     expect(articles.find((a) => a.slug === "technical-debt")!.title).toBe("Essay wins");
   });
 
-  it("localizes the explorables it merges in", () => {
-    const titles = getAllArticles("de").map((a) => a.title);
-    expect(titles).toEqual(getExplorables("de").map((e) => e.title));
+  it("merges the registered explorables in", () => {
+    const titles = getAllArticles().map((a) => a.title);
+    expect(titles).toEqual(getExplorables().map((e) => e.title));
   });
 });
 
@@ -278,7 +275,7 @@ describe("hidden", () => {
   it("keeps a hidden essay out of the writing index", () => {
     writeEssay("secret.md", HIDDEN);
     writeEssay("shown.md", SHOWN);
-    const slugs = getAllArticles("en").map((a) => a.slug);
+    const slugs = getAllArticles().map((a) => a.slug);
     expect(slugs).toContain("shown");
     expect(slugs).not.toContain("secret");
   });
@@ -308,59 +305,47 @@ describe("hidden", () => {
 });
 
 describe("getExplorable", () => {
-  it("resolves a registered explorable in the requested locale", () => {
-    expect(getExplorable("technical-debt", "de")).toEqual(
-      getExplorables("de").find((e) => e.slug === "technical-debt"),
+  it("resolves a registered explorable", () => {
+    expect(getExplorable("technical-debt")).toEqual(
+      getExplorables().find((e) => e.slug === "technical-debt"),
     );
   });
 
   it("is undefined for an unknown slug", () => {
-    expect(getExplorable("nope", "en")).toBeUndefined();
+    expect(getExplorable("nope")).toBeUndefined();
   });
 });
 
 describe("articleDate", () => {
   it("is empty for a missing date", () => {
-    expect(articleDate({ date: "", lang: "en" })).toBe("");
+    expect(articleDate({ date: "" })).toBe("");
   });
 
-  it("writes the date the way each language does", () => {
-    expect(articleDate({ date: "2026-02-09", lang: "en" })).toBe("February 9, 2026");
-    expect(articleDate({ date: "2026-02-09", lang: "de" })).toBe("9. Februar 2026");
-    expect(articleDate({ date: "2026-02-09", lang: "ar" })).toBe("9 فبراير 2026");
-  });
-
-  it("falls back to US English for an unknown language", () => {
-    expect(articleDate({ date: "2026-02-09", lang: "fr" })).toBe(articleDate({ date: "2026-02-09", lang: "en" }));
+  it("writes the date in US English", () => {
+    expect(articleDate({ date: "2026-02-09" })).toBe("February 9, 2026");
   });
 
   it("reads the date as local midnight, so the day never slips", () => {
-    expect(articleDate({ date: "2026-01-01", lang: "en" })).toBe("January 1, 2026");
-    expect(articleDate({ date: "2026-12-31", lang: "en" })).toBe("December 31, 2026");
+    expect(articleDate({ date: "2026-01-01" })).toBe("January 1, 2026");
+    expect(articleDate({ date: "2026-12-31" })).toBe("December 31, 2026");
+  });
+});
+
+describe("formatDate", () => {
+  it("writes a reflection's date the way its own language does", () => {
+    expect(formatDate("2026-02-09", "en")).toBe("February 9, 2026");
+    expect(formatDate("2026-02-09", "de")).toBe("9. Februar 2026");
+    expect(formatDate("2026-02-09", "ar")).toBe("9 فبراير 2026");
+  });
+
+  it("falls back to US English for an unknown language", () => {
+    expect(formatDate("2026-02-09", "fr")).toBe(formatDate("2026-02-09", "en"));
   });
 });
 
 describe("articleReadingTime", () => {
-  it("uses an invariant unit in English and German", () => {
-    expect(articleReadingTime({ readingTime: 6, lang: "en" })).toBe("6 min read");
-    expect(articleReadingTime({ readingTime: 1, lang: "en" })).toBe("1 min read");
-    expect(articleReadingTime({ readingTime: 6, lang: "de" })).toBe("6 Min. Lesezeit");
-  });
-
-  it("falls back to English for an unknown language", () => {
-    expect(articleReadingTime({ readingTime: 6, lang: "fr" })).toBe("6 min read");
-  });
-
-  it("agrees the Arabic counted noun with its number", () => {
-    expect(articleReadingTime({ readingTime: 1, lang: "ar" })).toBe("دقيقة قراءة");
-    expect(articleReadingTime({ readingTime: 2, lang: "ar" })).toBe("دقيقتان قراءة");
-    expect(articleReadingTime({ readingTime: 6, lang: "ar" })).toBe("6 دقائق قراءة");
-    expect(articleReadingTime({ readingTime: 11, lang: "ar" })).toBe("11 دقيقة قراءة");
-    expect(articleReadingTime({ readingTime: 100, lang: "ar" })).toBe("100 دقيقة قراءة");
-  });
-
-  it("drops the number entirely for the singular and dual", () => {
-    expect(articleReadingTime({ readingTime: 1, lang: "ar" })).not.toMatch(/\d/);
-    expect(articleReadingTime({ readingTime: 2, lang: "ar" })).not.toMatch(/\d/);
+  it("reads as minutes", () => {
+    expect(articleReadingTime({ readingTime: 6 })).toBe("6 min read");
+    expect(articleReadingTime({ readingTime: 1 })).toBe("1 min read");
   });
 });

@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 import { SHARE_TARGETS, shareIntent, type ShareTarget } from "@/lib/share";
 import { useHydrated } from "@/components/use-hydrated";
-import type { Dictionary } from "@/lib/i18n";
+import { strings } from "@/lib/strings";
 
-type ShareLabels = Dictionary["share"];
+const labels = strings.share;
 
 const ICON = {
   linkedin:
@@ -33,15 +33,7 @@ const linkClass =
  * row of marks. `navigator.share` is only known after mount, so the row is the
  * server-rendered default and the button replaces it on capable clients.
  */
-export function ShareRow({
-  url,
-  title,
-  labels,
-}: {
-  url: string;
-  title: string;
-  labels: ShareLabels;
-}) {
+export function ShareRow({ url, title }: { url: string; title: string }) {
   const [copied, setCopied] = useState(false);
 
   // Whether the OS sheet exists can't be known while rendering on the server,

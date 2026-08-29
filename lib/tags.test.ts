@@ -4,25 +4,23 @@ import { TAG_PARAM, tagHref, readTag, filterByTag, countTags } from "./tags";
 const tagged = (slug: string, tags: string[]) => ({ slug, tags });
 
 describe("tagHref", () => {
-  it("lands on the writing index of the reader's locale", () => {
-    expect(tagHref("de", "IT-Projekte")).toBe("/de/writing?tag=IT-Projekte");
+  it("lands on the writing index", () => {
+    expect(tagHref("IT Projects")).toBe("/writing?tag=IT%20Projects");
   });
 
   it("escapes a tag so a space or an ampersand cannot rewrite the query", () => {
-    expect(tagHref("en", "Software Design")).toBe(
-      "/en/writing?tag=Software%20Design",
-    );
-    expect(tagHref("en", "speed & correctness")).toContain("%26");
+    expect(tagHref("Software Design")).toBe("/writing?tag=Software%20Design");
+    expect(tagHref("speed & correctness")).toContain("%26");
   });
 
   it("carries an Arabic tag through intact", () => {
-    const href = tagHref("ar", "تصميم البرمجيات");
-    expect(href.startsWith("/ar/writing?tag=")).toBe(true);
+    const href = tagHref("تصميم البرمجيات");
+    expect(href.startsWith("/writing?tag=")).toBe(true);
     expect(decodeURIComponent(href.split("=")[1])).toBe("تصميم البرمجيات");
   });
 
   it("names the query key once, for the index to read back", () => {
-    expect(tagHref("en", "x")).toContain(`?${TAG_PARAM}=`);
+    expect(tagHref("x")).toContain(`?${TAG_PARAM}=`);
   });
 });
 

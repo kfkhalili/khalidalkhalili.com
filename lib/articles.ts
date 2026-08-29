@@ -1,6 +1,5 @@
 import fs from "node:fs";
 import path from "node:path";
-import { DEFAULT_LOCALE } from "@/lib/i18n";
 import {
   getExplorableArticles,
   findExplorable,
@@ -24,7 +23,6 @@ export type Article = {
   description: string;
   date: string; // ISO YYYY-MM-DD
   tags: string[];
-  lang: string;
   featured?: boolean;
   kind: "essay" | "explorable";
   collection: Collection;
@@ -124,7 +122,6 @@ function parseEssay(file: string): { article: Article; body: string } {
       description: String(data.description ?? "") || openingLine(body),
       date: toIsoDay(data.date),
       tags: Array.isArray(data.tags) ? data.tags.map(String) : [],
-      lang: String(data.lang ?? DEFAULT_LOCALE),
       featured: Boolean(data.featured),
       kind: "essay",
       collection: toCollection(data.collection),
@@ -187,11 +184,11 @@ function visibleEssays(): Article[] {
 }
 
 /**
- * All writing (file-based essays + registered explorables), localized. Metadata
- * only, so the result is safe to hand to a Client Component.
+ * All writing (file-based essays + registered explorables). Metadata only, so
+ * the result is safe to hand to a Client Component.
  */
-export function getAllArticles(lang: string): Article[] {
-  return mergeWriting(visibleEssays(), getExplorableArticles(lang));
+export function getAllArticles(): Article[] {
+  return mergeWriting(visibleEssays(), getExplorableArticles());
 }
 
 /** Slugs to build pages for. A hidden essay gets none, so its URL 404s. */
@@ -214,9 +211,6 @@ export function getEssayContent(
   return { article, html: renderMarkdown(body) };
 }
 
-export function getExplorable(
-  slug: string,
-  lang: string,
-): Explorable | undefined {
-  return findExplorable(slug, lang);
+export function getExplorable(slug: string): Explorable | undefined {
+  return findExplorable(slug);
 }

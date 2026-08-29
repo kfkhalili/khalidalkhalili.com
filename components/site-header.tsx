@@ -4,23 +4,21 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { LanguageSwitcher } from "@/components/language-switcher";
-import type { Dictionary } from "@/lib/i18n";
+import { strings } from "@/lib/strings";
 
-export function SiteHeader({ lang, dict }: { lang: string; dict: Dictionary }) {
+export function SiteHeader() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
   // Every section names itself: a feed behind a label like "Elsewhere" is a
   // feed nobody visits. `about` stays in the footer, where the home hero has
-  // already done its job; losing it is what lets five items fit where six once
-  // collided with the wordmark in German.
+  // already done its job.
   const nav = [
-    { href: `/${lang}/projects`, label: dict.nav.projects },
-    { href: `/${lang}/writing`, label: dict.nav.writing },
-    { href: `/${lang}/reading`, label: dict.nav.reading },
-    { href: `/${lang}/islam`, label: dict.nav.islam },
-    { href: `/${lang}/chess`, label: dict.nav.chess },
+    { href: "/projects", label: strings.nav.projects },
+    { href: "/writing", label: strings.nav.writing },
+    { href: "/reading", label: strings.nav.reading },
+    { href: "/islam", label: strings.nav.islam },
+    { href: "/chess", label: strings.nav.chess },
   ];
   const isActive = (href: string) =>
     pathname === href || pathname.startsWith(href + "/");
@@ -29,11 +27,11 @@ export function SiteHeader({ lang, dict }: { lang: string; dict: Dictionary }) {
     <header className="sticky top-0 z-40 border-b border-border/70 bg-background/80 backdrop-blur-md">
       <div className="mx-auto flex h-14 max-w-3xl items-center justify-between px-5">
         <Link
-          href={`/${lang}`}
+          href="/"
           onClick={() => setOpen(false)}
           className="font-mono text-sm font-semibold tracking-tight text-foreground transition-opacity hover:opacity-70"
         >
-          {dict.site.shortName.toLowerCase()}
+          {strings.site.shortName.toLowerCase()}
           <span className="text-accent">.</span>
         </Link>
 
@@ -53,8 +51,6 @@ export function SiteHeader({ lang, dict }: { lang: string; dict: Dictionary }) {
               {item.label}
             </Link>
           ))}
-          <span className="mx-1 h-4 w-px bg-border" aria-hidden />
-          <LanguageSwitcher lang={lang} />
           <span className="mx-1 h-4 w-px bg-border" aria-hidden />
           <ThemeToggle />
         </nav>
@@ -108,9 +104,6 @@ export function SiteHeader({ lang, dict }: { lang: string; dict: Dictionary }) {
                 {item.label}
               </Link>
             ))}
-            <div className="mt-1 border-t border-border/70 px-2 pt-3">
-              <LanguageSwitcher lang={lang} />
-            </div>
           </nav>
         </div>
       )}

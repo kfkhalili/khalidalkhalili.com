@@ -1,7 +1,6 @@
 ---
 title: "Commander-in-chief"
 date: 2013-01-10
-lang: en
 collection: prose
 hidden: true
 tags: []

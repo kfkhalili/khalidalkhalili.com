@@ -1,7 +1,6 @@
 ---
 title: "The Luxury of an Empty Mind"
 date: 2013-02-14
-lang: en
 collection: prose
 hidden: true
 tags: []

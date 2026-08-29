@@ -1,7 +1,6 @@
 import Link from "next/link";
 import type { Article } from "@/lib/articles";
 import { articleDate, articleReadingTime } from "@/lib/format";
-import { languageBadge } from "@/lib/i18n";
 import { tagHref } from "@/lib/tags";
 
 /**
@@ -11,36 +10,23 @@ import { tagHref } from "@/lib/tags";
  * browser can render. The border still answers to the article link alone, which
  * is what keeps a hovered tag from claiming the whole card.
  */
-export function ArticleCard({
-  lang,
-  article,
-}: {
-  lang: string;
-  article: Article;
-}) {
-  const badge = languageBadge(article.lang, lang);
-
+export function ArticleCard({ article }: { article: Article }) {
   return (
     <div className="rounded-xl border border-border bg-card p-5 transition-colors has-[[data-article-link]:hover]:border-accent/60">
       <div className="flex flex-wrap items-center gap-1.5">
         {article.tags.map((t) => (
           <Link
             key={t}
-            href={tagHref(lang, t)}
+            href={tagHref(t)}
             className="rounded-full border border-border px-2 py-0.5 text-xs text-faint transition-colors hover:border-accent/40 hover:text-accent-strong"
           >
             {t}
           </Link>
         ))}
-        {badge && (
-          <span className="rounded-full border border-accent/40 px-2 py-0.5 text-xs text-accent-strong">
-            {badge}
-          </span>
-        )}
       </div>
       <Link
         data-article-link
-        href={`/${lang}/writing/${article.slug}`}
+        href={`/writing/${article.slug}`}
         className="group block"
       >
         <h3 className="mt-3 text-lg font-semibold tracking-tight text-foreground transition-colors group-hover:text-accent-strong">

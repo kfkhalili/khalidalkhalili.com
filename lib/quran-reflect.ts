@@ -1,5 +1,4 @@
 import { plainText } from "@/lib/prose";
-import { toLocale, type Locale } from "@/lib/i18n";
 
 /**
  * My reflections on QuranReflect, read through the Quran Foundation gateway,
@@ -142,6 +141,19 @@ export type VerseRef = {
   url: string;
 };
 
+/**
+ * The languages I write reflections in on QuranReflect. This is about the
+ * feed's content, not the site's chrome: the site publishes in English, but a
+ * reflection written in Arabic or German still dates, reads, and quotes its
+ * ayat in its own language.
+ */
+export type ReflectionLang = "en" | "de" | "ar";
+
+/** Badge label for a reflection not written in the site's language, else null. */
+export function languageBadge(lang: ReflectionLang): string | null {
+  return lang === "en" ? null : { de: "Deutsch", ar: "العربية" }[lang];
+}
+
 export type Reflection = {
   id: number;
   /** What QuranReflect calls it: a heart-response, or a point of understanding. */
@@ -149,7 +161,7 @@ export type Reflection = {
   /** Plain text, paragraphs kept as blank lines. */
   body: string;
   /** The language I wrote it in, so it can date and read itself in that language. */
-  lang: Locale;
+  lang: ReflectionLang;
   /** `YYYY-MM-DD`, or "" when the gateway gave no date. */
   date: string;
   refs: VerseRef[];
@@ -190,7 +202,7 @@ export type Reflections = {
  */
 const PRIVATE_STATUS = new Set([4, 5, 6, 30]);
 
-const LANGUAGES: Record<string, Locale> = {
+const LANGUAGES: Record<string, ReflectionLang> = {
   english: "en",
   arabic: "ar",
   german: "de",
@@ -198,12 +210,11 @@ const LANGUAGES: Record<string, Locale> = {
 
 /**
  * The language a reflection was written in. QuranReflect names it in English
- * and in no consistent case ("English", "arabic"), and a language this site
- * does not publish reads as the default, exactly as `toLocale` decides it
- * everywhere else.
+ * and in no consistent case ("English", "arabic"), and a language this module
+ * does not know reads as English.
  */
-function languageOf(name: string | undefined): Locale {
-  return toLocale(LANGUAGES[(name ?? "").toLowerCase()] ?? "");
+function languageOf(name: string | undefined): ReflectionLang {
+  return LANGUAGES[(name ?? "").toLowerCase()] ?? "en";
 }
 
 /**
@@ -312,7 +323,7 @@ export function parseChapters(payload: ChaptersPayload): Chapters {
  * shows (the Clear Quran is absent, for one), so these are chosen from what it
  * actually serves.
  */
-const TRANSLATION_IDS: Partial<Record<Locale, number>> = {
+const TRANSLATION_IDS: Partial<Record<ReflectionLang, number>> = {
   en: 20, // Saheeh International
   de: 27, // Frank Bubenheim and Nadeem Elyas
 };
@@ -343,7 +354,7 @@ export function verseKeys(refs: VerseRef[]): string[] {
  * language, but the translation under it follows the post, so quotes are held
  * per language as well as per verse.
  */
-export function quoteKey(lang: Locale, verseKey: string): string {
+export function quoteKey(lang: ReflectionLang, verseKey: string): string {
   return `${lang}:${verseKey}`;
 }
 
@@ -395,7 +406,7 @@ async function fetchQuotes(
   posts: Reflection[],
   token: string,
 ): Promise<Record<string, Verse>> {
-  const wanted = new Map<string, { lang: Locale; key: string }>();
+  const wanted = new Map<string, { lang: ReflectionLang; key: string }>();
   for (const post of posts) {
     for (const key of verseKeys(post.refs)) {
       const qk = quoteKey(post.lang, key);

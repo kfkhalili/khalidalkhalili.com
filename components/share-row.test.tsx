@@ -3,13 +3,13 @@ import { render, screen, act, fireEvent, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event";
 import { ShareRow } from "./share-row";
 import { shareIntent, SHARE_TARGETS } from "@/lib/share";
-import en from "@/dictionaries/en.json";
+import { strings } from "@/lib/strings";
 
-const labels = en.share;
-const url = "https://khalidalkhalili.com/en/writing/the-third-thing";
+const labels = strings.share;
+const url = "https://khalidalkhalili.com/writing/the-third-thing";
 const title = "The Third Thing";
 
-const renderRow = () => render(<ShareRow url={url} title={title} labels={labels} />);
+const renderRow = () => render(<ShareRow url={url} title={title} />);
 
 const user = () => userEvent.setup();
 

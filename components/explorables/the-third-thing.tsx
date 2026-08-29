@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { WatermelonSim } from "@/components/watermelon-sim";
 import { ZeroBitStatus } from "@/components/zero-bit-status";
 import { ContractDiagnostic } from "@/components/contract-diagnostic";
-import { getThirdThingContent } from "@/components/explorables/the-third-thing.content";
+import { TT_CONTENT } from "@/components/explorables/the-third-thing.content";
 
 /** Render a block of authored (trusted) HTML as the given prose element. */
 function Html({ as: Tag = "p", html }: { as?: "p" | "li"; html: string }) {
@@ -36,11 +36,11 @@ function Artifact({
 /**
  * Body of the the-third-thing explorable: the essay's prose with three
  * interactive artifacts embedded where the argument produces them. One JSX
- * skeleton; all copy comes from the locale-keyed content module. Rendered inside
+ * skeleton; all copy comes from the co-located content module. Rendered inside
  * the shared `.prose` wrapper by the article route via the explorables registry.
  */
-export function ThirdThingArticle({ lang }: { lang: string }) {
-  const c = getThirdThingContent(lang);
+export function ThirdThingArticle() {
+  const c = TT_CONTENT;
 
   return (
     <>

@@ -2,9 +2,8 @@ import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { TechnicalDebtArticle } from "./technical-debt";
 import { ThirdThingArticle } from "./the-third-thing";
-import { getTechDebtContent, TD_CONTENT } from "./technical-debt.content";
-import { getThirdThingContent, TT_CONTENT } from "./the-third-thing.content";
-import { LOCALES } from "@/lib/i18n";
+import { TD_CONTENT } from "./technical-debt.content";
+import { TT_CONTENT } from "./the-third-thing.content";
 
 /** Strip the authored inline HTML so prose can be matched against the DOM's text. */
 const text = (html: string) => html.replace(/<[^>]+>/g, "");
@@ -27,44 +26,39 @@ afterEach(() => {
 });
 
 describe("TechnicalDebtArticle", () => {
-  it.each(LOCALES)("renders the %s prose", (locale) => {
-    const c = getTechDebtContent(locale);
-    const { container } = render(<TechnicalDebtArticle lang={locale} />);
+  it("renders the prose", () => {
+    const c = TD_CONTENT;
+    const { container } = render(<TechnicalDebtArticle />);
     expect(container.textContent).toContain(text(c.intro));
     expect(container.textContent).toContain(text(c.trap));
     expect(container.textContent).toContain(text(c.conclusion));
   });
 
-  it("falls back to the default locale's prose for an unknown language", () => {
-    const { container } = render(<TechnicalDebtArticle lang="fr" />);
-    expect(container.textContent).toContain(text(TD_CONTENT.en.intro));
-  });
-
   it("renders the authored inline HTML rather than escaping it", () => {
-    const { container } = render(<TechnicalDebtArticle lang="en" />);
+    const { container } = render(<TechnicalDebtArticle />);
     expect(container.querySelectorAll("strong").length).toBeGreaterThan(0);
     expect(container.textContent).not.toContain("<strong>");
   });
 
   it("embeds the live simulation", () => {
-    render(<TechnicalDebtArticle lang="en" />);
+    render(<TechnicalDebtArticle />);
     expect(
-      screen.getByRole("slider", { name: TD_CONTENT.en.sim.allocationAria }),
+      screen.getByRole("slider", { name: TD_CONTENT.sim.allocationAria }),
     ).toBeInTheDocument();
   });
 
   it("lays out the argument as headings and numbered steps", () => {
-    const c = getTechDebtContent("en");
-    const { container } = render(<TechnicalDebtArticle lang="en" />);
+    const c = TD_CONTENT;
+    const { container } = render(<TechnicalDebtArticle />);
     expect(screen.getByRole("heading", { name: c.modelHeading })).toBeInTheDocument();
     expect(container.querySelectorAll("ol > li")).toHaveLength(c.modelSteps.length);
   });
 
-  it.each(LOCALES)("hands the four archetypes off to the sim in %s", (locale) => {
+  it("hands the four archetypes off to the sim", () => {
     // The sim explains each archetype when you pick it, so the paragraph that
     // introduces the sim names the count and stays out of the enumeration. It
     // is the same prose that sets the sim up, not a section of its own.
-    const c = getTechDebtContent(locale);
+    const c = TD_CONTENT;
     const prose = text(c.intro).toLowerCase();
     for (const label of c.sim.presets) {
       expect(prose).not.toContain(label.toLowerCase());
@@ -75,8 +69,8 @@ describe("TechnicalDebtArticle", () => {
   });
 
   it("introduces the sim in the paragraph directly above it", () => {
-    const c = getTechDebtContent("en");
-    const { container } = render(<TechnicalDebtArticle lang="en" />);
+    const c = TD_CONTENT;
+    const { container } = render(<TechnicalDebtArticle />);
     const order = [...container.children];
     const intro = order.findIndex((el) => el.textContent?.includes(text(c.intro)));
     const sim = order.findIndex((el) => el.textContent?.includes(c.sim.allocation));
@@ -85,8 +79,8 @@ describe("TechnicalDebtArticle", () => {
   });
 
   it("folds the hindsight notes away behind their summaries", () => {
-    const c = getTechDebtContent("en");
-    const { container } = render(<TechnicalDebtArticle lang="en" />);
+    const c = TD_CONTENT;
+    const { container } = render(<TechnicalDebtArticle />);
     const details = container.querySelectorAll("details");
     expect(details).toHaveLength(c.details.length);
     for (const [i, entry] of c.details.entries()) {
@@ -95,48 +89,43 @@ describe("TechnicalDebtArticle", () => {
     }
   });
 
-  it("embeds the talk, titled in the page's language", () => {
-    const { container } = render(<TechnicalDebtArticle lang="de" />);
+  it("embeds the talk, with a title", () => {
+    const { container } = render(<TechnicalDebtArticle />);
     const iframe = container.querySelector("iframe")!;
-    expect(iframe).toHaveAttribute("title", TD_CONTENT.de.videoTitle);
+    expect(iframe).toHaveAttribute("title", TD_CONTENT.videoTitle);
     expect(iframe.getAttribute("src")).toContain("youtube.com/embed/");
     expect(iframe).toHaveAttribute("allowfullscreen");
   });
 });
 
 describe("ThirdThingArticle", () => {
-  it.each(LOCALES)("renders the %s prose", (locale) => {
-    const c = getThirdThingContent(locale);
-    const { container } = render(<ThirdThingArticle lang={locale} />);
+  it("renders the prose", () => {
+    const c = TT_CONTENT;
+    const { container } = render(<ThirdThingArticle />);
     expect(container.textContent).toContain(text(c.opening[0]));
     expect(container.textContent).toContain(text(c.thirdThing));
     expect(container.textContent).toContain(text(c.closing[c.closing.length - 1]));
   });
 
-  it("falls back to the default locale's prose for an unknown language", () => {
-    const { container } = render(<ThirdThingArticle lang="fr" />);
-    expect(container.textContent).toContain(text(TT_CONTENT.en.thirdThing));
-  });
-
   it("renders every paragraph of every prose block", () => {
-    const c = getThirdThingContent("en");
-    const { container } = render(<ThirdThingArticle lang="en" />);
+    const c = TT_CONTENT;
+    const { container } = render(<ThirdThingArticle />);
     for (const paragraph of [...c.opening, ...c.symptoms, ...c.dialect, ...c.why, ...c.fix, ...c.closing]) {
       expect(container.textContent).toContain(text(paragraph));
     }
   });
 
   it("embeds all three interactive artifacts", () => {
-    const c = getThirdThingContent("en");
-    render(<ThirdThingArticle lang="en" />);
+    const c = TT_CONTENT;
+    render(<ThirdThingArticle />);
     expect(screen.getByText(c.statusPage.heading)).toBeInTheDocument();
     expect(screen.getByRole("slider", { name: c.sim.pressureAria })).toBeInTheDocument();
     expect(screen.getByText(c.diagnostic.heading)).toBeInTheDocument();
   });
 
   it("puts each artifact where the argument produces it", () => {
-    const c = getThirdThingContent("en");
-    const { container } = render(<ThirdThingArticle lang="en" />);
+    const c = TT_CONTENT;
+    const { container } = render(<ThirdThingArticle />);
     const order = [...container.children].map((el) => el.textContent ?? "");
     const indexOf = (needle: string) => order.findIndex((t) => t.includes(needle));
 
@@ -146,8 +135,8 @@ describe("ThirdThingArticle", () => {
   });
 
   it("captions the sim with the line that operates it, in the machine's voice", () => {
-    const c = getThirdThingContent("en");
-    const { container } = render(<ThirdThingArticle lang="en" />);
+    const c = TT_CONTENT;
+    const { container } = render(<ThirdThingArticle />);
     const figures = [...container.querySelectorAll("figure")];
 
     // Caption and machine are one unit, so the line reads as a label rather
@@ -160,10 +149,10 @@ describe("ThirdThingArticle", () => {
     expect(figures[0].textContent).toContain(c.sim.badgeLabel);
   });
 
-  it.each(LOCALES)("leaves the four questions to the diagnostic in %s", (locale) => {
+  it("leaves the four questions to the diagnostic", () => {
     // The machine asks them with buttons, so the prose that hands off to it
     // names the count and stays out of the enumeration.
-    const c = getThirdThingContent(locale);
+    const c = TT_CONTENT;
     const prose = text(c.audit).toLowerCase();
     for (const question of c.diagnostic.questions) {
       expect(prose).not.toContain(question.q.replace(/[?؟]/g, "").toLowerCase());
@@ -171,7 +160,7 @@ describe("ThirdThingArticle", () => {
   });
 
   it("renders the authored links rather than escaping them", () => {
-    const { container } = render(<ThirdThingArticle lang="en" />);
+    const { container } = render(<ThirdThingArticle />);
     const links = container.querySelectorAll("a[href^='https://']");
     expect(links.length).toBeGreaterThan(0);
     for (const link of links) expect(link).toHaveAttribute("rel", "noopener noreferrer");

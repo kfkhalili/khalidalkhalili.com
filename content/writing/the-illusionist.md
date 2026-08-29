@@ -1,7 +1,6 @@
 ---
 title: "The Illusionist"
 date: 2013-04-18
-lang: en
 collection: prose
 hidden: true
 tags: []
